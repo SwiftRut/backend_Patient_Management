@@ -1,12 +1,11 @@
-import patientModel from "../models/patientModel.js";
+import adminModel from "../models/adminModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import twilio from "twilio"; // For sending SMS
+import twilio from "twilio";
 
-//register patient
-export const registerPatient = async (req, res) => {
+export const registerAdmin = async (req, res) => {
   try {
     const {
       firstName,
@@ -18,10 +17,9 @@ export const registerPatient = async (req, res) => {
       country,
       state,
       city,
-      role,
+      hospital,
     } = req.body;
 
-    // Check if all required fields are provided
     if (
       !firstName ||
       !lastName ||
@@ -40,12 +38,12 @@ export const registerPatient = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const existingPatient = await patientModel.findOne({ email });
-    if (existingPatient) {
+    const existingAdmin = await adminModel.findOne({ email });
+    if (existingAdmin) {
       return res.status(400).json({ message: "Email is already in use" });
     }
 
-    const newPatient = new patientModel({
+    const newAdmin = new adminModel({
       firstName,
       lastName,
       email,
@@ -54,25 +52,23 @@ export const registerPatient = async (req, res) => {
       country,
       state,
       city,
-      role: role || "patient",
+      hospital,
+      role: "admin",
     });
 
-    await newPatient.save();
+    await newAdmin.save();
 
-    res
-      .status(201)
-      .json({
-        message: "Patient registered successfully",
-        newPatient: newPatient,
-      });
+    res.status(201).json({
+      message: "Admin registered successfully",
+      newAdmin,
+    });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Server error" });
   }
 };
 
-//login patient
-
-export const loginPatient = async (req, res) => {
+export const loginAdmin = async (req, res) => {
   try {
     const { identifier, password, rememberMe } = req.body;
 
@@ -83,57 +79,41 @@ export const loginPatient = async (req, res) => {
     }
 
     const normalizedIdentifier = identifier.trim().toLowerCase();
-
-    console.log("Normalized Identifier: ", normalizedIdentifier);
-
     const normalizedPhone = identifier.trim().replace(/[\s\+\-\(\)]/g, "");
 
-    console.log("Normalized Phone: ", normalizedPhone);
-
-    const patient = await patientModel.findOne({
+    const admin = await adminModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
 
-    if (!patient) {
+    if (!admin) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    console.log("Patient found:", patient);
-
-    const isMatch = await bcrypt.compare(password, patient.password);
-    console.log("Password Match:", isMatch);
-
+    const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      console.log("Password does not match");
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: patient._id },
-      process.env.JWT_SECRET,
-      { expiresIn: rememberMe ? "7d" : "1d" } // 'Remember Me' for 7 days, otherwise 1 day
-    );
+    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
+      expiresIn: rememberMe ? "7d" : "1d",
+    });
 
     res.status(200).json({
       message: "Login successful",
       token,
-      patient: {
-        id: patient._id,
-        firstName: patient.firstName,
-        lastName: patient.lastName,
-        email: patient.email,
-        phone: patient.phone,
+      admin: {
+        id: admin._id,
+        firstName: admin.firstName,
+        lastName: admin.lastName,
+        email: admin.email,
+        phone: admin.phone,
       },
     });
   } catch (error) {
-    console.error("Error during login:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-//forgot password
-// Initialize Twilio
 const twilioClient = twilio(
   process.env.TWILIO_SID,
   process.env.TWILIO_AUTH_TOKEN
@@ -149,27 +129,22 @@ export const forgotPassword = async (req, res) => {
         .json({ message: "Please provide email or phone number" });
     }
 
-    // Find the patient by email or phone
-    const patient = await patientModel.findOne({
+    const admin = await adminModel.findOne({
       $or: [{ email: identifier }, { phone: identifier }],
     });
 
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
     }
 
-    // Generate a 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
     const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-    const otpExpiry = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
+    const otpExpiry = Date.now() + 10 * 60 * 1000;
 
-    // Save OTP and expiry in the patient record
-    patient.resetPasswordOtp = hashedOtp;
-    patient.resetPasswordExpires = otpExpiry;
-    await patient.save();
+    admin.resetPasswordOtp = hashedOtp;
+    admin.resetPasswordExpires = otpExpiry;
+    await admin.save();
 
-    // If email is provided, send the OTP via email using nodemailer
     if (identifier.includes("@")) {
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -180,7 +155,7 @@ export const forgotPassword = async (req, res) => {
       });
 
       const mailOptions = {
-        to: patient.email,
+        to: admin.email,
         from: process.env.EMAIL_USER,
         subject: "Password Reset OTP",
         text: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
@@ -192,11 +167,10 @@ export const forgotPassword = async (req, res) => {
         .status(200)
         .json({ message: "OTP has been sent to your email" });
     } else {
-      // If phone is provided, send OTP via SMS using Twilio
       await twilioClient.messages.create({
         body: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
         from: process.env.TWILIO_PHONE_NUMBER,
-        to: patient.phone,
+        to: admin.phone,
       });
 
       return res
@@ -204,12 +178,10 @@ export const forgotPassword = async (req, res) => {
         .json({ message: "OTP has been sent to your phone" });
     }
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-//reset password
 export const resetPassword = async (req, res) => {
   try {
     const { resetToken, password, confirmPassword } = req.body;
@@ -224,22 +196,21 @@ export const resetPassword = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const patient = await patientModel.findOne({
+    const admin = await adminModel.findOne({
       resetPasswordToken: resetToken,
-      resetPasswordExpires: { $gt: Date.now() }, // Check if the token has expired
+      resetPasswordExpires: { $gt: Date.now() },
     });
 
-    if (!patient) {
+    if (!admin) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
 
-    // Hash new password
     const salt = await bcrypt.genSalt(10);
-    patient.password = await bcrypt.hash(password, salt);
-    patient.resetPasswordToken = undefined;
-    patient.resetPasswordExpires = undefined;
+    admin.password = await bcrypt.hash(password, salt);
+    admin.resetPasswordToken = undefined;
+    admin.resetPasswordExpires = undefined;
 
-    await patient.save();
+    await admin.save();
 
     res.status(200).json({ message: "Password has been reset" });
   } catch (error) {

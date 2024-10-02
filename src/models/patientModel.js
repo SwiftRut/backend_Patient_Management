@@ -27,7 +27,6 @@ const patientSchema = new mongoose.Schema(
     },
     confirmPassword: {
       type: String,
-      required: [true, "Confirm password is required"],
       validate: {
         validator: function (value) {
           return value === this.password;
@@ -37,6 +36,7 @@ const patientSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      unique: true,
       required: [true, "Phone number is required"],
       match: [/^\d{10}$/, "Please provide a valid phone number"],
     },
@@ -52,10 +52,24 @@ const patientSchema = new mongoose.Schema(
       type: String,
       required: [true, "City is required"],
     },
-    hospital: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Hospital",
-      required: [true, "Hospital selection is required"],
+    diseaseName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    role: {
+      type: String,
+      default: "patient",
+    },
+    avatar: {
+      type: String,
+      default: "https://vectorified.com/images/default-user-icon-33.jpg",
+    },
+    resetPasswordOtp: {
+      type: String,
+    },
+    resetPasswordExpires: {
+      type: Date,
     },
   },
   { timestamps: true }
@@ -69,10 +83,11 @@ patientSchema.pre("save", async function (next) {
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+
   this.confirmPassword = undefined; // We won't store confirmPassword in the database
   next();
 });
 
-const Patient = mongoose.model("Patient", patientSchema);
+const patientModel = mongoose.model("Patient", patientSchema);
 
-export default Patient;
+export default patientModel;
