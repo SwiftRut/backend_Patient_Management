@@ -6,7 +6,7 @@ const AutoIncrement = mongooseSequence(mongoose);
 const billSchema = new mongoose.Schema(
   {
     billNumber: {
-      type: String,
+      type:  Number,
       unique: true,
       required: true,
       trim: true,
