@@ -1,54 +1,49 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
 
-// Define the Admin schema
-const adminSchema = new mongoose.Schema(
+const appointmentSchema = new mongoose.Schema(
   {
-    firstName: {
+    patientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Patient",
+      required: [true, "Patient ID is required"],
+    },
+    doctorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Doctor",
+      required: [true, "Doctor ID is required"],
+    },
+    hospitalId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hospital",
+    },
+    date: {
+      type: Date,
+      required: [true, "Date is required"],
+    },
+    appointmentTime: {
       type: String,
-      required: [true, "First name is required"],
+      required: [true, "Appointment time is required"],
+      match: [
+        /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+        "Please enter a valid time in HH:MM format",
+      ],
+    },
+    status: {
+      type: String,
+      enum: ["scheduled", "completed", "cancelled"],
+      default: "scheduled",
+    },
+    type: {
+      type: String,
+      enum: ["in-person", "teleconsultation"],
+      required: [true, "Appointment type is required"],
+    },
+    reason: {
+      type: String,
       trim: true,
     },
-    lastName: {
+    notes: {
       type: String,
-      required: [true, "Last name is required"],
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: true,
-      index: true,
-      lowercase: true,
-      match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters long"],
-    },
-    confirmPassword: {
-      type: String,
-      validate: {
-        validator: function (value) {
-          return value === this.password;
-        },
-        message: "Passwords do not match",
-      },
-    },
-    phone: {
-      type: String,
-      required: [true, "Phone number is required"],
-      match: [/^\d{10}$/, "Please enter a valid phone number"],
-    },
-    country: {
-      type: String,
-      required: [true, "Country is required"],
-      trim: true,
-    },
-    state: {
-      type: String,
-      required: [true, "State is required"],
       trim: true,
     },
     city: {
@@ -56,18 +51,15 @@ const adminSchema = new mongoose.Schema(
       required: [true, "City is required"],
       trim: true,
     },
-    hospital: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Hospital",
-    },
-    avatar: {
+    state: {
       type: String,
-      default: "https://vectorified.com/images/default-user-icon-33.jpg",
+      required: [true, "State is required"],
+      trim: true,
     },
-    role: {
+    country: {
       type: String,
-      enum: ["admin", "doctor", "patient"],
-      default: "admin",
+      required: [true, "Country is required"],
+      trim: true,
     },
   },
   {
@@ -75,23 +67,6 @@ const adminSchema = new mongoose.Schema(
   }
 );
 
-// Password hashing middleware
-adminSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    return next();
-  }
+const appointmentModel = mongoose.model("Appointment", appointmentSchema);
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  this.confirmPassword = undefined; // Do not store confirmPassword in the database
-  next();
-});
-
-// Method to compare password for login
-adminSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-// Create the Admin model
-const adminModel = mongoose.model("Admin", adminSchema);
-export default adminModel;
+export default appointmentModel;

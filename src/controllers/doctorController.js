@@ -1,5 +1,69 @@
 import doctorModel from "../models/doctorModel.js";
 
+
+export const registerAdmin = async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      phone,
+      country,
+      state,
+      city,
+      hospital,
+    } = req.body;
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !phone ||
+      !country ||
+      !state ||
+      !city
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    const existingAdmin = await adminModel.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ message: "Email is already in use" });
+    }
+
+    const newAdmin = new adminModel({
+      firstName,
+      lastName,
+      email,
+      password,
+      phone,
+      country,
+      state,
+      city,
+      hospital,
+      role: "admin",
+    });
+
+    await newAdmin.save();
+
+    res.status(201).json({
+      message: "Admin registered successfully",
+      newAdmin,
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export const loginDoctor = async (req, res) => {
   try {
     const { identifier, password, rememberMe } = req.body;
