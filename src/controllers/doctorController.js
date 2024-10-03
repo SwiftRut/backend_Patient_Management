@@ -1,7 +1,6 @@
 import doctorModel from "../models/doctorModel.js";
 
-
-export const registerAdmin = async (req, res) => {
+export const registerDoctor = async (req, res) => {
   try {
     const {
       firstName,
@@ -34,12 +33,12 @@ export const registerAdmin = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const existingAdmin = await adminModel.findOne({ email });
-    if (existingAdmin) {
+    const existingDoctor = await doctorModel.findOne({ email });
+    if (existingDoctor) {
       return res.status(400).json({ message: "Email is already in use" });
     }
 
-    const newAdmin = new adminModel({
+    const newDoctor = new doctorModel({
       firstName,
       lastName,
       email,
@@ -49,21 +48,22 @@ export const registerAdmin = async (req, res) => {
       state,
       city,
       hospital,
-      role: "admin",
+      role: "doctor",
     });
 
-    await newAdmin.save();
+    await newDoctor.save();
 
     res.status(201).json({
-      message: "Admin registered successfully",
-      newAdmin,
+      message: "Doctor registered successfully",
+      newDoctor,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+//login doctor
 export const loginDoctor = async (req, res) => {
   try {
     const { identifier, password, rememberMe } = req.body;
@@ -115,6 +115,7 @@ const twilioClient = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
+//forgot password
 export const forgotPassword = async (req, res) => {
   try {
     const { identifier } = req.body;
@@ -178,6 +179,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
+//reset password
 export const resetPassword = async (req, res) => {
   try {
     const { resetToken, password, confirmPassword } = req.body;
@@ -211,5 +213,110 @@ export const resetPassword = async (req, res) => {
     res.status(200).json({ message: "Password has been reset" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+//add doctor
+export const addDoctor = async (req, res) => {
+  try {
+    const existingDoctor = await Doctor.findOne({ email: req.body.email });
+    if (existingDoctor) {
+      return res.status(400).json({ message: "Doctor with this email already exists" });
+    }
+
+    const newDoctor = new Doctor(req.body);
+    await newDoctor.save();
+
+    res.status(201).json({
+      message: "Doctor added successfully",
+      data: newDoctor,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get doctor by id
+export const getDoctorById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid Doctor ID" });
+  }
+
+  try {
+    const doctor = await Doctor.findById(id);
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.status(200).json({
+      message: "Doctor fetched successfully",
+      data: doctor,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get all doctors
+export const getAllDoctors = async (req, res) => {
+  try {
+    const doctors = await Doctor.find();
+    res.status(200).json({
+      message: "Doctors fetched successfully",
+      data: doctors,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//edit doctor
+export const editDoctor = async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid Doctor ID" });
+  }
+
+  try {
+    const doctor = await Doctor.findByIdAndUpdate(id, updatedData, { new: true });
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.status(200).json({
+      message: "Doctor updated successfully",
+      data: doctor,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//delete doctor
+export const deleteDoctor = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid Doctor ID" });
+  }
+
+  try {
+    const doctor = await Doctor.findByIdAndDelete(id);
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.status(200).json({
+      message: "Doctor deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
