@@ -5,6 +5,7 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import twilio from "twilio";
 
+//register
 export const registerAdmin = async (req, res) => {
   try {
     const {
@@ -63,11 +64,12 @@ export const registerAdmin = async (req, res) => {
       newAdmin,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+//login
 export const loginAdmin = async (req, res) => {
   try {
     const { identifier, password, rememberMe } = req.body;
@@ -114,6 +116,7 @@ export const loginAdmin = async (req, res) => {
   }
 };
 
+//forgot password
 const twilioClient = twilio(
   process.env.TWILIO_SID,
   process.env.TWILIO_AUTH_TOKEN
@@ -182,6 +185,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
+//reset password after otp of forget password
 export const resetPassword = async (req, res) => {
   try {
     const { resetToken, password, confirmPassword } = req.body;
@@ -215,5 +219,39 @@ export const resetPassword = async (req, res) => {
     res.status(200).json({ message: "Password has been reset" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+//get profile by id
+export const getProfile = async (req, res) => {
+  try {
+    const adminId = req.params.id;
+
+    const admin = await adminModel
+      .findById(adminId)
+      .select("-password -confirmPassword"); // Exclude sensitive fields
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.status(200).json(admin);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+//get all admin
+export const getAllAdmins = async (req, res) => {
+  try {
+    const admins = await adminModel.find().select("-password -confirmPassword"); // Exclude sensitive fields
+    const adminCount = await adminModel.countDocuments();
+
+    res.status(200).json({
+      totalAdmin: adminCount,
+      admins,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
