@@ -18,6 +18,7 @@ export const registerPatient = async (req, res) => {
       country,
       state,
       city,
+      diseaseName,
       role,
     } = req.body;
 
@@ -31,6 +32,7 @@ export const registerPatient = async (req, res) => {
       !phone ||
       !country ||
       !state ||
+      !diseaseName||
       !city
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -54,6 +56,7 @@ export const registerPatient = async (req, res) => {
       country,
       state,
       city,
+      diseaseName,
       role: role || "patient",
     });
 
@@ -66,6 +69,7 @@ export const registerPatient = async (req, res) => {
         newPatient: newPatient,
       });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Server error" });
   }
 };
