@@ -109,6 +109,7 @@ export const loginAdmin = async (req, res) => {
         lastName: admin.lastName,
         email: admin.email,
         phone: admin.phone,
+        role: admin.role,
       },
     });
   } catch (error) {
@@ -255,3 +256,91 @@ export const getAllAdmins = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+//edit profile
+export const editProfile = async (req, res) => {
+  try {
+    const adminId = req.params.id;
+    const updates = req.body;
+
+    if (updates.email) {
+      const existingAdminWithEmail = await adminModel.findOne({
+        email: updates.email,
+        _id: { $ne: adminId },
+      });
+      if (existingAdminWithEmail) {
+        return res.status(400).json({ message: "Email is already in use" });
+      }
+    }
+
+    if (updates.gender) {
+      const allowedGenders = ["male", "female", "other"];
+      if (!allowedGenders.includes(updates.gender.toLowerCase())) {
+        return res.status(400).json({ message: "Invalid gender value" });
+      }
+    }
+
+    const updatedAdmin = await adminModel
+      .findByIdAndUpdate(
+        adminId,
+        { $set: updates },
+        { new: true, runValidators: true }
+      )
+      .select("-password -confirmPassword");
+
+    if (!updatedAdmin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      admin: updatedAdmin,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+//change password 
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+    const adminId = req.params.id;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "New password and confirm password do not match" });
+    }
+
+    if (newPassword === currentPassword) {
+      return res.status(400).json({ message: "New password cannot be the same as the current password" });
+    }
+
+    const admin = await adminModel.findById(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, admin.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+    admin.password = hashedNewPassword;
+    admin.confirmPassword = undefined; // Remove confirmPassword field
+
+    await admin.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+//

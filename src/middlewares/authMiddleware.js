@@ -1,8 +1,12 @@
 import jwt from "jsonwebtoken";
-import User from "../models/patientModel.js";
+import { Types } from "mongoose";
+import adminModel from "../models/adminModel.js";
+import doctorModel from "../models/doctorModel.js";
+import patientModel from "../models/patientModel.js";
 
 export const protect = async (req, res, next) => {
   let token;
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -10,7 +14,27 @@ export const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select("-password");
+
+      let user;
+      if (decoded.role === "admin") {
+        user = await adminModel
+          .findById(Types.ObjectId(decoded.id))
+          .select("-password");
+      } else if (decoded.role === "doctor") {
+        user = await doctorModel
+          .findById(Types.ObjectId(decoded.id))
+          .select("-password");
+      } else if (decoded.role === "patient") {
+        user = await patientModel
+          .findById(Types.ObjectId(decoded.id))
+          .select("-password");
+      }
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      req.user = user;
       next();
     } catch (error) {
       res.status(401).json({ message: "Not authorized, token failed" });
@@ -25,5 +49,21 @@ export const admin = (req, res, next) => {
     next();
   } else {
     res.status(403).json({ message: "Not authorized as admin" });
+  }
+};
+
+export const doctor = (req, res, next) => {
+  if (req.user && req.user.role === "doctor") {
+    next();
+  } else {
+    res.status(403).json({ message: "Not authorized as doctor" });
+  }
+};
+
+export const patient = (req, res, next) => {
+  if (req.user && req.user.role === "patient") {
+    next();
+  } else {
+    res.status(403).json({ message: "Not authorized as patient" });
   }
 };
