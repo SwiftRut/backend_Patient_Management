@@ -301,7 +301,7 @@ export const editProfile = async (req, res) => {
   }
 };
 
-//change password 
+//change password
 export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
@@ -312,11 +312,15 @@ export const changePassword = async (req, res) => {
     }
 
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ message: "New password and confirm password do not match" });
+      return res
+        .status(400)
+        .json({ message: "New password and confirm password do not match" });
     }
 
     if (newPassword === currentPassword) {
-      return res.status(400).json({ message: "New password cannot be the same as the current password" });
+      return res.status(400).json({
+        message: "New password cannot be the same as the current password",
+      });
     }
 
     const admin = await adminModel.findById(adminId);
@@ -342,5 +346,3 @@ export const changePassword = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
-//

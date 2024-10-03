@@ -38,7 +38,7 @@ const adminSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      unique:true,
+      unique: true,
       required: [true, "Phone number is required"],
       match: [/^\d{10}$/, "Please enter a valid phone number"],
     },

@@ -52,6 +52,11 @@ const patientSchema = new mongoose.Schema(
       type: String,
       required: [true, "City is required"],
     },
+    adress: {
+      type: String,
+      required: [true, "Address is required"],
+      trim: true,
+    },
     diseaseName: {
       type: String,
       required: true,
@@ -71,11 +76,44 @@ const patientSchema = new mongoose.Schema(
     resetPasswordExpires: {
       type: Date,
     },
+    age: {
+      type: Number,
+      required: [true, "Age is required"],
+      min: [0, "Age must be a positive number"],
+    },
+    height: {
+      type: Number, // height in centimeters
+      required: [true, "Height is required"],
+      min: [0, "Height must be a positive number"],
+    },
+    weight: {
+      type: Number, // weight in kilograms
+      required: [true, "Weight is required"],
+      min: [0, "Weight must be a positive number"],
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      required: [true, "Gender is required"],
+    },
+    bloodGroup: {
+      type: String,
+      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      required: [true, "Blood group is required"],
+    },
+    dob: {
+      type: Date,
+      required: [true, "Date of birth is required"],
+    },
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Doctor",
+    },
   },
   { timestamps: true }
 );
 
-//hash password
+// Hash password before saving
 patientSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
