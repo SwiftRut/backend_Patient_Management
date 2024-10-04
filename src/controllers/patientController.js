@@ -20,7 +20,6 @@ export const registerPatient = async (req, res) => {
       state,
       city,
       diseaseName,
-      role,
     } = req.body;
 
     if (
