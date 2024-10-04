@@ -16,6 +16,10 @@ const appointmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hospital",
     },
+    insuranceId : {
+      type : mongoose.Schema.Types.ObjectId,
+      ref : "Insurance"
+    },
     date: {
       type: Date,
       required: [true, "Date is required"],
@@ -28,21 +32,16 @@ const appointmentSchema = new mongoose.Schema(
         "Please enter a valid time in HH:MM format",
       ],
     },
-    status: {
-      type: String,
-      enum: ["scheduled", "completed", "cancelled"],
-      default: "scheduled",
-    },
     type: {
       type: String,
       enum: ["in-person", "teleconsultation"],
       required: [true, "Appointment type is required"],
     },
-    reason: {
+    patient_issue: {
       type: String,
       trim: true,
     },
-    notes: {
+    dieseas_name: {
       type: String,
       trim: true,
     },

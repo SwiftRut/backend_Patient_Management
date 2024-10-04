@@ -90,13 +90,13 @@ billSchema.plugin(AutoIncrement, {
   start_seq: 1000,
 });
 
-billSchema.virtual("totalAmount").get(function () {
-  return (
-    this.amount -
-    this.amount * (this.discount / 100) +
-    this.amount * (this.tax / 100)
-  );
-});
+// billSchema.virtual("totalAmount").get(function () {
+//   return (
+//     this.amount -
+//     this.amount * (this.discount / 100) +
+//     this.amount * (this.tax / 100)
+//   );
+// });
 
 billSchema.set("toJSON", { virtuals: true });
 

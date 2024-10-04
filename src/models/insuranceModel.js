@@ -17,15 +17,12 @@ const insuranceSchema = new mongoose.Schema({
     ref: "Patient",
     required: true,
   },
-  diseaseName: {
-    type: String,
-    required: [true, "Disease name is required"],
-    trim: true,
+  claim_amount : {
+    type : Number,
+    min : [0]
   },
-  amount: {
-    type: Number,
-    required: [true, "Amount is required"],
-    min: [0, "Amount must be a positive number"],
+  claimed_amount : {
+    type : Number,
   },
   insuranceCompany: {
     type: String,
@@ -42,12 +39,7 @@ const insuranceSchema = new mongoose.Schema({
     required: true,
     enum: ["Maternity", "Medical", "Health"], 
     trim: true,
-  },
-  billDate: {
-    type: Date,
-    required: true,
-    default: Date.now,
-  },
+  }
 }, { timestamps: true });
 
 const insuranceModel = mongoose.model("Insurance", insuranceSchema);
