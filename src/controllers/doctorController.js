@@ -1,4 +1,10 @@
 import doctorModel from "../models/doctorModel.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+import twilio from "twilio";
+import mongoose from "mongoose";
 
 export const registerDoctor = async (req, res) => {
   try {
@@ -219,12 +225,14 @@ export const resetPassword = async (req, res) => {
 //add doctor
 export const addDoctor = async (req, res) => {
   try {
-    const existingDoctor = await Doctor.findOne({ email: req.body.email });
+    const existingDoctor = await doctorModel.findOne({ email: req.body.email });
     if (existingDoctor) {
-      return res.status(400).json({ message: "Doctor with this email already exists" });
+      return res
+        .status(400)
+        .json({ message: "Doctor with this email already exists" });
     }
 
-    const newDoctor = new Doctor(req.body);
+    const newDoctor = new doctorModel(req.body);
     await newDoctor.save();
 
     res.status(201).json({
@@ -245,7 +253,7 @@ export const getDoctorById = async (req, res) => {
   }
 
   try {
-    const doctor = await Doctor.findById(id);
+    const doctor = await doctorModel.findById(id);
 
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
@@ -263,7 +271,7 @@ export const getDoctorById = async (req, res) => {
 //get all doctors
 export const getAllDoctors = async (req, res) => {
   try {
-    const doctors = await Doctor.find();
+    const doctors = await doctorModel.find();
     res.status(200).json({
       message: "Doctors fetched successfully",
       data: doctors,
@@ -283,7 +291,9 @@ export const editDoctor = async (req, res) => {
   }
 
   try {
-    const doctor = await Doctor.findByIdAndUpdate(id, updatedData, { new: true });
+    const doctor = await doctorModel.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
 
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
@@ -307,7 +317,7 @@ export const deleteDoctor = async (req, res) => {
   }
 
   try {
-    const doctor = await Doctor.findByIdAndDelete(id);
+    const doctor = await doctorModel.findByIdAndDelete(id);
 
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
