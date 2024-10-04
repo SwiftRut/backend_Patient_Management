@@ -28,7 +28,6 @@ router.delete("/deleteDoctor/:id", deleteDoctor);
 
 
 // router.post('/forgot-password', protect , doctor ,forgotPassword);
-
 // router.post('/reset-password', protect , doctor,  resetPassword);
 
 

@@ -1,6 +1,6 @@
-import patientModel from "../models/patientModel";
-import doctorModel from "../models/doctorModel";
-import appointmentModel from "../models/appointmentModel";
+import doctorModel from "../models/doctorModel.js";
+import appointmentModel from "../models/appointmentModel.js";
+import patientModel from "../models/patientModel.js";
 
 // Controller function to get doctor count by department (speciality)
 const getDoctorDepartmentCount = async (req, res) => {
@@ -117,7 +117,7 @@ const getAdmittedPatientCount = async (req, res) => {
   }
 };
 
-export default {
+export {
   getDoctorDepartmentCount,
   getPatientDepartmentCount,
   getAppointmentCountByHospital,
