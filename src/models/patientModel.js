@@ -59,7 +59,6 @@ const patientSchema = new mongoose.Schema(
     },
     diseaseName: {
       type: String,
-      required: true,
       trim: true,
     },
     role: {
