@@ -55,11 +55,11 @@ const patientSchema = new mongoose.Schema(
     adress: {
       type: String,
       required: [true, "Address is required"],
-      trim: true,
+      trim: false,
     },
     diseaseName: {
       type: String,
-      trim: true,
+      trim: false,
     },
     role: {
       type: String,

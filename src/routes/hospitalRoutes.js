@@ -4,6 +4,6 @@ import { createHospital, getAllHospitals } from "../controllers/hospitalControll
 const router = express.Router();
 
 router.post("/create-hospital", createHospital);
-router.get("/getAllHospitals", getAllHospitals);
+router.get("/get-all-hospitals", getAllHospitals);
 
 export default router;

@@ -21,12 +21,16 @@ router.post("/forgot-password", forgotPassword);
 
 router.post("/reset-password", resetPassword);
 
-router.get("/profile/:id", protect, getProfile);
+
+//this should be protected for development it is removed
+router.get("/profile/:id", getProfile);
 
 router.get("/all", getAllAdmins);
 
-router.put("/edit-profile/:id", editProfile);
 
-router.put("/change-password/:id", protect, admin, changePassword);
+router.patch("/edit-profile/:id", editProfile);
+
+//this should be protected for development it is removed
+router.patch("/change-password/:id", changePassword);
 
 export default router;

@@ -70,6 +70,11 @@ const adminSchema = new mongoose.Schema(
       enum: ["admin", "doctor", "patient"],
       default: "admin",
     },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+      default: "Other",
+    }
   },
   {
     timestamps: true,
