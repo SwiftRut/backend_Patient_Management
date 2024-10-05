@@ -28,3 +28,14 @@ export const createHospital = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+export const getAllHospitals = async (req, res) => {
+  try {
+    const hospitals = await hospitalModel.find();
+    res.status(200).json({
+      message: "Hospitals fetched successfully",
+      data: hospitals,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
