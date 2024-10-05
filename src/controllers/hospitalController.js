@@ -3,11 +3,10 @@ import hospitalModel from "../models/hospitalModel.js";
 export const createHospital = async (req, res) => {
   try {
     const { name, address, country, state, city, zipcode } = req.body;
-
+    console.log(req.body);
     if (!name || !address || !country || !state || !city || !zipcode) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
     const newHospital = new hospitalModel({
       name,
       address,
