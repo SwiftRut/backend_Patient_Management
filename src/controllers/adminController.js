@@ -5,6 +5,7 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import twilio from "twilio";
 import hospitalModel from "../models/hospitalModel.js";
+import { hostname } from "os";
 
 //register
 export const registerAdmin = async (req, res) => {
@@ -262,16 +263,37 @@ export const getAllAdmins = async (req, res) => {
 //edit profile
 export const editProfile = async (req, res) => {
   try {
-    const imgUrl = req.file ? req.file.path : null;
-    console.log(imgUrl);
+    const { 
+      firstName,
+      lastName,
+      email,
+      phone,
+      country,
+      state,
+      city,
+      avatar,
+      role,
+      gender,
+      hospitalName
+    } = req.body;
     const adminId = req.params.id;
-    const updates = req.body;
-    updates.avatar = imgUrl;
-    console.log(updates, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< updates");
 
-    if (updates.email) {
+    const updates = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      country,
+      state,
+      city,
+      role,
+      gender
+    };
+
+    // Validate email uniqueness
+    if (email) {
       const existingAdminWithEmail = await adminModel.findOne({
-        email: updates.email,
+        email,
         _id: { $ne: adminId },
       });
       if (existingAdminWithEmail) {
@@ -279,30 +301,44 @@ export const editProfile = async (req, res) => {
       }
     }
 
-    if (updates.gender) {
+    // Validate gender input
+    if (gender) {
       const allowedGenders = ["male", "female", "other"];
-      if (!allowedGenders.includes(updates.gender.toLowerCase())) {
+      if (!allowedGenders.includes(gender.toLowerCase())) {
         return res.status(400).json({ message: "Invalid gender value" });
       }
     }
 
+    // Handle avatar file upload if present
+    const imgUrl = req.file ? req.file.path : avatar;
+    if (imgUrl) updates.avatar = imgUrl;
+
+    // Update admin profile
     const updatedAdmin = await adminModel
-      .findByIdAndUpdate(
-        adminId,
-        { $set: updates },
-        { new: true, runValidators: true }
-      )
+      .findByIdAndUpdate(adminId, { $set: updates }, { new: true })
       .select("-password -confirmPassword");
 
     if (!updatedAdmin) {
       return res.status(404).json({ message: "Admin not found" });
     }
 
+    // Update hospital information if hospitalName is provided
+    let updatedHospital = null;
+    if (hospitalName && updatedAdmin.hospital) {
+      updatedHospital = await hospitalModel.findByIdAndUpdate(
+        updatedAdmin.hospital,
+        { $set: { name: hospitalName } },
+        { new: true }
+      );
+    }
+
     res.status(200).json({
       message: "Profile updated successfully",
       admin: updatedAdmin,
+      hospital: updatedHospital
     });
   } catch (error) {
+    console.error("Error updating profile:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
