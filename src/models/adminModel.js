@@ -40,7 +40,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
       unique: true,
       required: [true, "Phone number is required"],
-      match: [/^\d{10}$/, "Please enter a valid phone number"],
+      // match: [/^\d{13}$/, "Please enter a valid phone number"],
     },
     country: {
       type: String,

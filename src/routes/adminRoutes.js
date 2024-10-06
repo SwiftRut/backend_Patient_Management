@@ -17,16 +17,16 @@ router.post("/register", registerAdmin);
 
 router.post("/login", loginAdmin);
 
-router.post("/forgot-password", forgotPassword);
+router.post("/forgot_password", forgotPassword);
 
-router.post("/reset-password", resetPassword);
+router.post("/reset_password", resetPassword);
 
 router.get("/profile/:id", protect, getProfile);
 
 router.get("/all", getAllAdmins);
 
-router.put("/edit-profile/:id", editProfile);
+router.patch("/edit-profile/:id", editProfile);
 
-router.put("/change-password/:id", protect, admin, changePassword);
+router.patch("/change-password/:id", changePassword);
 
 export default router;
