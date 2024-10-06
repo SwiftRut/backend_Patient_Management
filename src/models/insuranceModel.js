@@ -49,16 +49,7 @@ const insuranceSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
-    doctor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Doctor",
-      required: true,
-    },
-    patient: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Patient",
-      required: true,
-    },
+
     claim_amount: {
       type: Number,
       min: [0],
