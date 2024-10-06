@@ -79,6 +79,11 @@ const billSchema = new mongoose.Schema(
       ref: "Insurance",
       required: false,
     },
+    status: {
+      type: String,
+      enum: ["Unpaid", "Paid"],
+      default: "Unpaid",
+    },
   },
   {
     timestamps: true,
