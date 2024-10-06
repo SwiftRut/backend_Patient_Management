@@ -60,6 +60,7 @@ const adminSchema = new mongoose.Schema(
     hospital: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hospital",
+      required: [true, "Hospital ID is required"],
     },
     avatar: {
       type: String,

@@ -232,19 +232,17 @@ export const getProfile = async (req, res) => {
 
     const admin = await adminModel
       .findById(adminId)
-      .select("-password -confirmPassword");
-    const hospital = await hospitalModel.findById(admin.hospital);
-    console.log(hospital, admin.hospital);
+      .populate('hospital');
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
 
     res.status(200).json(admin);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 //get all admin
 export const getAllAdmins = async (req, res) => {
@@ -264,8 +262,12 @@ export const getAllAdmins = async (req, res) => {
 //edit profile
 export const editProfile = async (req, res) => {
   try {
+    const imgUrl = req.file ? req.file.path : null;
+    console.log(imgUrl);
     const adminId = req.params.id;
     const updates = req.body;
+    updates.avatar = imgUrl;
+    console.log(updates, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< updates");
 
     if (updates.email) {
       const existingAdminWithEmail = await adminModel.findOne({

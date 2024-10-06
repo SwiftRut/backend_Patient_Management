@@ -1,6 +1,6 @@
 import express from "express";
-import { doctor, protect } from "../middlewares/authMiddleware";
-import { AddPriscription, getOldPrescriptions, getPrescription, getPrescriptionsByDate, getTodaysPrescriptions, searchPrescriptionsByPatientName, SinglePrescription } from "../controllers/prescriptionController";
+import { doctor, protect } from "../middlewares/authMiddleware.js";
+import { AddPriscription, getOldPrescriptions, getPrescription, getPrescriptionsByDate, getTodaysPrescriptions, searchPrescriptionsByPatientName, SinglePrescription } from "../controllers/prescriptionController.js";
 const router = express.Router()
 
 

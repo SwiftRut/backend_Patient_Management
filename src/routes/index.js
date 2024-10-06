@@ -14,6 +14,9 @@ import patientModel from "../models/patientModel.js";
 import { loginAdmin } from "../controllers/adminController.js";
 import { loginDoctor } from "../controllers/doctorController.js";
 import { loginPatient } from "../controllers/patientController.js";
+import appoinmentRoutes from "./appointmentRoutes.js";
+import prescriptionRoutes from "./prescriptionRoutes.js";
+
 const router = express.Router();
 
 router.use("/admin", adminRoutes);
