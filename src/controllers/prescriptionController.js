@@ -1,5 +1,5 @@
-import appointmentModel from "../models/appointmentModel";
-import prescriptionModel from "../models/prescriptionModel";
+import appointmentModel from "../models/appointmentModel.js";
+import prescriptionModel from "../models/prescriptionModel.js";
 
 
 // create prescripition
