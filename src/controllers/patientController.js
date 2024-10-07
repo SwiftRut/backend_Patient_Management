@@ -1,9 +1,7 @@
 import patientModel from "../models/patientModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import nodemailer from "nodemailer";
-import twilio from "twilio"; // For sending SMS
+import mongoose from "mongoose";
 
 //register patient
 export const registerPatient = async (req, res) => {
@@ -22,7 +20,6 @@ export const registerPatient = async (req, res) => {
       role,
     } = req.body;
 
-    // Check if all required fields are provided
     if (
       !firstName ||
       !lastName ||
@@ -32,7 +29,7 @@ export const registerPatient = async (req, res) => {
       !phone ||
       !country ||
       !state ||
-      !diseaseName||
+      !diseaseName ||
       !city
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -62,14 +59,12 @@ export const registerPatient = async (req, res) => {
 
     await newPatient.save();
 
-    res
-      .status(201)
-      .json({
-        message: "Patient registered successfully",
-        newPatient: newPatient,
-      });
+    res.status(201).json({
+      message: "Patient registered successfully",
+      newPatient: newPatient,
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -122,12 +117,13 @@ export const loginPatient = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      patient: {
+      user: {
         id: patient._id,
         firstName: patient.firstName,
         lastName: patient.lastName,
         email: patient.email,
         phone: patient.phone,
+        role:'patient',
       },
     });
   } catch (error) {
@@ -136,117 +132,116 @@ export const loginPatient = async (req, res) => {
   }
 };
 
-//forgot password
-// Initialize Twilio
-const twilioClient = twilio(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
 
-export const forgotPassword = async (req, res) => {
+//add patient
+export const addPatient = async (req, res) => {
+  const { email, phone, password, confirmPassword } = req.body;
+
   try {
-    const { identifier } = req.body;
-
-    if (!identifier) {
-      return res
-        .status(400)
-        .json({ message: "Please provide email or phone number" });
+    const existingPatient = await patientModel.findOne({
+      $or: [{ email }, { phone }],
+    });
+    if (existingPatient) {
+      return res.status(400).json({
+        message: "Patient with this email or phone number already exists",
+      });
     }
 
-    // Find the patient by email or phone
-    const patient = await patientModel.findOne({
-      $or: [{ email: identifier }, { phone: identifier }],
+    const newPatient = new patientModel(req.body);
+    await newPatient.save();
+
+    res.status(201).json({
+      message: "Patient added successfully",
+      data: newPatient,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get patient by id
+export const getPatientById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid Patient ID" });
+  }
+
+  try {
+    const patient = await patientModel.findById(id);
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    res.status(200).json({
+      message: "Patient fetched successfully",
+      data: patient,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get all patient
+export const getAllPatients = async (req, res) => {
+  try {
+    const patients = await patientModel.find();
+    res.status(200).json({
+      message: "Patients fetched successfully",
+      data: patients,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//edit patient by id
+export const editPatient = async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid Patient ID" });
+  }
+
+  try {
+    const patient = await patientModel.findByIdAndUpdate(id, updatedData, {
+      new: true,
     });
 
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
 
-    // Generate a 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-    const otpExpiry = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
-
-    // Save OTP and expiry in the patient record
-    patient.resetPasswordOtp = hashedOtp;
-    patient.resetPasswordExpires = otpExpiry;
-    await patient.save();
-
-    // If email is provided, send the OTP via email using nodemailer
-    if (identifier.includes("@")) {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      const mailOptions = {
-        to: patient.email,
-        from: process.env.EMAIL_USER,
-        subject: "Password Reset OTP",
-        text: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
-      };
-
-      await transporter.sendMail(mailOptions);
-
-      return res
-        .status(200)
-        .json({ message: "OTP has been sent to your email" });
-    } else {
-      // If phone is provided, send OTP via SMS using Twilio
-      await twilioClient.messages.create({
-        body: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: patient.phone,
-      });
-
-      return res
-        .status(200)
-        .json({ message: "OTP has been sent to your phone" });
-    }
+    res.status(200).json({
+      message: "Patient updated successfully",
+      data: patient,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
-//reset password
-export const resetPassword = async (req, res) => {
+//delete patient by id
+export const deletePatient = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid Patient ID" });
+  }
+
   try {
-    const { resetToken, password, confirmPassword } = req.body;
-
-    if (!password || !confirmPassword) {
-      return res
-        .status(400)
-        .json({ message: "Please provide a new password and confirmation" });
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
-
-    const patient = await patientModel.findOne({
-      resetPasswordToken: resetToken,
-      resetPasswordExpires: { $gt: Date.now() }, // Check if the token has expired
-    });
+    const patient = await patientModel.findByIdAndDelete(id);
 
     if (!patient) {
-      return res.status(400).json({ message: "Invalid or expired token" });
+      return res.status(404).json({ message: "Patient not found" });
     }
 
-    // Hash new password
-    const salt = await bcrypt.genSalt(10);
-    patient.password = await bcrypt.hash(password, salt);
-    patient.resetPasswordToken = undefined;
-    patient.resetPasswordExpires = undefined;
-
-    await patient.save();
-
-    res.status(200).json({ message: "Password has been reset" });
+    res.status(200).json({
+      message: "Patient deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
