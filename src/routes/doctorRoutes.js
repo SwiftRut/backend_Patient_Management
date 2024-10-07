@@ -20,4 +20,5 @@ router.get("/getAllDoctors", getAllDoctors);
 router.put("/editDoctor/:id", editDoctor);
 router.delete("/deleteDoctor/:id", deleteDoctor);
 
+
 export default router;

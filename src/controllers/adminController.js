@@ -1,9 +1,11 @@
 import adminModel from "../models/adminModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-// import crypto from "crypto";
-// import nodemailer from "nodemailer";
-// import twilio from "twilio";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+import twilio from "twilio";
+import hospitalModel from "../models/hospitalModel.js";
+
 
 //register
 export const registerAdmin = async (req, res) => {
@@ -107,13 +109,14 @@ export const loginAdmin = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      admin: {
+      user: {
         id: admin._id,
         firstName: admin.firstName,
         lastName: admin.lastName,
         email: admin.email,
         phone: admin.phone,
-        role: admin.role,
+        role: 'admin',
+
       },
     });
   } catch (error) {
@@ -263,6 +266,8 @@ export const getProfile = async (req, res) => {
       .select("-password -confirmPassword")
       .populate("hospital")
 
+    const hospital = await hospitalModel.findById(admin.hospital);
+
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
@@ -344,15 +349,11 @@ export const changePassword = async (req, res) => {
     }
 
     if (newPassword !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ message: "New password and confirm password do not match" });
+      return res.status(400).json({ message: "New password and confirm password do not match" });
     }
 
     if (newPassword === currentPassword) {
-      return res.status(400).json({
-        message: "New password cannot be the same as the current password",
-      });
+      return res.status(400).json({ message: "New password cannot be the same as the current password" });
     }
 
     const admin = await adminModel.findById(adminId);
@@ -368,13 +369,10 @@ export const changePassword = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
-    admin.password = hashedNewPassword;
-    admin.confirmPassword = undefined; // Remove confirmPassword field
-
-    await admin.save();
-
+    await adminModel.findByIdAndUpdate(adminId, { password: hashedNewPassword });
     res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+

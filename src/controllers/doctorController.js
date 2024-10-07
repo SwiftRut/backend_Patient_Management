@@ -100,12 +100,13 @@ export const loginDoctor = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      doctor: {
+      user: {
         id: doctor._id,
         firstName: doctor.firstName,
         lastName: doctor.lastName,
         email: doctor.email,
         phone: doctor.phone,
+        role: 'doctor',
       },
     });
   } catch (error) {

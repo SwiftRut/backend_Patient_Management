@@ -117,12 +117,13 @@ export const loginPatient = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      patient: {
+      user: {
         id: patient._id,
         firstName: patient.firstName,
         lastName: patient.lastName,
         email: patient.email,
         phone: patient.phone,
+        role:'patient',
       },
     });
   } catch (error) {

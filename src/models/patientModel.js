@@ -55,11 +55,11 @@ const patientSchema = new mongoose.Schema(
     adress: {
       type: String,
       required: [true, "Address is required"],
-      trim: true,
+      trim: false,
     },
     diseaseName: {
       type: String,
-      trim: true,
+      trim: false,
     },
     role: {
       type: String,
@@ -69,6 +69,10 @@ const patientSchema = new mongoose.Schema(
       type: String,
       default: "https://vectorified.com/images/default-user-icon-33.jpg",
     },
+    appointmentId : [{
+      type : mongoose.Schema.Types.ObjectId,
+      ref : "Appointment"
+    }],
     resetPasswordOtp: {
       type: String,
     },
