@@ -7,6 +7,7 @@ import insuranceRoutes from "./insuranceRoutes.js"
 import appoinmentRoutes from "./appointmentRoutes.js"
 import prescriptionRoutes from "./prescriptionRoutes.js"
 import notificationRoutes from "./notificationRoutes.js"
+import paymentRoutes from "./paymentRoutes.js"
 const router = express.Router();
 
 router.use("/admin", adminRoutes);
@@ -17,4 +18,5 @@ router.use("/insurance" , insuranceRoutes)
 router.use("/appoinment" , appoinmentRoutes)
 router.use("/presciption" , prescriptionRoutes)
 router.use("/notification" , notificationRoutes)
+router.use("/payment" , paymentRoutes)
 export default router;
