@@ -49,6 +49,30 @@ const insuranceSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
+
+    claim_amount: {
+      type: Number,
+      min: [0],
+    },
+    claimed_amount: {
+      type: Number,
+    },
+    insuranceCompany: {
+      type: String,
+      required: true,
+      enum: [
+        "HDFC Life Insurance",
+        "LIC Life Insurance",
+        "Aegon Life Insurance",
+      ],
+      trim: true,
+    },
+    insurancePlan: {
+      type: String,
+      required: true,
+      enum: ["Maternity", "Medical", "Health"],
+      trim: true,
+    },
   },
   { timestamps: true }
 );
