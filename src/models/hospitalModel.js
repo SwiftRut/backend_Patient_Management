@@ -30,7 +30,6 @@ const hospitalSchema = new mongoose.Schema(
     zipcode: {
       type: String,
       required: [true, "Zip code is required"],
-      match: [/^\d{5}(-\d{4})?$/, "Please provide a valid zip code"],
     },
   },
   {
