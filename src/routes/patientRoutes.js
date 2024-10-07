@@ -2,8 +2,6 @@ import express from "express";
 import {
   registerPatient,
   loginPatient,
-  forgotPassword,
-  resetPassword,
   addPatient,
   getPatientById,
   getAllPatients,
@@ -14,9 +12,6 @@ const router = express.Router();
 
 router.post("/register", registerPatient);
 router.post("/login", loginPatient);
-router.post("/forgotPassword", forgotPassword);
-router.post("/resetPassword", resetPassword);
-
 router.post("/addPatient", addPatient);
 router.get("/getPatient/:id", getPatientById);
 router.get("/getAllPatient", getAllPatients);

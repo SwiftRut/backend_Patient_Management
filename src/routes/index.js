@@ -1,11 +1,13 @@
 import express from "express";
 
-import patientRoutes from "./patientRoutes.js";
-import adminRoutes from "./adminRoutes.js";
-import hospitalRoutes from "./hospitalRoutes.js";
-import billRoutes from "./billRoutes.js";
+import patientRoutes from "../routes/patientRoutes.js";
+import adminRoutes from "../routes/adminRoutes.js";
+import hospitalRoutes from "../routes/hospitalRoutes.js";
+import doctorRoutes from "../routes/doctorRoutes.js";
+import billRoutes from "../routes/billRoutes.js";
+import universalRoutes from "../routes/universalRoutes.js"
+
 import insuranceRoutes from "./insuranceRoutes.js";
-import doctorRoutes from "./doctorRoutes.js";
 import aggregationRoutes from "../routes/aggregationRoutes.js";
 
 import adminModel from "../models/adminModel.js";
@@ -14,8 +16,10 @@ import patientModel from "../models/patientModel.js";
 import { loginAdmin } from "../controllers/adminController.js";
 import { loginDoctor } from "../controllers/doctorController.js";
 import { loginPatient } from "../controllers/patientController.js";
+
 const router = express.Router();
 
+router.use("/",universalRoutes);
 router.use("/admin", adminRoutes);
 router.use("/patient", patientRoutes);
 router.use("/doctor", doctorRoutes);
@@ -72,5 +76,6 @@ router.post("/universal-login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 export default router;
