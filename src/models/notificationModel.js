@@ -4,7 +4,7 @@ const notificationSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Patient",
       required: [true, "User ID is required"],
     },
     type: {
@@ -16,16 +16,7 @@ const notificationSchema = new mongoose.Schema(
       type: String,
       required: [true, "Message is required"],
       trim: true,
-    },
-    read: {
-      type: Boolean,
-      default: false,
-    },
-    status: {
-      type: String,
-      enum: ["unread", "read", "dismissed"],
-      default: "unread",
-    },
+    }
   },
   {
     timestamps: true,

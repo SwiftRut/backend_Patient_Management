@@ -1,11 +1,8 @@
-
 import express from "express";
-import { doctor, protect } from '../middlewares/authMiddleware.js';
+import { doctor, protect } from "../middlewares/authMiddleware.js";
 import {
   registerDoctor,
   loginDoctor,
-  forgotPassword,
-  resetPassword,
   addDoctor,
   getDoctorById,
   getAllDoctors,
@@ -17,18 +14,11 @@ const router = express.Router();
 
 router.post("/register", registerDoctor);
 router.post("/login", loginDoctor);
-router.post("/forgotPassword", forgotPassword);
-router.post("/resetPassword", resetPassword);
 router.post("/addDoctor", addDoctor);
 router.get("/getDoctorById/:id", getDoctorById);
 router.get("/getAllDoctors", getAllDoctors);
 router.put("/editDoctor/:id", editDoctor);
 router.delete("/deleteDoctor/:id", deleteDoctor);
-
-
-
-// router.post('/forgot-password', protect , doctor ,forgotPassword);
-// router.post('/reset-password', protect , doctor,  resetPassword);
 
 
 export default router;

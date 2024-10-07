@@ -5,7 +5,7 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import twilio from "twilio";
 import hospitalModel from "../models/hospitalModel.js";
-import { hostname } from "os";
+
 
 //register
 export const registerAdmin = async (req, res) => {
@@ -98,9 +98,13 @@ export const loginAdmin = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: admin._id, role: "admin"}, process.env.JWT_SECRET, {
-      expiresIn: rememberMe ? "7d" : "1d",
-    });
+    const token = jwt.sign(
+      { id: admin._id, role: "admin" },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: rememberMe ? "7d" : "1d",
+      }
+    );
 
     res.status(200).json({
       message: "Login successful",
@@ -120,120 +124,150 @@ export const loginAdmin = async (req, res) => {
   }
 };
 
-//forgot password
-const twilioClient = twilio(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
 
-export const forgotPassword = async (req, res) => {
-  try {
-    const { identifier } = req.body;
 
-    if (!identifier) {
-      return res
-        .status(400)
-        .json({ message: "Please provide email or phone number" });
-    }
+// export const forgotPassword = async (req, res) => {
+//   try {
+//     const { identifier } = req.body;
 
-    const admin = await adminModel.findOne({
-      $or: [{ email: identifier }, { phone: identifier }],
-    });
+//     // Check if identifier is provided
+//     if (!identifier) {
+//       return res
+//         .status(400)
+//         .json({ message: "Please provide email or phone number" });
+//     }
 
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
+//     // Find admin by email or phone number
+//     const admin = await adminModel.findOne({
+//       $or: [{ email: identifier }, { phone: identifier }],
+//     });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-    const otpExpiry = Date.now() + 10 * 60 * 1000;
+//     // If admin is not found
+//     if (!admin) {
+//       return res.status(404).json({ message: "Admin not found" });
+//     }
 
-    admin.resetPasswordOtp = hashedOtp;
-    admin.resetPasswordExpires = otpExpiry;
-    await admin.save();
+//     // Generate OTP and hash it
+//     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+//     const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+//     const otpExpiry = Date.now() + 10 * 60 * 1000;
 
-    if (identifier.includes("@")) {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
+//     // Save OTP and expiration in admin document
+//     admin.resetPasswordOtp = hashedOtp;
+//     admin.resetPasswordExpires = otpExpiry;
+//     await admin.save();
 
-      const mailOptions = {
-        to: admin.email,
-        from: process.env.EMAIL_USER,
-        subject: "Password Reset OTP",
-        text: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
-      };
+//     // If identifier is an email
+//     if (identifier.includes("@")) {
+//       const transporter = nodemailer.createTransport({
+//         service: "gmail",
+//         auth: {
+//           user: process.env.EMAIL_USER,
+//           pass: process.env.EMAIL_PASS,
+//         },
+//       });
 
-      await transporter.sendMail(mailOptions);
+//       const mailOptions = {
+//         to: admin.email,
+//         from: process.env.EMAIL_USER,
+//         subject: "Password Reset OTP",
+//         text: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
+//       };
 
-      return res
-        .status(200)
-        .json({ message: "OTP has been sent to your email" });
-    } else {
-      await twilioClient.messages.create({
-        body: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: admin.phone,
-      });
+//       await transporter.sendMail(mailOptions);
+//       return res
+//         .status(200)
+//         .json({ message: "OTP has been sent to your email" });
+//     } else {
+//       // If identifier is a phone number (send OTP via SMS using Twilio)
+//       // console.log(admin);
+//       await twilioClient.messages
+//         .create({
+//           body: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
+//           from: process.env.TWILIO_PHONE_NUMBER,
+//           to: admin.phone,
+//         })
+//         .then((message) => {
+//           console.log("message", message);
 
-      return res
-        .status(200)
-        .json({ message: "OTP has been sent to your phone" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//           return res
+//             .status(200)
+//             .json({ message: "OTP has been sent to your phone" });
+//         })
+//         .catch((error) => {
+//           // Handle Twilio authentication error
+//           if (error.code === 20003) {
+//             console.error("Twilio Authentication Error:", error.message);
+//             return res.status(500).json({
+//               message:
+//                 "Authentication failed with Twilio. Please check your credentials.",
+//             });
+//           }
 
-//reset password after otp of forget password
-export const resetPassword = async (req, res) => {
-  try {
-    const { resetToken, password, confirmPassword } = req.body;
+//           // Handle other Twilio errors
+//           console.error("Twilio Error:", error.message);
+//           return res.status(500).json({
+//             message: "Failed to send OTP via SMS. Please try again later.",
+//           });
+//         });
+//     }
+//   } catch (error) {
+//     console.error("Server Error:", error);
+//     return res.status(500).json({ message: "Server error" });
+//   }
+// };
 
-    if (!password || !confirmPassword) {
-      return res
-        .status(400)
-        .json({ message: "Please provide a new password and confirmation" });
-    }
+// //reset password after otp of forget password
+// export const resetPassword = async (req, res) => {
+//   try {
+//     const { resetToken, password, confirmPassword } = req.body;
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
+//     if (!password || !confirmPassword) {
+//       return res
+//         .status(400)
+//         .json({ message: "Please provide a new password and confirmation" });
+//     }
 
-    const admin = await adminModel.findOne({
-      resetPasswordToken: resetToken,
-      resetPasswordExpires: { $gt: Date.now() },
-    });
+//     if (password !== confirmPassword) {
+//       return res.status(400).json({ message: "Passwords do not match" });
+//     }
 
-    if (!admin) {
-      return res.status(400).json({ message: "Invalid or expired token" });
-    }
+//     const admin = await adminModel.findOne({
+//       resetPasswordToken: resetToken,
+//       resetPasswordExpires: { $gt: Date.now() },
+//     });
 
-    const salt = await bcrypt.genSalt(10);
-    admin.password = await bcrypt.hash(password, salt);
-    admin.resetPasswordToken = undefined;
-    admin.resetPasswordExpires = undefined;
+//     if (!admin) {
+//       return res.status(400).json({ message: "Invalid or expired token" });
+//     }
 
-    await admin.save();
+//     const salt = await bcrypt.genSalt(10);
+//     admin.password = await bcrypt.hash(password, salt);
+//     admin.resetPasswordToken = undefined;
+//     admin.resetPasswordExpires = undefined;
 
-    res.status(200).json({ message: "Password has been reset" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//     await admin.save();
+
+//     res.status(200).json({ message: "Password has been reset" });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 //get profile by id
 export const getProfile = async (req, res) => {
   try {
     const adminId = req.params.id;
+    console.log(req.params.id);   
+
 
     const admin = await adminModel
       .findById(adminId)
-      .populate('hospital');
+      .select("-password -confirmPassword")
+      .populate("hospital")
+
+    const hospital = await hospitalModel.findById(admin.hospital);
+
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
