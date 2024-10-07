@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-// Define the Admin schema
 const adminSchema = new mongoose.Schema(
   {
     firstName: {
@@ -60,6 +59,7 @@ const adminSchema = new mongoose.Schema(
     hospital: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hospital",
+      required: [true, "Hospital is required"],
     },
     avatar: {
       type: String,
@@ -93,6 +93,6 @@ adminSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Create the Admin model
 const adminModel = mongoose.model("Admin", adminSchema);
 export default adminModel;
+  

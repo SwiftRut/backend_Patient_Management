@@ -1,9 +1,6 @@
 import doctorModel from "../models/doctorModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import nodemailer from "nodemailer";
-import twilio from "twilio";
 import mongoose from "mongoose";
 
 export const registerDoctor = async (req, res) => {
@@ -111,75 +108,6 @@ export const loginDoctor = async (req, res) => {
         phone: doctor.phone,
       },
     });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-const twilioClient = twilio(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
-
-//forgot password
-export const forgotPassword = async (req, res) => {
-  try {
-    const { identifier } = req.body;
-
-    if (!identifier) {
-      return res
-        .status(400)
-        .json({ message: "Please provide email or phone number" });
-    }
-
-    const doctor = await doctorModel.findOne({
-      $or: [{ email: identifier }, { phone: identifier }],
-    });
-
-    if (!doctor) {
-      return res.status(404).json({ message: "doctor not found" });
-    }
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-    const otpExpiry = Date.now() + 10 * 60 * 1000;
-
-    doctor.resetPasswordOtp = hashedOtp;
-    doctor.resetPasswordExpires = otpExpiry;
-    await doctor.save();
-
-    if (identifier.includes("@")) {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      const mailOptions = {
-        to: doctor.email,
-        from: process.env.EMAIL_USER,
-        subject: "Password Reset OTP",
-        text: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
-      };
-
-      await transporter.sendMail(mailOptions);
-
-      return res
-        .status(200)
-        .json({ message: "OTP has been sent to your email" });
-    } else {
-      await twilioClient.messages.create({
-        body: `Your password reset OTP is: ${otp}. It will expire in 10 minutes.`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: doctor.phone,
-      });
-
-      return res
-        .status(200)
-        .json({ message: "OTP has been sent to your phone" });
-    }
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

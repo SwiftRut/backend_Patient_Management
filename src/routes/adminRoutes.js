@@ -3,8 +3,6 @@ import { protect, admin } from "../middlewares/authMiddleware.js";
 import {
   registerAdmin,
   loginAdmin,
-  forgotPassword,
-  resetPassword,
   getProfile,
   getAllAdmins,
   editProfile,
@@ -17,11 +15,7 @@ router.post("/register", registerAdmin);
 
 router.post("/login", loginAdmin);
 
-router.post("/forgot_password", forgotPassword);
-
-router.post("/reset_password", resetPassword);
-
-router.get("/profile/:id", protect, getProfile);
+router.get("/profile/:id", getProfile);
 
 router.get("/all", getAllAdmins);
 
