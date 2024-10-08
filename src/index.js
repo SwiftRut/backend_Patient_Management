@@ -19,6 +19,26 @@ io.on('connection', (socket) => {
   console.log('a user connected');
 });
 
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  // Join room for specific chat session
+  socket.on("joinChat", (chatId) => {
+    socket.join(chatId);
+    console.log(`User joined chat: ${chatId}`);
+  });
+
+  // Listen for new messages
+  socket.on("sendMessage", (data) => {
+    const { chatId, message } = data;
+    io.to(chatId).emit("receiveMessage", message); // Broadcast to room
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
 socketHandler(io);
 connectDB()
   .then(() => {
