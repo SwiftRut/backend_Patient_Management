@@ -14,6 +14,7 @@ const router = express.Router();
 
 router.post("/login", async (req, res) => {
   const { identifier, password, rememberMe } = req.body;
+  console.log("identifier:", identifier, "password:", password);
 
   if (!identifier || !password) {
     return res
@@ -39,6 +40,7 @@ router.post("/login", async (req, res) => {
     });
 
     if (doctor) {
+      console.log("is doctor");
       return loginDoctor(req, res);
     }
 
@@ -49,6 +51,7 @@ router.post("/login", async (req, res) => {
     console.log("Doctor:", doctor);
     console.log("Admin:", admin);
     if (patient) {
+      console.log("is patient");
       return loginPatient(req, res);
     }
 

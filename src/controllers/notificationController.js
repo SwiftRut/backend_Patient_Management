@@ -1,5 +1,5 @@
-import notificationModel from "../models/notificationModel";
-import patientModel from "../models/patientModel";
+import notificationModel from "../models/notificationModel.js";
+import patientModel from "../models/patientModel.js";
 
 export const createNotification = async (req, res) => {
     const { userId, type, message } = req.body;

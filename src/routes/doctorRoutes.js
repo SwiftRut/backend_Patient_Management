@@ -9,6 +9,7 @@ import {
   editDoctor,
   deleteDoctor,
 } from "../controllers/doctorController.js";
+import upload from "../../cloudinary/multer.js";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.post("/login", loginDoctor);
 router.post("/addDoctor", addDoctor);
 router.get("/getDoctorById/:id", getDoctorById);
 router.get("/getAllDoctors", getAllDoctors);
-router.put("/editDoctor/:id", editDoctor);
+router.put("/editDoctor/:id",upload.single('profilePic'), editDoctor);
 router.delete("/deleteDoctor/:id", deleteDoctor);
 
 
