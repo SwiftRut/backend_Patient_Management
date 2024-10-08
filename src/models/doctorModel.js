@@ -2,12 +2,7 @@ import mongoose from "mongoose";
 
 const doctorSchema = new mongoose.Schema(
   {
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    lastName: {
+    name: {
       type: String,
       required: true,
       trim: true,
