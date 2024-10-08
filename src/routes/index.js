@@ -4,12 +4,22 @@ import insuranceRoutes from "./insuranceRoutes.js"
 import appoinmentRoutes from "./appointmentRoutes.js"
 import prescriptionRoutes from "./prescriptionRoutes.js"
 import notificationRoutes from "./notificationRoutes.js"
-import universalRoutes from "./universalRoutes.js"
-import adminRoutes from "./adminRoutes.js"
-import patientRoutes from "./patientRoutes.js"
-import doctorRoutes from "./doctorRoutes.js"
-import hospitalRoutes from "./hospitalRoutes.js"
+
+// aa no path check karvu 
 import chatRoutes from "./chatRoutes.js"
+
+
+import patientRoutes from "../routes/patientRoutes.js";
+import adminRoutes from "../routes/adminRoutes.js";
+import hospitalRoutes from "../routes/hospitalRoutes.js";
+import doctorRoutes from "../routes/doctorRoutes.js";
+import billRoutes from "../routes/billRoutes.js";
+import universalRoutes from "../routes/universalRoutes.js"
+
+// import insuranceRoutes from "./insuranceRoutes.js";
+import aggregationRoutes from "../routes/aggregationRoutes.js";
+
+
 const router = express.Router();
 
 router.use("/",universalRoutes);
