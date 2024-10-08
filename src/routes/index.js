@@ -12,7 +12,7 @@ import doctorRoutes from "../routes/doctorRoutes.js";
 import billRoutes from "../routes/billRoutes.js";
 import universalRoutes from "../routes/universalRoutes.js"
 
-import insuranceRoutes from "./insuranceRoutes.js";
+// import insuranceRoutes from "./insuranceRoutes.js";
 import aggregationRoutes from "../routes/aggregationRoutes.js";
 
 

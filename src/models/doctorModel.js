@@ -9,17 +9,28 @@ const doctorSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      required: true,
       enum: ["Male", "Female", "Other"],
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters long"],
+    },
+    confirmPassword: {
+      type: String,
+      validate: {
+        validator: function (value) {
+          return value === this.password;
+        },
+        message: "Passwords do not match",
+      },
     },
     qualification: {
       type: String,
-      required: true,
       trim: true,
     },
     speciality: {
       type: String,
-      required: true,
       trim: true,
     },
     avatar: {
@@ -28,7 +39,6 @@ const doctorSchema = new mongoose.Schema(
     },
     workingTime: {
       type: String,
-      required: true,
       validate: {
         validator: function (v) {
           return /^([0-9]{1,2}):([0-9]{2})$/.test(v); // Validates time format (HH:mm)
@@ -38,7 +48,6 @@ const doctorSchema = new mongoose.Schema(
     },
     breakTime: {
       type: String,
-      required: true,
       validate: {
         validator: function (v) {
           return /^([0-9]{1,2}):([0-9]{2})$/.test(v); // Validates time format (HH:mm)
@@ -48,7 +57,6 @@ const doctorSchema = new mongoose.Schema(
     },
     patientCheckupTime: {
       type: String,
-      required: true,
       validate: {
         validator: function (v) {
           return /^([0-9]{1,2}):([0-9]{2})$/.test(v); // Validates time format (HH:mm)
@@ -60,11 +68,9 @@ const doctorSchema = new mongoose.Schema(
     workingOn: {
       type: String,
       enum: ["Part-time", "Full-time", "Contract"],
-      required: true, // Selection box for employment type
     },
     experience: {
       type: Number,
-      required: [true, "Experience is required"],
     },
     phone: {
       type: String,
@@ -73,7 +79,6 @@ const doctorSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
-      required: true,
       min: [0, "Age must be a positive number"],
     },
     email: {
@@ -97,47 +102,38 @@ const doctorSchema = new mongoose.Schema(
     },
     zipCode: {
       type: String,
-      required: true,
     },
     doctorAddress: {
       type: String,
-      required: true,
       trim: true,
     },
     description: {
       type: String,
-      required: true,
       trim: true,
     },
     onlineConsultationRate: {
       type: Number,
-      required: [true, "Online consultation rate is required"],
       min: [0, "Rate must be a positive number"],
     },
     currentHospital: {
       type: String,
-      required: true,
       trim: true,
     },
     hospitalName: {
       type: String,
-      required: true,
       trim: true,
     },
     hospitalAddress: {
       type: String,
-      required: true,
       trim: true,
     },
     worksiteLink: {
       type: String,
-      required: true,
       trim: true,
       match: [/^https?:\/\/.+$/, "Please provide a valid URL"], // URL validation
     },
     emergencyContactNo: {
       type: String,
-      required: true,
       match: [
         /^\d{10}$/,
         "Please provide a valid 10-digit emergency contact number",
@@ -145,7 +141,6 @@ const doctorSchema = new mongoose.Schema(
     },
     signatureUpload: {
       type: String,
-      required: true,
     },
   },
   {

@@ -12,10 +12,17 @@ export const registerPatient = async (req, res) => {
       email,
       password,
       confirmPassword,
+      age,
+      height,
+      weight,
+      gender,
+      dob,
+      bloodGroup,
       phone,
       country,
       state,
       city,
+      address,
       diseaseName,
       role,
     } = req.body;
@@ -26,9 +33,16 @@ export const registerPatient = async (req, res) => {
       !email ||
       !password ||
       !confirmPassword ||
+      !age ||
+      !height ||
+      !weight ||
+      !gender ||
+      !dob ||
+      !bloodGroup ||
       !phone ||
       !country ||
       !state ||
+      !address||
       !diseaseName ||
       !city
     ) {
@@ -50,9 +64,16 @@ export const registerPatient = async (req, res) => {
       email,
       password,
       phone,
+      age,
+      height,
+      weight,
+      gender,
+      dob,
+      bloodGroup,
       country,
       state,
       city,
+      address,
       diseaseName,
       role: role || "patient",
     });
@@ -85,7 +106,7 @@ export const loginPatient = async (req, res) => {
 
     console.log("Normalized Identifier: ", normalizedIdentifier);
 
-    const normalizedPhone = identifier.trim().replace(/[\s\+\-\(\)]/g, "");
+    const normalizedPhone = identifier.trim().replace(/[\s\-\(\)]/g, "");
 
     console.log("Normalized Phone: ", normalizedPhone);
 
@@ -123,7 +144,7 @@ export const loginPatient = async (req, res) => {
         lastName: patient.lastName,
         email: patient.email,
         phone: patient.phone,
-        role:'patient',
+        role: "patient",
       },
     });
   } catch (error) {
@@ -131,7 +152,6 @@ export const loginPatient = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 //add patient
 export const addPatient = async (req, res) => {
