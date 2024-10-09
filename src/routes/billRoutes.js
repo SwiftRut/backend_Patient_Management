@@ -8,5 +8,5 @@ router.post("/createbill" ,upload.single('profilePic'), createBill)
 router.get("/getbill" , getBills)
 router.get("/singlebill/:id" , getBillById)
 router.put("/billupdate/:id" , updateBill)
-router.delete("/deletebill/id" , deleteBill)
+router.delete("/deletebill/:id" , deleteBill)
 export default router;

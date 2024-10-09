@@ -79,16 +79,27 @@ export const getBillById = async (req, res) => {
 
   export const updateBill = async (req, res) => {
     try {
-      const updatedBill = await Bill.findByIdAndUpdate(req.params.id, req.body, {
+      console.log(req.body);
+  
+      if (req.body.totalAmount && isNaN(Number(req.body.totalAmount))) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid totalAmount value',
+        });
+      }
+  
+      const updatedBill = await billModel.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true,
       });
+  
       if (!updatedBill) {
         return res.status(404).json({
           success: false,
           message: 'Bill not found',
         });
       }
+  
       res.status(200).json({
         success: true,
         data: updatedBill,

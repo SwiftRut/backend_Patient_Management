@@ -66,13 +66,13 @@ const billSchema = new mongoose.Schema(
     totalAmount: {
       type: Number,
       required: false,
-      set: function () {
-        return (
-          this.amount -
-          this.amount * (this.discount / 100) +
-          this.amount * (this.tax / 100)
-        );
-      },
+      // set: function () {
+      //   return (
+      //     this.amount -
+      //     this.amount * (this.discount / 100) +
+      //     this.amount * (this.tax / 100)
+      //   );
+      // },
     },
     insuranceId: {
       type: mongoose.Schema.Types.ObjectId,
