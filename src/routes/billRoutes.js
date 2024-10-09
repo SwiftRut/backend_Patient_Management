@@ -1,11 +1,12 @@
 import express from 'express'
 import { doctor, patient, protect } from '../middlewares/authMiddleware.js';
 import { createBill, deleteBill, getBillById, getBills, updateBill } from '../controllers/bill.controller.js';
+import upload from '../../cloudinary/multer.js';
 const router = express.Router()
 
-router.post("/createbill" , protect , doctor , createBill)
-router.get("/getbill" , protect ,patient , getBills)
+router.post("/createbill" ,upload.single('profilePic'), createBill)
+router.get("/getbill" , getBills)
 router.get("/singlebill/:id" , getBillById)
-router.put("/billupdate" , updateBill)
-router.delete("/deletebill" , deleteBill)
+router.put("/billupdate/:id" , updateBill)
+router.delete("/deletebill/id" , deleteBill)
 export default router;

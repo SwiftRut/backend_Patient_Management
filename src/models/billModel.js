@@ -8,37 +8,37 @@ const billSchema = new mongoose.Schema(
     billNumber: {
       type:  Number,
       unique: true,
-      required: true,
+      required: false,
       trim: true,
     },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
-      required: true,
+      required: false,
     },
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
-      required: true,
+      required: false,
     },
     description: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     paymentType: {
       type: String,
-      required: true,
-      enum: ["online", "cash", "insurance"],
+      required: false,
+      enum: ["Online", "Cash", "Insurance"],
     },
     date: {
       type: Date,
-      required: true,
+      required: false,
       default: Date.now,
     },
     time: {
       type: String,
-      required: true,
+      required: false,
       validate: {
         validator: function (v) {
           return /^([0-9]{1,2}):([0-9]{2})$/.test(v);
@@ -48,7 +48,7 @@ const billSchema = new mongoose.Schema(
     },
     amount: {
       type: Number,
-      required: [true, "Amount is required"],
+      required: [false, "Amount is required"],
       min: [0, "Amount must be a positive number"],
     },
     discount: {
@@ -60,12 +60,12 @@ const billSchema = new mongoose.Schema(
     },
     tax: {
       type: Number,
-      required: [true, "Tax is required"],
+      required: [false, "Tax is required"],
       min: [0, "Tax cannot be negative"],
     },
     totalAmount: {
       type: Number,
-      required: true,
+      required: false,
       set: function () {
         return (
           this.amount -

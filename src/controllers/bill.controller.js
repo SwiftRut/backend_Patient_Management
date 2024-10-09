@@ -1,6 +1,7 @@
 import billModel from "../models/billModel.js";
 
 export const createBill = async (req, res) => {
+  console.log("hangle the create a Bill")
     try {
         const {
             billNumber,
@@ -15,10 +16,10 @@ export const createBill = async (req, res) => {
             totalAmount,
             insuranceId
         } = req.body
-
-        if (!billNumber || !description || !paymentType || !date || !time || !amount || !discount || !tax || !totalAmount) {
-            return res.status(400).json({ message: "All fields are required" });
-          }
+        console.log(req.body)
+        // if (!billNumber || !description || !paymentType || !date || !time || !amount || !discount || !tax || !totalAmount) {
+        //     return res.status(400).json({ message: "All fields are required" });
+        //   }
 
         const newBill = new billModel(req.body)
         await newBill.save();
