@@ -12,6 +12,7 @@ import {
 } from "../controllers/prescriptionController.js";
 const router = express.Router();
 
+
 router.post("/createprescription", protect, doctor, AddPriscription);
 router.get("/getPrescription", protect, doctor, getPrescription);
 router.get("/todayPrescription", protect, doctor, getTodaysPrescriptions);

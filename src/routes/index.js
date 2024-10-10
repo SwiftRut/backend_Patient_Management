@@ -7,7 +7,6 @@ import notificationRoutes from "./notificationRoutes.js";
 // aa no path check karvu 
 import chatRoutes from "./chatRoutes.js"
 
-
 import patientRoutes from "../routes/patientRoutes.js";
 import adminRoutes from "../routes/adminRoutes.js";
 import hospitalRoutes from "../routes/hospitalRoutes.js";
@@ -26,11 +25,13 @@ router.use("/patient", patientRoutes);
 router.use("/doctor", doctorRoutes);
 router.use("/hospital", hospitalRoutes);
 
+
 router.use("/insurance" , insuranceRoutes)
 router.use("/appoinment" , appoinmentRoutes)
 router.use("/prescription" , prescriptionRoutes)
 router.use("/chat" , chatRoutes)
 router.use("/notification" , notificationRoutes)
+
 
 
 
