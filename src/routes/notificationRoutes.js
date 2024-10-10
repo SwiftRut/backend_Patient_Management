@@ -1,11 +1,15 @@
 import express from "express";
-import { createNotification, deleteNotification, getNotificationsForUser } from "../controllers/notificationController.js";
-const router = express.Router()
 
+import {
+  createNotification,
+  deleteNotification,
+  getNotificationsForUser,
+} from "../controllers/notificationController.js";
+const router = express.Router();
 
-router.post("/createnotification" , createNotification)
-router.get("/getnotificationforuser" , getNotificationsForUser)
-router.delete("/deletenotification" , deleteNotification)
+router.post("/createnotification", createNotification);
+router.get("/getnotificationforuser", getNotificationsForUser);
+router.delete("/deletenotification", deleteNotification);
 
+export default router;
 
-export default router
