@@ -1,5 +1,6 @@
 import express from "express";
 
+
 import insuranceRoutes from "./insuranceRoutes.js";
 import appoinmentRoutes from "./appointmentRoutes.js";
 import prescriptionRoutes from "./prescriptionRoutes.js";
@@ -25,6 +26,7 @@ router.use("/admin", adminRoutes);
 router.use("/patient", patientRoutes);
 router.use("/doctor", doctorRoutes);
 router.use("/hospital", hospitalRoutes);
+
 router.use("/insurance", insuranceRoutes);
 router.use("/appoinment", appoinmentRoutes);
 router.use("/prescription", prescriptionRoutes);

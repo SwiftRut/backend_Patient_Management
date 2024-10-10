@@ -13,7 +13,7 @@ const doctorSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      // required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters long"],
     },
     confirmPassword: {
@@ -75,7 +75,6 @@ const doctorSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: [true, "Phone number is required"],
-      match: [/^\d{10}$/, "Please provide a valid 10-digit phone number"],
     },
     age: {
       type: Number,
@@ -100,6 +99,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     zipCode: {
       type: String,
     },
