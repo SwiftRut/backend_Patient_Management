@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   createNotification,
   deleteNotification,
@@ -11,3 +12,4 @@ router.get("/getnotificationforuser", getNotificationsForUser);
 router.delete("/deletenotification", deleteNotification);
 
 export default router;
+

@@ -23,12 +23,13 @@ router.post("/login", async (req, res) => {
 
   try {
     const normalizedIdentifier = identifier.trim().toLowerCase();
-    const normalizedPhone = identifier.trim().replace(/[\s\+\-\(\)]/g, "");
-    console.log("Normalized Identifier:", normalizedIdentifier);
-    console.log("Normalized Phone:", normalizedPhone);
+    const normalizedPhone = identifier.trim().replace(/[\s\-\(\)]/g, "");
+    // console.log("Normalized Identifier:", normalizedIdentifier);
+    // console.log("Normalized Phone:", normalizedPhone);
     const admin = await adminModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
+    console.log("admin", admin);
 
     if (admin) {
       return loginAdmin(req, res);
@@ -59,6 +60,18 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+//logout
+router.post("/logout", async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({ message: "Successfully logged out" });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error during logout" });
+  }
+});
+
+
 const twilioClient = twilio(
   process.env.TWILIO_SID,
   process.env.TWILIO_AUTH_TOKEN
@@ -69,6 +82,9 @@ let user;
 // Forget Password API
 router.post("/forgetPassword", async (req, res) => {
   try {
+    console.log("sid", process.env.TWILIO_SID);
+    console.log("token", process.env.TWILIO_AUTH_TOKEN);
+
     const { identifier } = req.body;
 
     if (!identifier) {
@@ -79,7 +95,7 @@ router.post("/forgetPassword", async (req, res) => {
 
     // Normalize identifier (for email and phone)
     const normalizedIdentifier = identifier.trim().toLowerCase();
-    const normalizedPhone = identifier.trim().replace(/[\s\+\-\(\)]/g, "");
+    const normalizedPhone = identifier.trim().replace(/[\s\-\(\)]/g, "");
 
     // Search across all models (admin, doctor, patient)
     user = await adminModel.findOne({
@@ -111,6 +127,7 @@ router.post("/forgetPassword", async (req, res) => {
     user.resetPasswordOtp = hashedOtp;
     user.resetPasswordExpires = otpExpiry;
     await user.save();
+    console.log("<<user", user);
 
     // If identifier is email, send OTP via email
     if (identifier.includes("@")) {
@@ -136,11 +153,13 @@ router.post("/forgetPassword", async (req, res) => {
         .json({ message: "OTP has been sent to your email" });
     } else {
       // If identifier is phone number, send OTP via SMS using Twilio
+      console.log(user.phone);
       await twilioClient.messages.create({
         body: `Your password reset OTP is: ${otp}. It will expire in 5 minutes.`,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: user.phone,
       });
+
       return res
         .status(200)
         .json({ message: "OTP has been sent to your phone" });
@@ -199,6 +218,5 @@ router.post("/resetPassword", async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
-
 
 export default router;

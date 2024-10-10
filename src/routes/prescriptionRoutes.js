@@ -1,5 +1,6 @@
 import express from "express";
 import { doctor, protect } from "../middlewares/authMiddleware.js";
+
 import {
   AddPriscription,
   getOldPrescriptions,
@@ -10,6 +11,7 @@ import {
   SinglePrescription,
 } from "../controllers/prescriptionController.js";
 const router = express.Router();
+
 
 router.post("/createprescription", protect, doctor, AddPriscription);
 router.get("/getPrescription", protect, doctor, getPrescription);
