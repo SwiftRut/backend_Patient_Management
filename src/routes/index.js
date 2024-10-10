@@ -13,6 +13,7 @@ import billRoutes from "../routes/billRoutes.js";
 import universalRoutes from "../routes/universalRoutes.js"
 
 import aggregationRoutes from "../routes/aggregationRoutes.js";
+import chatRoutes from "../routes/chatRoutes.js";
 
 const router = express.Router();
 
@@ -31,5 +32,7 @@ router.use("/aggregation", aggregationRoutes);
 router.use("/insurance", insuranceRoutes);
 router.use("/appoinment", appoinmentRoutes);
 router.use("/presciption", prescriptionRoutes);
+
+router.use("/chat", chatRoutes);
 
 export default router;
