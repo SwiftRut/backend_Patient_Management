@@ -52,7 +52,7 @@ const patientSchema = new mongoose.Schema(
       type: String,
       required: [true, "City is required"],
     },
-    adress: {
+    address: {
       type: String,
       required: [true, "Address is required"],
       trim: false,
