@@ -14,7 +14,7 @@ export default (io) => {
 
     socket.on('message', async (data) => {
       console.log(data);
-      const { doctorId, patientId, senderId, receiverId, messageInput:messageContent } = data;
+      const { doctorId, patientId, senderId, receiverId, messageContent } = data;
       const chat = new Chat({ doctorId, patientId, senderId, receiverId, messageContent });
       await chat.save();
 
