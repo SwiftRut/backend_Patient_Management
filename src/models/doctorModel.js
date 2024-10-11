@@ -147,6 +147,10 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    calenderId : {
+      type : String,
+      required : false,
+    }
   },
   {
     timestamps: true,

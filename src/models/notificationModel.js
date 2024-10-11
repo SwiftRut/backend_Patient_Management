@@ -4,23 +4,24 @@ const notificationSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Patient",
-      required: [true, "User ID is required"],
-    },
-    type: {
-      type: String,
-      enum: ["appointment_reminder", "prescription_ready", "payment_due"],
-      required: [true, "Notification type is required"],
+      ref: "User", // Assuming the admin and doctor are stored in a User model
+      required: true,
     },
     message: {
       type: String,
-      required: [true, "Message is required"],
-      trim: true,
-    }
+      required: true,
+    },
+    appointmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Appointment",
+      required: true,
+    },
+    read: {
+      type: Boolean,
+      default: false,
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const notificationModel = mongoose.model("Notification", notificationSchema);
