@@ -10,11 +10,11 @@ const doctorSchema = new mongoose.Schema(
     gender: {
       type: String,
       enum: ["Male", "Female", "Other"],
+      required: true,
     },
     password: {
       type: String,
-      // required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters long"],
+      required: [true, "Password is required"],
     },
     confirmPassword: {
       type: String,

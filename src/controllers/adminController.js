@@ -36,6 +36,17 @@ export const registerAdmin = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    //check password validation
+    var pass = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,12}$/;
+    if (!pass.test(password)) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "[6 to 12 characters which contain at least one numeric digit and a special character]",
+        });
+    }
+
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }

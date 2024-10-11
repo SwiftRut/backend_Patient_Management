@@ -24,7 +24,6 @@ const adminSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters long"],
     },
     confirmPassword: {
       type: String,
@@ -74,7 +73,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
       enum: ["Male", "Female", "Other"],
       default: "Other",
-    }
+    },
   },
   {
     timestamps: true,
@@ -100,4 +99,3 @@ adminSchema.methods.matchPassword = async function (enteredPassword) {
 
 const adminModel = mongoose.model("Admin", adminSchema);
 export default adminModel;
-  
