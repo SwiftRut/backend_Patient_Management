@@ -14,7 +14,7 @@ const doctorSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      // required: [true, "Password is required"],
     },
     confirmPassword: {
       type: String,
@@ -139,7 +139,7 @@ const doctorSchema = new mongoose.Schema(
         "Please provide a valid 10-digit emergency contact number",
       ],
     },
-    signatureUpload: {
+    signature: {
       type: String,
     },
   },

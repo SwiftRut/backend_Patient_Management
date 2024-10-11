@@ -162,16 +162,25 @@ export const resetPassword = async (req, res) => {
 //add doctor
 export const addDoctor = async (req, res) => {
   try {
+    // Check if doctor with this email already exists
     const existingDoctor = await doctorModel.findOne({ email: req.body.email });
     if (existingDoctor) {
-      return res
-        .status(400)
-        .json({ message: "Doctor with this email already exists" });
+      return res.status(400).json({ message: "Doctor with this email already exists" });
     }
 
+    // Handle uploaded files
+    const imgUrlProfilePic = req.files['profilePicture'] && req.files['profilePicture'][0] ? req.files['profilePicture'][0].path : null;
+    const imgUrlSignature = req.files['signature'] && req.files['signature'][0] ? req.files['signature'][0].path : null;
+    console.log(imgUrlProfilePic, imgUrlSignature,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< image");
+    // Add image paths to req.body if they exist
+    if (imgUrlProfilePic) req.body.avatar = imgUrlProfilePic; // Assuming you want to store the profilePic path in 'avatar'
+    if (imgUrlSignature) req.body.signature = imgUrlSignature; // Add signature path
+
+    // Create a new doctor instance
     const newDoctor = new doctorModel(req.body);
     await newDoctor.save();
 
+    // Send success response
     res.status(201).json({
       message: "Doctor added successfully",
       data: newDoctor,
