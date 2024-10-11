@@ -1,16 +1,30 @@
-import chatModel from "./models/chatModel.js";
+import Chat from "./models/chatModel.js";
 
 export default (io) => {
   io.on('connection', (socket) => {
-    socket.on('join', (chatId) => socket.join(chatId));
+    console.log('A user connected:', socket.id);
 
-    socket.on('chatMessage', async ({ chatId, senderId, content }) => {
-      const newMessage = { sender: senderId, content };
-      // const chat = await chatModel.findByIdAndUpdate(chatId, {
-      //   $push: { messages: newMessage },
-      // });
-      console.log(chatId, senderId, content);
-      io.emit('newMessage', { chatId, newMessage });
+    socket.on('joinRoom', ({ doctorId, patientId }) => {
+      
+        const room = [doctorId, patientId].sort().join('-');
+        console.log(room ,"<<<<<<<<<<<<<<<<<<Room")        
+        socket.join(room);
+        socket.emit('joinRoom', { doctorId, patientId });
     });
-  });
+
+    socket.on('message', async (data) => {
+      console.log(data);
+      const { doctorId, patientId, senderId, receiverId, messageInput:messageContent } = data;
+      const chat = new Chat({ doctorId, patientId, senderId, receiverId, messageContent });
+      await chat.save();
+
+      const room = [doctorId, patientId].sort().join('-');
+      io.to(room).emit('message', chat); // emit message to the room
+    });
+
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
 };
