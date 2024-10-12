@@ -27,7 +27,6 @@ router.use("/patient", patientRoutes);
 router.use("/doctor", doctorRoutes);
 router.use("/hospital", hospitalRoutes);
 router.use("/calender" , calenderRoutes)
-
 router.use("/insurance", insuranceRoutes);
 router.use("/appoinment", appoinmentRoutes);
 router.use("/prescription", prescriptionRoutes);

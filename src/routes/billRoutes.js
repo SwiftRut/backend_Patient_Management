@@ -12,6 +12,6 @@ const router = express.Router();
 router.post("/createbill", createBill);
 router.get("/getbill", getBills);
 router.get("/singlebill/:id", getBillById);
-router.put("/billupdate", updateBill);
-router.delete("/deletebill", deleteBill);
+router.patch("/billupdate/:id", updateBill);
+router.delete("/deletebill/:id", deleteBill);
 export default router;

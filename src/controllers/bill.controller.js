@@ -90,7 +90,7 @@ export const getBillById = async (req, res) => {
 
 export const updateBill = async (req, res) => {
   try {
-    const updatedBill = await Bill.findByIdAndUpdate(req.params.id, req.body, {
+    const updatedBill = await billModel.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });

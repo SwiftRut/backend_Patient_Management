@@ -45,7 +45,7 @@ export const protect = async (req, res, next) => {
 };
 
 export const admin = (req, res, next) => {
-  if (req.user && req.user.role === "admin") {
+  if (req.user && req.user.role === "admin"){
     next();
   } else {
     res.status(403).json({ message: "Not authorized as admin" });
@@ -53,7 +53,7 @@ export const admin = (req, res, next) => {
 };
 
 export const doctor = (req, res, next) => {
-  if (req.user && req.user.role === "doctor") {
+  if (req.user && req.user.role === "doctor"){
     next();
   } else {
     res.status(403).json({ message: "Not authorized as doctor" });
@@ -61,7 +61,7 @@ export const doctor = (req, res, next) => {
 };
 
 export const patient = (req, res, next) => {
-  if (req.user && req.user.role === "patient") {
+  if (req.user && req.user.role === "patient"){
     next();
   } else {
     res.status(403).json({ message: "Not authorized as patient" });

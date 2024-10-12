@@ -6,6 +6,6 @@ router.post("/craeteindurance" , createInsurance)
 router.get("/getallinsurance" , getInsurances)
 router.get("/singleinsurance/:id" , getInsuranceById)
 router.put("/updateinsurance/:id" , updateInsurance)
-router.delete("/deleteinsurance" , deleteInsurance)
+router.delete("/deleteinsurance/:id" , deleteInsurance)
 
 export default router;

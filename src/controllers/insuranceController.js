@@ -39,7 +39,7 @@ export const getInsurances = async (req, res) => {
 
   export const getInsuranceById = async (req, res) => {
     try {
-      const insurance = await insuranceModel .findById(req.params.id)
+      const insurance = await insuranceModel.findById(req.params.id)
         .populate('bill')
         .populate('doctor')
         .populate('patient');
