@@ -1,6 +1,5 @@
 import express from "express";
 
-
 import insuranceRoutes from "./insuranceRoutes.js";
 import appoinmentRoutes from "./appointmentRoutes.js";
 import prescriptionRoutes from "./prescriptionRoutes.js";
