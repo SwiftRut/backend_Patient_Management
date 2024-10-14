@@ -21,6 +21,7 @@ const getChatHistory = async (req, res) => {
     const history = await Chat.find({ doctorId, patientId }).sort({
       timestamp: 1,
     });
+    console.log(history);
     res.status(200).json(history);
   } catch (error) {
     res.status(500).json({ error: error.message });
