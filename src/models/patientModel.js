@@ -112,6 +112,10 @@ const patientSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
     },
+    insurance: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Insurance",
+    },
   },
   { timestamps: true }
 );

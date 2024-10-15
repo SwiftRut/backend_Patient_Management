@@ -11,6 +11,21 @@ const billSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    patientName: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    age: {
+      type: Number,
+      required: false,
+      min: [0, "Age must be a positive number"],
+    },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
@@ -66,13 +81,6 @@ const billSchema = new mongoose.Schema(
     totalAmount: {
       type: Number,
       required: false,
-      // set: function () {
-      //   return (
-      //     this.amount -
-      //     this.amount * (this.discount / 100) +
-      //     this.amount * (this.tax / 100)
-      //   );
-      // },
     },
     insuranceId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -83,6 +91,20 @@ const billSchema = new mongoose.Schema(
       type: String,
       enum: ["Unpaid", "Paid"],
       default: "Unpaid",
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+      required: [false, "Gender is required"],
+    },
+    diseaseName: {
+      type: String,
+      trim: false,
+    },
+    address: {
+      type: String,
+      required: [false, "Address is required"],
+      trim: false,
     },
   },
   {
