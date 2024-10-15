@@ -17,6 +17,20 @@ const doctorSchema = new mongoose.Schema(
       required: false,
       enum: ["Male", "Female", "Other"],
     },
+    password: {
+      type: String,
+      // required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters long"],
+    },
+    confirmPassword: {
+      type: String,
+      validate: {
+        validator: function (value) {
+          return value === this.password;
+        },
+        message: "Passwords do not match",
+      },
+    },
     qualification: {
       type: String,
       required: false,
@@ -105,6 +119,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+
     zipCode: {
       type: String,
       required: false,

@@ -1,4 +1,3 @@
-
 import express from 'express';
 const router = express.Router();
 import { createMessage, getChatHistory, updateMessageStatus, deleteMessage, getDoctorContacts, getPatientContacts } from '../controllers/chatController.js';

@@ -72,11 +72,6 @@ const getDoctorContacts = async (req, res) => {
 const getPatientContacts = async (req, res) => {
   const { doctorId } = req.params;
   try {
-    // const patientIds = await Chat.find({ doctorId}).distinct("patientId").populate("patientId");
-    // const patientIds = await Chat.find({ doctorId}).distinct("patientId");
-    // const patientContacts = await Patient.find({  _id: { $in: patientIds }, }).select("-password");
-    // console.log(patientIds);
-
     // Step 1: Get distinct patient IDs
 const patientIds = await Chat.find({ doctorId }).distinct("patientId");
 

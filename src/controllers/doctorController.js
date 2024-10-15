@@ -78,7 +78,7 @@ export const loginDoctor = async (req, res) => {
     }
 
     const normalizedIdentifier = identifier.trim().toLowerCase();
-    const normalizedPhone = identifier.trim().replace(/[\s\+\-\(\)]/g, "");
+    const normalizedPhone = identifier.trim().replace(/[\s\-\(\)]/g, "");
 
     const doctor = await doctorModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
@@ -106,7 +106,7 @@ export const loginDoctor = async (req, res) => {
         lastName: doctor.lastName,
         email: doctor.email,
         phone: doctor.phone,
-        role: 'doctor',
+        role: "doctor",
       },
     });
   } catch (error) {
