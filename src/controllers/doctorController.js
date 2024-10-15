@@ -83,7 +83,7 @@ export const loginDoctor = async (req, res) => {
     const doctor = await doctorModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
-
+    console.log(doctor,"<<<<<<<<<<<<<<<<<<<<<<< from doctor controller");
     if (!doctor) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -110,7 +110,7 @@ export const loginDoctor = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error:error.message });
   }
 };
 
@@ -187,7 +187,6 @@ export const getDoctorById = async (req, res) => {
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
-
     res.status(200).json({
       message: "Doctor fetched successfully",
       data: doctor,
@@ -213,7 +212,10 @@ export const getAllDoctors = async (req, res) => {
 //edit doctor
 export const editDoctor = async (req, res) => {
   const { id } = req.params;
+  console.log(req.body);
+  const imageUrl = req.file ? req.file.path : req.body.avatar || "";
   const updatedData = req.body;
+  updatedData.avatar = imageUrl;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid Doctor ID" });

@@ -4,7 +4,7 @@ import { AllAppointment,  allpatient,  createAppointment, DeleteAppointment, get
 const router = express.Router()
 
 router.post("/appoinmentcreate" , protect , patient , createAppointment)
-router.get("/allappoinment" , protect , patient , AllAppointment)
+router.get("/allappoinment" , AllAppointment)
 router.put("/updateappointment/:id" , protect , patient , UpdateAppointment)
 router.delete("/deleteappointment/:id" , protect , patient , DeleteAppointment)
 router.get("/Patient_Appointment_History/:PatientID" , protect , patient , getPatientAppointmentHistory)

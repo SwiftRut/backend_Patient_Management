@@ -1,6 +1,5 @@
 import express from "express";
 import { doctor, protect } from "../middlewares/authMiddleware.js";
-
 import {
   AddPriscription,
   getOldPrescriptions,

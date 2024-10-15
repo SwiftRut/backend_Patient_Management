@@ -1,44 +1,15 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const chatSchema = new mongoose.Schema(
-  {
-    participants: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Patient",
-        ref : "Doctor",
-        required: true,
-      },
-    ],
-    messages: [
-      {
-        sender: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Patient",
-          ref : "Doctor",
-          required: true,
-        },
-        message: {
-          type: String,
-          required: true,
-        },
-        timestamp: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-    sessionStatus: {
-      type: String,
-      enum: ["active", "completed", "cancelled"],
-      default: "active",
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+const chatSchema = new mongoose.Schema({
+    messageContent: { type: String, required: true },
+    senderId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    receiverId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    doctorId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Doctor' },
+    patientId: { type: mongoose.Schema.Types.ObjectId,
+        ref: 'Patient',
+        required: true },
+    timestamp: { type: Date, default: Date.now },
+    status: { type: String, enum: ['read', 'unread'], default: 'unread' }
+});
 
-const chatModel = mongoose.model("Chat", chatSchema);
-
-export default chatModel;
+ export default mongoose.model('Chat', chatSchema);
