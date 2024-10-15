@@ -34,20 +34,6 @@ export const createBill = async (req, res) => {
             error: error.message,
         });
     }
-
-    const newBill = new billModel(req.body);
-    await newBill.save();
-    res.status(201).json({
-      success: true,
-      data: newBill,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: "Failed to create the bill",
-      error: error.message,
-    });
-  }
 };
 
 export const getBills = async (req, res) => {
@@ -126,17 +112,6 @@ export const getBillById = async (req, res) => {
         message: "Bill not found",
       });
     }
-    res.status(200).json({
-      success: true,
-      data: updatedBill,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to update the bill",
-      error: error.message,
-    });
-  }
 };
 
 export const deleteBill = async (req, res) => {
