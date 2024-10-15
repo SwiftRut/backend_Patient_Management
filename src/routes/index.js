@@ -16,9 +16,6 @@ import doctorRoutes from "../routes/doctorRoutes.js";
 import billRoutes from "../routes/billRoutes.js";
 import universalRoutes from "../routes/universalRoutes.js";
 
-import aggregationRoutes from "../routes/aggregationRoutes.js";
-import chatRoutes from "../routes/chatRoutes.js";
-
 
 const router = express.Router();
 
