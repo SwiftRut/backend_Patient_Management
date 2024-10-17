@@ -134,11 +134,11 @@ export const getPatientAppointmentHistory = async (req, res) => {
 // fetch appoinment for doctor
 export const getDoctorAppointmentHistory = async (req, res) => {
   try {
-    const { DoctorID } = req.params;
+    const { doctorId } = req.params;
 
     const appointmentHistory = await appointmentModel
-      .find({ DoctorID })
-      .populate("PatientID", "firstname lastname") // Populates patient information
+      .find({ doctorId })
+      .populate("patientId", "firstname lastname") // Populates patient information
       .sort({ appointmentdate: -1 });
     console.log(appointmentHistory);
 
