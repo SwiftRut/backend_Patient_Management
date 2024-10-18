@@ -14,7 +14,7 @@ export const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+      console.log(decoded)
       let user;
       if (decoded.role === "admin") {
         user = await adminModel
@@ -25,11 +25,12 @@ export const protect = async (req, res, next) => {
           .findById(Types.ObjectId(decoded.id))
           .select("-password");
       } else if (decoded.role === "patient") {
+        console.log("in patient");
         user = await patientModel
-          .findById(Types.ObjectId(decoded.id))
+          .findById(decoded.id)
           .select("-password");
       }
-
+      console.log(decoded)
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }

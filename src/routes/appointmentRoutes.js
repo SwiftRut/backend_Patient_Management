@@ -4,11 +4,11 @@ import { AllAppointment,  allpatient,  createAppointment, DeleteAppointment, get
 const router = express.Router()
 
 router.post("/appoinmentcreate" , protect , patient , createAppointment)
-router.get("/allappoinment" , AllAppointment)
+router.get("/allappoinment" , protect, AllAppointment)
 router.put("/updateappointment/:id" , protect , patient , UpdateAppointment)
 router.delete("/deleteappointment/:id" , protect , patient , DeleteAppointment)
 router.get("/Patient_Appointment_History/:PatientID" , protect , patient , getPatientAppointmentHistory)
-router.get("/Doctor_Appointment_History/:DoctorID" , protect , doctor , getDoctorAppointmentHistory)
+router.get("/Doctor_Appointment_History/:id" , protect , getDoctorAppointmentHistory)
 router.get("/singleappointment/:id" , protect , patient ,SingleAppoiment)
 router.get("/allpatient" , protect , doctor , allpatient)
 router.get("/singlepatient/:id" , protect , doctor , singlepatient)

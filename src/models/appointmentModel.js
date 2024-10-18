@@ -12,10 +12,10 @@ const appointmentSchema = new mongoose.Schema(
       ref: "Doctor",
       required: [true, "Doctor ID is required"],
     },
-    hospitalId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Hospital",
-    },
+    // hospitalId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Hospital",
+    // },
     insuranceId : {
       type : mongoose.Schema.Types.ObjectId,
       ref : "Insurance"
@@ -27,14 +27,14 @@ const appointmentSchema = new mongoose.Schema(
     appointmentTime: {
       type: String,
       required: [true, "Appointment time is required"],
-      match: [
-        /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
-        "Please enter a valid time in HH:MM format",
-      ],
+      // match: [
+      //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+      //   "Please enter a valid time in HH:MM format",
+      // ],
     },
     type: {
       type: String,
-      enum: ["in-person", "teleconsultation"],
+      // enum: ["in-person", "teleconsultation"],
       required: [true, "Appointment type is required"],
     },
     patient_issue: {
