@@ -17,8 +17,6 @@ export const createAppointment = async (req, res) => {
       hospitalId = null, // default to null if not provided
     } = req.body;
 
-    console.log(req.body);
-
     const patient = await patientModel.findById(req.user._id);
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
@@ -33,7 +31,6 @@ export const createAppointment = async (req, res) => {
     });
 
     if (conflictingAppointment) {
-      console.log("conflicting.......");
       return res
         .status(400)
         .json({ message: "Doctor is not available at this time" });
@@ -55,8 +52,6 @@ export const createAppointment = async (req, res) => {
     });
 
     await newAppointment.save();
-    console.log("new appointment is created successfully");
-
     // Update patient's appointments array
     patient.appointmentId = patient.appointmentId || []; // ensure it’s an array
     patient.appointmentId.push(newAppointment._id);
@@ -72,9 +67,10 @@ export const createAppointment = async (req, res) => {
   }
 };
 
-// all appoinment -
+// all appoinment - shoud work for both patient and doctor based on token role
 export const AllAppointment = async (req, res) => {
   try {
+    console.log(req.user,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     let data = await appointmentModel
       .find({
         patientId: req.user.id,
@@ -117,7 +113,7 @@ export const getPatientAppointmentHistory = async (req, res) => {
 
     const appointmentHistory = await appointmentModel
       .find({ PatientID })
-      .populate("DoctorID", "DoctorName specialtiyType") // Populates doctor information
+      .populate("doctorId", "name specialtiyType") // Populates doctor information
       .sort({ appointmentdate: -1 }); // Sort by date (most recent first)
 
     res
@@ -137,8 +133,6 @@ export const getDoctorAppointmentHistory = async (req, res) => {
     const { id } = req.params;
     console.log(id);
     const appointmentHistory = await appointmentModel.find({ doctorId: id }).populate('patientId doctorId');
-    console.log(appointmentHistory);
-
     res
       .status(200)
       .json({
