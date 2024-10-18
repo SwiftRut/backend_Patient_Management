@@ -12,6 +12,16 @@ const doctorSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    hospitalId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hospital",
+      required: [true, "Hospital ID is required"],
+    },
+    name:{
+      type: String,
+      required: false,
+      trim: true,
+    },
     gender: {
       type: String,
       required: false,
@@ -88,7 +98,6 @@ const doctorSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: [false, "Phone number is required"],
-      match: [/^\d{10}$/, "Please provide a valid 10-digit phone number"],
     },
     age: {
       type: Number,

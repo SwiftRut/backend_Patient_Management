@@ -17,7 +17,7 @@ export const createAppointment = async (req, res) => {
       hospitalId = null, // default to null if not provided
     } = req.body;
 
-    const patient = await patientModel.findById(req.user._id);
+    const patient = await patientModel.findById(req.user.id);
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
