@@ -21,8 +21,9 @@ export const protect = async (req, res, next) => {
           .findById(Types.ObjectId(decoded.id))
           .select("-password");
       } else if (decoded.role === "doctor") {
+        console.log("in doctor");
         user = await doctorModel
-          .findById(Types.ObjectId(decoded.id))
+          .findById(decoded.id)
           .select("-password");
       } else if (decoded.role === "patient") {
         console.log("in patient");
@@ -35,7 +36,7 @@ export const protect = async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      req.user = user;
+      req.user = {user, role: decoded.role};
       next();
     } catch (error) {
       res.status(401).json({ message: "Not authorized, token failed" });
@@ -54,6 +55,7 @@ export const admin = (req, res, next) => {
 };
 
 export const doctor = (req, res, next) => {
+  console.log(req.user,"<<<<<<<<<<<<<<<<<<< from doctor middleware");
   if (req.user && req.user.role === "doctor") {
     next();
   } else {

@@ -6,7 +6,7 @@ const router = express.Router()
 router.post("/appoinmentcreate" ,protect, createAppointment)
 router.get("/allappoinment" , protect, patient, AllAppointment)
 router.put("/updateappointment/:id"  , UpdateAppointment)
-router.delete("/deleteappointment/:id" , protect , patient , DeleteAppointment)
+router.delete("/deleteappointment/:id" ,protect,doctor , DeleteAppointment)
 router.get("/Patient_Appointment_History/:PatientID" , protect , getPatientAppointmentHistory)
 router.get("/Doctor_Appointment_History/:id"  , getDoctorAppointmentHistory);
 router.get("/singleappointment/:id" , protect , patient ,SingleAppoiment);
