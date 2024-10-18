@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import appointmentModel from "../models/appointmentModel.js";
 import patientModel from "../models/patientModel.js";
 
@@ -16,7 +17,7 @@ export const createAppointment = async (req, res) => {
       type,
       hospitalId = null, // default to null if not provided
     } = req.body;
-
+    console.log(req.user)
     const patient = await patientModel.findById(req.user.id);
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
