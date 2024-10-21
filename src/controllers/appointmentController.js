@@ -137,6 +137,19 @@ export const AllAppointment = async (req, res) => {
   }
 };
 
+export const AllTodaysAppointment = async(req, res) => {
+  try {
+    let data = await appointmentModel
+      .find({
+        date: new Date().toISOString().split('T')[0]
+      })
+      .populate("patientId doctorId");
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+}
+
 // update appointment
 export const UpdateAppointment = async (req, res) => {
   try {

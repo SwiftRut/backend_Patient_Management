@@ -17,8 +17,9 @@ export const protect = async (req, res, next) => {
       console.log(decoded)
       let user;
       if (decoded.role === "admin") {
+        console.log("In Admin")
         user = await adminModel
-          .findById(Types.ObjectId(decoded.id))
+          .findById(decoded.id)
           .select("-password");
       } else if (decoded.role === "doctor") {
         console.log("in doctor");
