@@ -1,8 +1,47 @@
 import mongoose from "mongoose";
 import appointmentModel from "../models/appointmentModel.js";
 import patientModel from "../models/patientModel.js";
+import Razorpay from 'razorpay';
 
-// create appoinment
+// appointment fee
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
+});
+
+export const appointmentFee = async (req, res) => {
+  const { doctorId, appointmentType } = req.query;
+  console.log(`Appointment fee for doctor ${doctorId} and type ${appointmentType}`);
+  try {
+    // const doctor = await Doctor.findById(doctorId);
+    // let fee = doctor.consultationFee;
+    let fee = 1000; // You might want to replace this with actual doctor's fee in the future
+    if (appointmentType === 'follow_up' || true) {
+      fee *= 0.8;
+    }
+    res.json({ fee });
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching appointment fee' });
+  }
+};
+
+export const createRazorpayOrder = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    const options = {
+      amount: amount * 100,
+      currency: "INR",
+      receipt: "receipt_" + Math.random().toString(36).substring(7),
+    };
+
+    const order = await razorpay.orders.create(options);
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ error: 'Error creating Razorpay order' });
+  }
+};
+
 export const createAppointment = async (req, res) => {
   try {
     const {
@@ -15,12 +54,25 @@ export const createAppointment = async (req, res) => {
       city,
       state,
       type,
-      hospitalId = null, // default to null if not provided
+      hospitalId = null,
+      razorpayPaymentId,
+      razorpayOrderId,
+      razorpaySignature
     } = req.body;
-    console.log(req.user)
+
     const patient = await patientModel.findById(req.user.id);
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
+    }
+
+    // Verify Razorpay payment
+    const generatedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(razorpayOrderId + "|" + razorpayPaymentId)
+      .digest("hex");
+
+    if (generatedSignature !== razorpaySignature) {
+      return res.status(400).json({ message: "Invalid payment signature" });
     }
 
     const conflictingAppointment = await appointmentModel.findOne({
@@ -45,16 +97,19 @@ export const createAppointment = async (req, res) => {
       patient_issue,
       dieseas_name,
       appointmentTime: start,
-      hospitalId, // Optional field with default
+      hospitalId,
       country,
       city,
       type,
       state,
+      paymentId: razorpayPaymentId,
+      orderId: razorpayOrderId,
+      paymentStatus: 'paid'
     });
 
     await newAppointment.save();
-    // Update patient's appointments array
-    patient.appointmentId = patient.appointmentId || []; // ensure it’s an array
+
+    patient.appointmentId = patient.appointmentId || [];
     patient.appointmentId.push(newAppointment._id);
     await patient.save();
 
@@ -71,7 +126,6 @@ export const createAppointment = async (req, res) => {
 // all appoinment - shoud work for both patient and doctor based on token role
 export const AllAppointment = async (req, res) => {
   try {
-    console.log(req.user,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     let data = await appointmentModel
       .find({
         patientId: req.user.id,
