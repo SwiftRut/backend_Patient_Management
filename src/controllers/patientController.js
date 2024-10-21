@@ -43,7 +43,6 @@ export const registerPatient = async (req, res) => {
       !country ||
       !state ||
       !address||
-      !diseaseName ||
       !city
     ) {
       return res.status(400).json({ message: "All fields are required" });
