@@ -1,14 +1,16 @@
 import express  from "express";
 import { doctor, patient, protect } from "../middlewares/authMiddleware.js";
-import { AllAppointment,  allpatient,  createAppointment, DeleteAppointment, getDoctorAppointmentHistory,  getPatientAppointmentHistory, SingleAppoiment, singlepatient, UpdateAppointment } from "../controllers/appointmentController.js";
+import { AllAppointment,  allpatient,  appointmentFee,  createAppointment, DeleteAppointment, getDoctorAppointmentHistory,  getPatientAppointmentHistory, SingleAppoiment, singlepatient, UpdateAppointment, AllTodaysAppointment } from "../controllers/appointmentController.js";
 import authorize from "../middlewares/roleMiddleware.js";
 const router = express.Router()
 
 
 //here we have to change the role bbase on the role of the user
+router.get('/appointment-fee', protect, appointmentFee);
 router.post("/appoinmentcreate" ,protect, authorize(["patient"]), createAppointment)
-router.get("/allappoinment" , protect, authorize(["admin","patient", "doctor"]), AllAppointment)
-router.put("/updateappointment/:id" ,protect, authorize(["admin","patient", "doctor"]), UpdateAppointment)
+router.get("/allappoinment" , protect, authorize(["patient", "doctor","admin"]), AllAppointment);
+router.get("/alltodayappoinment" , protect, authorize(["patient", "doctor","admin"]), AllTodaysAppointment);
+router.put("/updateappointment/:id" ,protect, authorize(["patient", "doctor"]), UpdateAppointment)
 router.delete("/deleteappointment/:id" ,protect,authorize(["patient", "doctor"]) , DeleteAppointment)
 router.get("/Patient_Appointment_History/:PatientID" , protect, authorize(["patient", "doctor"]) , getPatientAppointmentHistory)
 router.get("/Doctor_Appointment_History/:id",protect ,authorize(["patient", "doctor"]) , getDoctorAppointmentHistory);
