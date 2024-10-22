@@ -8,6 +8,7 @@ import {
   editProfile,
   changePassword,
 } from "../controllers/adminController.js";
+import upload from "../../cloudinary/multer.js";
 
 const router = express.Router();
 
@@ -19,7 +20,8 @@ router.get("/profile/:id", getProfile);
 
 router.get("/all", getAllAdmins);
 
-router.patch("/edit-profile/:id", editProfile);
+
+router.patch("/edit-profile/:id", upload.single('profilePic'), editProfile);
 
 router.patch("/change-password/:id", changePassword);
 

@@ -14,26 +14,23 @@ export const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+      console.log(decoded);
       let user;
       if (decoded.role === "admin") {
-        user = await adminModel
-          .findById(Types.ObjectId(decoded.id))
-          .select("-password");
+        console.log("In Admin");
+        user = await adminModel.findById(decoded.id).select("-password");
       } else if (decoded.role === "doctor") {
-        user = await doctorModel
-          .findById(Types.ObjectId(decoded.id))
-          .select("-password");
+        console.log("in doctor");
+        user = await doctorModel.findById(decoded.id).select("-password");
       } else if (decoded.role === "patient") {
-        user = await patientModel
-          .findById(Types.ObjectId(decoded.id))
-          .select("-password");
+        console.log("in patient");
+        user = await patientModel.findById(decoded.id).select("-password");
       }
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-
+      user.role = decoded.role;
       req.user = user;
       next();
     } catch (error) {
@@ -53,6 +50,7 @@ export const admin = (req, res, next) => {
 };
 
 export const doctor = (req, res, next) => {
+  console.log(req.user, "<<<<<<<<<<<<<<<<<<< from doctor middleware");
   if (req.user && req.user.role === "doctor") {
     next();
   } else {

@@ -18,7 +18,6 @@ export const pay = (req, res) => {
         }
         else{
             res.send(order)
-            
         }
     })
 }

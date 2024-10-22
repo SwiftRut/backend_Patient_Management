@@ -43,7 +43,6 @@ export const registerPatient = async (req, res) => {
       !country ||
       !state ||
       !address||
-      !diseaseName ||
       !city
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -75,7 +74,7 @@ export const registerPatient = async (req, res) => {
       city,
       address,
       diseaseName,
-      role: role || "patient",
+      role: "patient",
     });
 
     await newPatient.save();
@@ -130,9 +129,9 @@ export const loginPatient = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: patient._id },
+      { id: patient._id,role: 'patient' },
       process.env.JWT_SECRET,
-      { expiresIn: rememberMe ? "7d" : "1d" } // 'Remember Me' for 7 days, otherwise 1 day
+      { expiresIn: rememberMe ? "7d" : "1d" }
     );
 
     res.status(200).json({
