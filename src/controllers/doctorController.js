@@ -1,4 +1,5 @@
 import doctorModel from "../models/doctorModel.js";
+import hospitalModel from "../models/hospitalModel.js"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -156,6 +157,7 @@ export const addDoctor = async (req, res) => {
   try {
     // Check if doctor with this email already exists
     const existingDoctor = await doctorModel.findOne({ email: req.body.email });
+    console.log(existingDoctor)
     if (existingDoctor) {
       return res.status(400).json({ message: "Doctor with this email already exists" });
     }
@@ -170,6 +172,13 @@ export const addDoctor = async (req, res) => {
     req.body.hospitalId = req.body.hospital;
     req.body.hospital = null;
     // Create a new doctor instance
+    const updatedHospital = await hospitalModel.findByIdAndUpdate(
+      req.body.hospitalId,
+      { worksiteLink:req.body.worksiteLink, emergencyContactNo:req.body.emergencyContactNo }, // Update fields
+      { new: true, runValidators: true } // Options: return the updated document, validate updates
+    );
+    console.log("Hospital update<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+
     const newDoctor = new doctorModel(req.body);
     await newDoctor.save();
 

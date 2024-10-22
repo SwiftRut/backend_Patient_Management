@@ -18,7 +18,7 @@ router.post("/login", loginDoctor);
 router.post("/addDoctor", upload.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'signature', maxCount: 1 }]), addDoctor);
 router.get("/getDoctorById/:id", getDoctorById);
 router.get("/getAllDoctors", getAllDoctors);
-router.put("/editDoctor/:id",upload.single('profilePic'), editDoctor);
+router.put("/editDoctor/:id",upload.single('profilePicture'), editDoctor);
 router.delete("/deleteDoctor/:id", deleteDoctor);
 
 
