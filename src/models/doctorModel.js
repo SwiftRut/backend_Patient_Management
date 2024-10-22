@@ -177,7 +177,7 @@ const doctorSchema = new mongoose.Schema(
         "Please provide a valid 10-digit emergency contact number",
       ],
     },
-    signatureUpload: {
+    signature: {
       type: String,
       required: false,
     },
