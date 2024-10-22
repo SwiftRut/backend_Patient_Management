@@ -1,6 +1,7 @@
 import billModel from "../models/billModel.js";
 import insuranceModel from "../models/insuranceModel.js";
 import patientModel from "../models/patientModel.js";
+
 export const createBill = async (req, res) => {
   console.log("hangle the create a Bill");
   try {
@@ -20,21 +21,21 @@ export const createBill = async (req, res) => {
       claimedAmount,
       doctorId,
       doctorName,
-      phoneNumber: phone,
-      patientName,
+      phone,
+      patientId,
       gender,
       age,
       diseaseName,
       address,
     } = req.body;
     console.log(req.body, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Bill Creation");
-    //find the patient id based on the phone
-    const patient = await patientModel.findOne({ phone });
-    console.log(patient, "<<<<<<<<<<<<<<<<<<<<<<<<<<< Patient ID");
+    // //find the patient id based on the phone
+    // const patient = await patientModel.findOne({ _id:patientId });
+    // console.log(patient, "<<<<<<<<<<<<<<<<<<<<<<<<<<< Patient ID");
 
     if (insuranceCompany && insurancePlan && claimAmount && claimedAmount) {
       const newInsurance = new insuranceModel({
-        patientId : patient._id,
+        patientId ,
         insuranceCompany,
         insurancePlan,
         claimAmount,
@@ -53,7 +54,7 @@ export const createBill = async (req, res) => {
       phone,
       gender,
       age,
-      patientId : patient._id,
+      patientId ,
       doctorId,
       insuranceId:req.body.insuranceId,
       diseaseName,
@@ -66,7 +67,6 @@ export const createBill = async (req, res) => {
       tax,
       totalAmount,
       address,
-      patientName
     });
     await newBill.save();
     res.status(201).json({
@@ -81,7 +81,7 @@ export const createBill = async (req, res) => {
     });
   }
 };
-
+ 
 export const getBills = async (req, res) => {
   try {
     const bills = await billModel

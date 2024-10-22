@@ -4,7 +4,8 @@ import { createBill, deleteBill, getBillById, getBills, updateBill } from '../co
 import upload from '../../cloudinary/multer.js';
 const router = express.Router()
 
-router.post("/createbill" ,upload.single('profilePic'), createBill)
+// router.post("/createbill" ,upload.single('profilePic'), createBill)
+router.post("/createbill", createBill)
 router.get("/getbill" , getBills)
 router.get("/singlebill/:id" , getBillById)
 router.put("/billupdate/:id" , updateBill)

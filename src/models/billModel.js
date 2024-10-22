@@ -16,11 +16,6 @@ const billSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    patientName: {
-      type: String,
-      required: false,
-      trim: true,
-    },
     age: {
       type: Number,
       required: false,
@@ -53,13 +48,7 @@ const billSchema = new mongoose.Schema(
     },
     time: {
       type: String,
-      required: false,
-      validate: {
-        validator: function (v) {
-          return /^([0-9]{1,2}):([0-9]{2})$/.test(v);
-        },
-        message: (props) => `${props.value} is not a valid time format!`,
-      },
+      required: false
     },
     amount: {
       type: Number,
@@ -94,7 +83,7 @@ const billSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
+      enum: ["male", "female", "other"],
       required: [false, "Gender is required"],
     },
     diseaseName: {
