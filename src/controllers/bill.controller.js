@@ -100,6 +100,25 @@ export const getBills = async (req, res) => {
   }
 };
 
+//get insurance bills
+export const getInsuranceBills = async (req, res) => {
+  try {
+    const bills = await billModel
+      .find({paymentType:"Insurance"})
+    res.status(200).json({
+      success: true,
+      data: bills,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bills",
+      error: error.message,
+    });
+  }
+};
+
+
 // Get a single bill by ID
 export const getBillById = async (req, res) => {
   try {
