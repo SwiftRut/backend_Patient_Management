@@ -174,6 +174,28 @@ export const DeleteAppointment = async (req, res) => {
   }
 };
 
+//cancel appointment
+export const CancelAppointment = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const appointment = await appointmentModel.findByIdAndUpdate(
+          id,
+          { status: 'canceled' },
+          { new: true }
+      );
+
+      if (!appointment) {
+          return res.status(404).json({ message: 'Appointment not found' });
+      }
+
+      res.status(200).json({ message: 'Appointment canceled successfully', data: appointment });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
+
 // fetch appointment for patient selected user
 export const getPatientAppointmentHistory = async (req, res) => {
   try {
