@@ -67,7 +67,6 @@ const adminSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "doctor", "patient"],
       default: "admin",
     },
     gender: {

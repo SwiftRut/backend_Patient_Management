@@ -220,6 +220,9 @@ export const editPatient = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
 
+  const imgUrl = req.file ? req.file.path : avatar;
+  console.log(imgUrl)
+  if (imgUrl) updatedData.avatar = imgUrl;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid Patient ID" });
   }
