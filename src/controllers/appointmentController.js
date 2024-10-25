@@ -141,7 +141,7 @@ export const AllTodaysAppointment = async(req, res) => {
   try {
     let data = await appointmentModel
       .find({
-        // date: new Date().toISOString().split('T')[0]
+        // date: new Date().      [0]
       })
       .populate("patientId doctorId");
       console.log(data);
@@ -242,9 +242,9 @@ export const SingleAppoiment = async (req, res) => {
     const SingleAppoiment = await appointmentModel.findById(id)
       .populate({
         path: "patientId",
-        select: "firstname lastname phonenumber gender age address",
+        select: "firstName lastName phonenumber gender age address ",
       })
-      .populate({ path: "doctorId", select: "DoctorName" })
+      .populate({ path: "doctorId", select: "name" })
       .populate({ path: "insuranceId" });
     res.json(SingleAppoiment);
   } catch (error) {

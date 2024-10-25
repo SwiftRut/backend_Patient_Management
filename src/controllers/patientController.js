@@ -205,7 +205,12 @@ export const getPatientById = async (req, res) => {
 //get all patient
 export const getAllPatients = async (req, res) => {
   try {
-    const patients = await patientModel.find();
+    const patients = await patientModel.find().populate({
+      path: 'appointmentId',
+      populate: {
+        path: 'doctorId', // Populate doctorId within each appointment
+      },
+    });
     res.status(200).json({
       message: "Patients fetched successfully",
       data: patients,

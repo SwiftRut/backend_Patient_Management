@@ -5,18 +5,20 @@ import prescriptionModel from "../models/prescriptionModel.js";
 export const AddPriscription = async (req, res) => {
   try {
     let { id } = req.params;
-    let { medications, note } = req.body;
+    let { medications, note, additionalNote, patientId } = req.body;
+    console.log(req.body)
     if (id) {
       let Appointment = await appointmentModel
         .findById(id)
         .populate({ path: "patientId", select: "id" });
-      console.log(Appointment.patientId.id);
+      console.log(Appointment);
 
       const prescription = new prescriptionModel({
-        PatientID: Appointment.patientId._id,
-        DoctorID: Appointment.doctorId._id,
-        AppointmentID: Appointment.id,
+        patientId: Appointment.patientId._id,
+        doctorId: Appointment.doctorId._id,
+        appointmentId: Appointment._id,
         medications,
+        instructions:additionalNote,
       });
       await prescription.save();
 
