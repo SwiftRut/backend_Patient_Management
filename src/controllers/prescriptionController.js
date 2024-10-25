@@ -51,6 +51,37 @@ export const getPrescription = async (req, res) => {
   }
 };
 
+//get prescriptiopn by patient id
+export const getPrescriptionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    console.log('Fetching prescriptions for patient ID:', id);
+
+    const prescriptions = await prescriptionModel.find({ patientId: id })
+      .populate({
+        path: 'appointmentId',
+        populate: {
+          path: 'doctorId'
+        }
+      }).populate({
+        path:"patientId"
+      })
+      .lean(); // Use lean() for better performance if you don't need Mongoose documents
+
+    console.log('Fetched prescriptions:', prescriptions);
+
+    if (!prescriptions || prescriptions.length === 0) {
+      return res.status(404).json({ message: 'No prescriptions found for this patient' });
+    }
+
+    res.json(prescriptions);
+  } catch (error) {
+    console.error('Error in getPrescriptionById:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 // today prescription
 export const getTodaysPrescriptions = async (req, res) => {
   try {
