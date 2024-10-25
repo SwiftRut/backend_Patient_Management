@@ -66,29 +66,6 @@ export const createAppointment = async (req, res) => {
     }
 
     // Verify Razorpay payment
-    const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(razorpayOrderId + "|" + razorpayPaymentId)
-      .digest("hex");
-
-    if (generatedSignature !== razorpaySignature) {
-      return res.status(400).json({ message: "Invalid payment signature" });
-    }
-
-    const conflictingAppointment = await appointmentModel.findOne({
-      patientId: req.user.id,
-      doctorId,
-      date,
-      appointmentTime: start,
-      status: { $ne: "cancelled" },
-    });
-
-    if (conflictingAppointment) {
-      return res
-        .status(400)
-        .json({ message: "Doctor is not available at this time" });
-    }
-
     // Creating new appointment
     const newAppointment = new appointmentModel({
       patientId: req.user.id,
@@ -102,8 +79,8 @@ export const createAppointment = async (req, res) => {
       city,
       type,
       state,
-      paymentId: razorpayPaymentId,
-      orderId: razorpayOrderId,
+      // paymentId: razorpayPaymentId,
+      // orderId: razorpayOrderId,
       paymentStatus: 'paid'
     });
 
