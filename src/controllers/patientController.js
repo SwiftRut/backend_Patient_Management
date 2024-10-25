@@ -43,7 +43,6 @@ export const registerPatient = async (req, res) => {
       !country ||
       !state ||
       !address||
-      !diseaseName ||
       !city
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -75,7 +74,7 @@ export const registerPatient = async (req, res) => {
       city,
       address,
       diseaseName,
-      role: role || "patient",
+      role: "patient",
     });
 
     await newPatient.save();
@@ -130,9 +129,9 @@ export const loginPatient = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: patient._id },
+      { id: patient._id,role: 'patient' },
       process.env.JWT_SECRET,
-      { expiresIn: rememberMe ? "7d" : "1d" } // 'Remember Me' for 7 days, otherwise 1 day
+      { expiresIn: rememberMe ? "7d" : "1d" }
     );
 
     res.status(200).json({
@@ -206,7 +205,12 @@ export const getPatientById = async (req, res) => {
 //get all patient
 export const getAllPatients = async (req, res) => {
   try {
-    const patients = await patientModel.find();
+    const patients = await patientModel.find().populate({
+      path: 'appointmentId',
+      populate: {
+        path: 'doctorId', // Populate doctorId within each appointment
+      },
+    });
     res.status(200).json({
       message: "Patients fetched successfully",
       data: patients,
@@ -221,6 +225,9 @@ export const editPatient = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
 
+  const imgUrl = req.file ? req.file.path : req.body.avatar;
+  console.log(imgUrl)
+  if (imgUrl) updatedData.avatar = imgUrl;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid Patient ID" });
   }

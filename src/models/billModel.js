@@ -8,47 +8,51 @@ const billSchema = new mongoose.Schema(
     billNumber: {
       type:  Number,
       unique: true,
+      required: false,
+      trim: true,
+    },
+    phone: {
+      type: String,
       required: true,
       trim: true,
+    },
+    age: {
+      type: Number,
+      required: false,
+      min: [0, "Age must be a positive number"],
     },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
-      required: true,
+      required: false,
     },
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
-      required: true,
+      required: false,
     },
     description: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     paymentType: {
       type: String,
-      required: true,
-      enum: ["online", "cash", "insurance"],
+      required: false,
+      enum: ["Online", "Cash", "Insurance"],
     },
     date: {
       type: Date,
-      required: true,
+      required: false,
       default: Date.now,
     },
     time: {
       type: String,
-      required: true,
-      validate: {
-        validator: function (v) {
-          return /^([0-9]{1,2}):([0-9]{2})$/.test(v);
-        },
-        message: (props) => `${props.value} is not a valid time format!`,
-      },
+      required: false
     },
     amount: {
       type: Number,
-      required: [true, "Amount is required"],
+      required: [false, "Amount is required"],
       min: [0, "Amount must be a positive number"],
     },
     discount: {
@@ -60,24 +64,36 @@ const billSchema = new mongoose.Schema(
     },
     tax: {
       type: Number,
-      required: [true, "Tax is required"],
+      required: [false, "Tax is required"],
       min: [0, "Tax cannot be negative"],
     },
     totalAmount: {
       type: Number,
-      required: true,
-      set: function () {
-        return (
-          this.amount -
-          this.amount * (this.discount / 100) +
-          this.amount * (this.tax / 100)
-        );
-      },
+      required: false,
     },
     insuranceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Insurance",
       required: false,
+    },
+    status: {
+      type: String,
+      enum: ["Unpaid", "Paid"],
+      default: "Unpaid",
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      required: [false, "Gender is required"],
+    },
+    diseaseName: {
+      type: String,
+      trim: false,
+    },
+    address: {
+      type: String,
+      required: [false, "Address is required"],
+      trim: false,
     },
   },
   {
