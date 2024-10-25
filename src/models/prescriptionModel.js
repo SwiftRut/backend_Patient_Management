@@ -19,24 +19,29 @@ const prescriptionSchema = new mongoose.Schema(
     },
     medications: [
       {
-        name: {
+        medicineName: {
           type: String,
           required: [true, "Medication name is required"],
           trim: true,
         },
-        dosage: {
+        strength: {
           type: String,
-          required: [true, "Dosage is required"],
+          required: [true, "Strength is required"],
           trim: true,
         },
-        frequency: {
+        dose: {
           type: String,
-          required: [true, "Frequency is required"],
+          required: [true, "Dosage is required"],
           trim: true,
         },
         duration: {
           type: String,
           required: [true, "Duration is required"],
+          trim: true,
+        },
+        whenToTake: {
+          type: String,
+          required: [true, "When to take is required"],
           trim: true,
         },
       },
