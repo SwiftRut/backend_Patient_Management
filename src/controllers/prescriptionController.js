@@ -41,9 +41,9 @@ export const getPrescription = async (req, res) => {
   try {
     let { id } = req.params;
     let data = await prescriptionModel.find({
-      AppointmentID: id,
-      DoctorID: req.body.DoctorID,
-    });
+      // AppointmentID: id,
+      // DoctorID: req.body.DoctorID,
+    }).populate("patientId");
     res.json(data);
   } catch (error) {
     console.log(error);
