@@ -185,6 +185,10 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: false,
       trim: true,
+    },
+    role:{
+      type:String,
+      default:"doctor"
     }
   },
   {

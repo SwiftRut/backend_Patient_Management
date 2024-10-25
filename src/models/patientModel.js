@@ -116,6 +116,10 @@ const patientSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Insurance",
     },
+    role: {
+      type: String,
+      default: "patient",
+    },
   },
   { timestamps: true }
 );

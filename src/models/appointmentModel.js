@@ -60,6 +60,11 @@ const appointmentSchema = new mongoose.Schema(
       required: [true, "Country is required"],
       trim: true,
     },
+    status: {
+      type: String,
+      enum: ["scheduled", "canceled", "pending", "completed"],
+      default: "scheduled", 
+    },
   },
   {
     timestamps: true,

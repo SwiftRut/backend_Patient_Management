@@ -66,6 +66,29 @@ export const createAppointment = async (req, res) => {
     }
 
     // Verify Razorpay payment
+    // const generatedSignature = crypto
+    //   .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    //   .update(razorpayOrderId + "|" + razorpayPaymentId)
+    //   .digest("hex");
+
+    // if (generatedSignature !== razorpaySignature) {
+    //   return res.status(400).json({ message: "Invalid payment signature" });
+    // }
+
+    // const conflictingAppointment = await appointmentModel.findOne({
+    //   patientId: req.user.id,
+    //   doctorId,
+    //   date,
+    //   appointmentTime: start,
+    //   status: { $ne: "cancelled" },
+    // });
+
+    // if (conflictingAppointment) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Doctor is not available at this time" });
+    // }
+
     // Creating new appointment
     const newAppointment = new appointmentModel({
       patientId: req.user.id,
@@ -150,6 +173,28 @@ export const DeleteAppointment = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+//cancel appointment
+export const CancelAppointment = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const appointment = await appointmentModel.findByIdAndUpdate(
+          id,
+          { status: 'canceled' },
+          { new: true }
+      );
+
+      if (!appointment) {
+          return res.status(404).json({ message: 'Appointment not found' });
+      }
+
+      res.status(200).json({ message: 'Appointment canceled successfully', data: appointment });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
 
 // fetch appointment for patient selected user
 export const getPatientAppointmentHistory = async (req, res) => {
