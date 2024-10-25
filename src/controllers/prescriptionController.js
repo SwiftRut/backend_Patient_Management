@@ -66,10 +66,10 @@ export const getPrescriptionById = async (req, res) => {
         }
       }).populate({
         path:"patientId"
+      }).populate({
+        path:"doctorId"
       })
       .lean(); // Use lean() for better performance if you don't need Mongoose documents
-
-    console.log('Fetched prescriptions:', prescriptions);
 
     if (!prescriptions || prescriptions.length === 0) {
       return res.status(404).json({ message: 'No prescriptions found for this patient' });
@@ -170,7 +170,7 @@ export const searchPrescriptionsByPatientName = async (req, res) => {
 
     // Filter out results where PatientID is null (no match found)
     const filteredPrescriptions = prescriptions.filter(
-      (prescription) => prescription.PatientID
+      (prescription) => prescription.patientId
     );
 
     if (filteredPrescriptions.length === 0) {
@@ -198,7 +198,7 @@ export const getPrescriptionsByDate = async (req, res) => {
     const startOfDay = new Date(new Date(date).setHours(0, 0, 0, 0));
     const endOfDay = new Date(new Date(date).setHours(23, 59, 59, 999));
 
-    const prescriptions = await PrescriptionModel.find({
+    const prescriptions = await prescriptionModel.find({
       date: {
         $gte: startOfDay,
         $lte: endOfDay,
