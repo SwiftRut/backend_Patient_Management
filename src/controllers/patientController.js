@@ -187,8 +187,8 @@ export const getPatientById = async (req, res) => {
   }
 
   try {
-    const patient = await patientModel.findById(id);
-
+    const patient = await patientModel.findById(id).populate("appointmentId");
+    console.log(patient,id)
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
