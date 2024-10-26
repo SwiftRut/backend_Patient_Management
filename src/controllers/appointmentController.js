@@ -137,6 +137,21 @@ export const AllAppointment = async (req, res) => {
   }
 };
 
+export const AllAppointmentById = async (req, res) => {
+  try {
+    let { id } = req.params;
+    let data = await appointmentModel
+      .find({
+        patientId: req.user.id || id,
+      })
+      .populate("patientId doctorId");
+      
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 export const AllTodaysAppointment = async(req, res) => {
   try {
     let data = await appointmentModel
@@ -144,7 +159,6 @@ export const AllTodaysAppointment = async(req, res) => {
         // date: new Date().      [0]
       })
       .populate("patientId doctorId");
-      console.log(data);
     res.json(data);
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -222,7 +236,6 @@ export const getPatientAppointmentHistory = async (req, res) => {
 export const getDoctorAppointmentHistory = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const appointmentHistory = await appointmentModel.find({ doctorId: id }).populate('patientId doctorId');
     res
       .status(200)

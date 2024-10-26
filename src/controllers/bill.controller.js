@@ -3,7 +3,6 @@ import insuranceModel from "../models/insuranceModel.js";
 import patientModel from "../models/patientModel.js";
 
 export const createBill = async (req, res) => {
-  console.log("hangle the create a Bill");
   try {
     const {
       billNumber,
@@ -28,10 +27,8 @@ export const createBill = async (req, res) => {
       diseaseName,
       address,
     } = req.body;
-    console.log(req.body, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Bill Creation");
     // //find the patient id based on the phone
     // const patient = await patientModel.findOne({ _id:patientId });
-    // console.log(patient, "<<<<<<<<<<<<<<<<<<<<<<<<<<< Patient ID");
 
     if (insuranceCompany && insurancePlan && claimAmount && claimedAmount) {
       const newInsurance = new insuranceModel({
@@ -41,7 +38,6 @@ export const createBill = async (req, res) => {
         claimAmount,
         claimedAmount,
       });
-      console.log(newInsurance,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< insurance company")
       await newInsurance.save();
       req.body.insuranceId = newInsurance._id;
     }
@@ -145,7 +141,6 @@ export const getBillById = async (req, res) => {
 };
 export const updateBill = async (req, res) => {
   try {
-    console.log(req.body);
 
     if (req.body.totalAmount && isNaN(Number(req.body.totalAmount))) {
       return res.status(400).json({

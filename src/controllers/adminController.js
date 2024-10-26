@@ -126,7 +126,6 @@ export const loginAdmin = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const adminId = req.params.id;
-    console.log(req.params.id);
 
     const admin = await adminModel
       .findById(adminId)

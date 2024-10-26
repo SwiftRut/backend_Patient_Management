@@ -6,13 +6,11 @@ export const AddPriscription = async (req, res) => {
   try {
     let { id } = req.params;
     let { medicines, note, additionalNote, patientId } = req.body;
-    console.log(req.body)
     if (id) {
       let Appointment = await appointmentModel
         .findById(id)
         .populate({ path: "patientId", select: "id" });
-      console.log(Appointment);
-
+    
       const prescription = new prescriptionModel({
         patientId: Appointment.patientId._id,
         doctorId: Appointment.doctorId._id,
@@ -56,8 +54,7 @@ export const getPrescriptionById = async (req, res) => {
   try {
     const { id } = req.params;
     
-    console.log('Fetching prescriptions for patient ID:', id);
-
+   
     const prescriptions = await prescriptionModel.find({ patientId: id })
       .populate({
         path: 'appointmentId',

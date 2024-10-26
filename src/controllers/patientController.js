@@ -103,12 +103,10 @@ export const loginPatient = async (req, res) => {
 
     const normalizedIdentifier = identifier.trim().toLowerCase();
 
-    console.log("Normalized Identifier: ", normalizedIdentifier);
-
+   
     const normalizedPhone = identifier.trim().replace(/[\s\-\(\)]/g, "");
 
-    console.log("Normalized Phone: ", normalizedPhone);
-
+   
     const patient = await patientModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
@@ -117,13 +115,10 @@ export const loginPatient = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    console.log("Patient found:", patient);
-
+   
     const isMatch = await bcrypt.compare(password, patient.password);
-    console.log("Password Match:", isMatch);
-
+   
     if (!isMatch) {
-      console.log("Password does not match");
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -188,7 +183,6 @@ export const getPatientById = async (req, res) => {
 
   try {
     const patient = await patientModel.findById(id).populate("appointmentId");
-    console.log(patient,id)
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
@@ -226,7 +220,6 @@ export const editPatient = async (req, res) => {
   const updatedData = req.body;
 
   const imgUrl = req.file ? req.file.path : req.body.avatar;
-  console.log(imgUrl)
   if (imgUrl) updatedData.avatar = imgUrl;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid Patient ID" });
