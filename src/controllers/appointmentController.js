@@ -257,7 +257,7 @@ export const SingleAppoiment = async (req, res) => {
         path: "patientId",
         select: "firstName lastName phonenumber gender age address ",
       })
-      .populate({ path: "doctorId", select: "name" })
+      .populate({ path: "doctorId"})
       .populate({ path: "insuranceId" });
     res.json(SingleAppoiment);
   } catch (error) {

@@ -190,15 +190,16 @@ export const addDoctor = async (req, res) => {
 
 //get doctor by id
 export const getDoctorById = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid Doctor ID" });
-  }
-
+  
   try {
-    const doctor = await doctorModel.findById(id);
+    const { id } = req.params;  
+  
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid Doctor ID" });
+    }
 
+    const doctor = await doctorModel.findById(id).populate("hospitalId");
+    
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
