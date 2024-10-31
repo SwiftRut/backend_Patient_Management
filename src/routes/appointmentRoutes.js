@@ -1,6 +1,6 @@
 import express  from "express";
 import { doctor, patient, protect } from "../middlewares/authMiddleware.js";
-import { AllAppointment,  allpatient,  appointmentFee,  createAppointment, DeleteAppointment,CancelAppointment, getDoctorAppointmentHistory,  getPatientAppointmentHistory, SingleAppoiment, singlepatient, UpdateAppointment, AllTodaysAppointment,AllAppointmentById } from "../controllers/appointmentController.js";
+import { AllAppointment,  allpatient,  appointmentFee,  createAppointment, DeleteAppointment,CancelAppointment, getDoctorAppointmentHistory,  getPatientAppointmentHistory, SingleAppoiment, singlepatient, UpdateAppointment, AllTodaysAppointment,AllAppointmentById, appoinmentDone } from "../controllers/appointmentController.js";
 import authorize from "../middlewares/roleMiddleware.js";
 const router = express.Router()
 
@@ -19,5 +19,6 @@ router.get("/Doctor_Appointment_History/:id",protect ,authorize(["patient", "doc
 router.get("/singleappointment/:id" , protect , authorize(["patient", "doctor"]) ,SingleAppoiment);
 router.get("/allpatient" , protect , authorize(["patient", "doctor"]) , allpatient);
 router.get("/singlepatient/:id" , protect , authorize(["patient", "doctor"]) , singlepatient);
+router.get("/appoinmentDone/:id", protect, appoinmentDone);
 
 export default router;

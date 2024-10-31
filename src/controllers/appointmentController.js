@@ -287,3 +287,14 @@ export const singlepatient = async (req, res) => {
     req.status(400).json({ error: error.message });
   }
 };
+
+export const appoinmentDone = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    const appointment = await appointmentModel.findByIdAndUpdate(id, { status:"completed" }, { new: true });
+    res.status(200).json({ message: 'Appointment status updated successfully', data: appointment });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
