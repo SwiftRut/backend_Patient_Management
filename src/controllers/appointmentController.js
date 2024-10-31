@@ -137,6 +137,21 @@ export const AllAppointment = async (req, res) => {
   }
 };
 
+export const AllAppointmentById = async (req, res) => {
+  try {
+    let { id } = req.params;
+    let data = await appointmentModel
+      .find({
+        patientId: req.user.id || id,
+      })
+      .populate("patientId doctorId");
+      
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 export const AllTodaysAppointment = async(req, res) => {
   try {
     let data = await appointmentModel
@@ -144,7 +159,6 @@ export const AllTodaysAppointment = async(req, res) => {
         // date: new Date().      [0]
       })
       .populate("patientId doctorId");
-      console.log(data);
     res.json(data);
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -204,7 +218,7 @@ export const getPatientAppointmentHistory = async (req, res) => {
 
     const appointmentHistory = await appointmentModel
       .find({ patientId:PatientID })
-      .populate("doctorId", "name specialtiyType") // Populates doctor information
+      .populate({path:"doctorId",populate:{path:"hospitalId"}}) // Populates doctor information
       .sort({ appointmentdate: -1 }); // Sort by date (most recent first)
 
     res
@@ -222,7 +236,6 @@ export const getPatientAppointmentHistory = async (req, res) => {
 export const getDoctorAppointmentHistory = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const appointmentHistory = await appointmentModel.find({ doctorId: id }).populate('patientId doctorId');
     res
       .status(200)
@@ -244,7 +257,7 @@ export const SingleAppoiment = async (req, res) => {
         path: "patientId",
         select: "firstName lastName phonenumber gender age address ",
       })
-      .populate({ path: "doctorId", select: "name" })
+      .populate({ path: "doctorId"})
       .populate({ path: "insuranceId" });
     res.json(SingleAppoiment);
   } catch (error) {
@@ -272,5 +285,16 @@ export const singlepatient = async (req, res) => {
     res.status(200).json({ data: patient });
   } catch (error) {
     req.status(400).json({ error: error.message });
+  }
+};
+
+export const appoinmentDone = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    const appointment = await appointmentModel.findByIdAndUpdate(id, { status:"completed" }, { new: true });
+    res.status(200).json({ message: 'Appointment status updated successfully', data: appointment });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

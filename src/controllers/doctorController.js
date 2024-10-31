@@ -84,8 +84,7 @@ export const loginDoctor = async (req, res) => {
     const doctor = await doctorModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
-    console.log(doctor,"<<<<<<<<<<<<<<<<<<<<<<< from doctor controller");
-    if (!doctor) {
+     if (!doctor) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -157,7 +156,6 @@ export const addDoctor = async (req, res) => {
   try {
     // Check if doctor with this email already exists
     const existingDoctor = await doctorModel.findOne({ email: req.body.email });
-    console.log(existingDoctor)
     if (existingDoctor) {
       return res.status(400).json({ message: "Doctor with this email already exists" });
     }
@@ -165,7 +163,6 @@ export const addDoctor = async (req, res) => {
     // Handle uploaded files
     const imgUrlProfilePic = req.files['profilePicture'] && req.files['profilePicture'][0] ? req.files['profilePicture'][0].path : null;
     const imgUrlSignature = req.files['signature'] && req.files['signature'][0] ? req.files['signature'][0].path : null;
-    console.log(imgUrlProfilePic, imgUrlSignature,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< image");
     // Add image paths to req.body if they exist
     if (imgUrlProfilePic) req.body.avatar = imgUrlProfilePic; // Assuming you want to store the profilePic path in 'avatar'
     if (imgUrlSignature) req.body.signature = imgUrlSignature; // Add signature path
@@ -177,8 +174,7 @@ export const addDoctor = async (req, res) => {
       { worksiteLink:req.body.worksiteLink, emergencyContactNo:req.body.emergencyContactNo }, // Update fields
       { new: true, runValidators: true } // Options: return the updated document, validate updates
     );
-    console.log("Hospital update<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-
+   
     const newDoctor = new doctorModel(req.body);
     await newDoctor.save();
 
@@ -194,15 +190,16 @@ export const addDoctor = async (req, res) => {
 
 //get doctor by id
 export const getDoctorById = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid Doctor ID" });
-  }
-
+  
   try {
-    const doctor = await doctorModel.findById(id);
+    const { id } = req.params;  
+  
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid Doctor ID" });
+    }
 
+    const doctor = await doctorModel.findById(id).populate("hospitalId");
+    
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
@@ -231,7 +228,6 @@ export const getAllDoctors = async (req, res) => {
 //edit doctor
 export const editDoctor = async (req, res) => {
   const { id } = req.params;
-  console.log(req.body);
   const imageUrl = req.file ? req.file.path : req.body.avatar || "";
   const updatedData = req.body;
   updatedData.avatar = imageUrl;

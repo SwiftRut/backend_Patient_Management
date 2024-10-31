@@ -5,7 +5,7 @@ const prescriptionSchema = new mongoose.Schema(
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
-      required: [true, "Patient ID is required"],
+      required: true,
     },
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -15,7 +15,7 @@ const prescriptionSchema = new mongoose.Schema(
     appointmentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
-      required: [true, "Appointment ID is required"],
+      required: true,
     },
     medications: [
       {

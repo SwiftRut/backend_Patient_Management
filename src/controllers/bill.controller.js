@@ -3,14 +3,13 @@ import insuranceModel from "../models/insuranceModel.js";
 import patientModel from "../models/patientModel.js";
 
 export const createBill = async (req, res) => {
-  console.log("hangle the create a Bill");
   try {
     const {
       billNumber,
       description,
       paymentType,
-      billDate:date,
-      billTime:time,
+      billDate: date,
+      billTime: time,
       amount,
       discount,
       tax,
@@ -28,20 +27,17 @@ export const createBill = async (req, res) => {
       diseaseName,
       address,
     } = req.body;
-    console.log(req.body, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Bill Creation");
     // //find the patient id based on the phone
     // const patient = await patientModel.findOne({ _id:patientId });
-    // console.log(patient, "<<<<<<<<<<<<<<<<<<<<<<<<<<< Patient ID");
 
     if (insuranceCompany && insurancePlan && claimAmount && claimedAmount) {
       const newInsurance = new insuranceModel({
-        patientId ,
+        patientId,
         insuranceCompany,
         insurancePlan,
         claimAmount,
         claimedAmount,
       });
-      console.log(newInsurance,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< insurance company")
       await newInsurance.save();
       req.body.insuranceId = newInsurance._id;
     }
@@ -54,9 +50,9 @@ export const createBill = async (req, res) => {
       phone,
       gender,
       age,
-      patientId ,
+      patientId,
       doctorId,
-      insuranceId:req.body.insuranceId,
+      insuranceId: req.body.insuranceId,
       diseaseName,
       description,
       paymentType,
@@ -81,7 +77,7 @@ export const createBill = async (req, res) => {
     });
   }
 };
- 
+
 export const getBills = async (req, res) => {
   try {
     const bills = await billModel
@@ -100,11 +96,14 @@ export const getBills = async (req, res) => {
   }
 };
 
-//get insurance bills
-export const getInsuranceBills = async (req, res) => {
+//get bills by patientID
+export const getbillsById = async (req, res) => {
   try {
+    const Id = req.user.id;
+
     const bills = await billModel
-      .find({paymentType:"Insurance"})
+      .find({ patientId: Id })
+      .populate("patientId doctorId insuranceId");
     res.status(200).json({
       success: true,
       data: bills,
@@ -118,6 +117,22 @@ export const getInsuranceBills = async (req, res) => {
   }
 };
 
+//get insurance bills
+export const getInsuranceBills = async (req, res) => {
+  try {
+    const bills = await billModel.find({ paymentType: "Insurance" });
+    res.status(200).json({
+      success: true,
+      data: bills,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bills",
+      error: error.message,
+    });
+  }
+};
 
 // Get a single bill by ID
 export const getBillById = async (req, res) => {
@@ -145,8 +160,6 @@ export const getBillById = async (req, res) => {
 };
 export const updateBill = async (req, res) => {
   try {
-    console.log(req.body);
-
     if (req.body.totalAmount && isNaN(Number(req.body.totalAmount))) {
       return res.status(400).json({
         success: false,

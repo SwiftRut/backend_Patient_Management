@@ -2,6 +2,7 @@ import express from "express";
 import { doctor, protect } from "../middlewares/authMiddleware.js";
 import {
   AddPriscription,
+  getPrescriptionById,
   getOldPrescriptions,
   getPrescription,
   getPrescriptionsByDate,
@@ -14,6 +15,7 @@ const router = express.Router();
 
 
 router.post("/createprescription/:id", protect, authorize(["patient", "doctor"]) , AddPriscription);
+router.get("/getPrescriptionById/:id", protect, authorize(["patient", "doctor"]) , getPrescriptionById);
 router.get("/getPrescription", protect, authorize(["patient", "doctor"]) , getPrescription);
 router.get("/todayPrescription", protect, authorize(["patient", "doctor"]) , getTodaysPrescriptions);
 router.get("/oldPrescription", protect, authorize(["patient", "doctor"]) , getOldPrescriptions);

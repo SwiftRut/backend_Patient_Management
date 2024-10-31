@@ -6,13 +6,11 @@ export const AddPriscription = async (req, res) => {
   try {
     let { id } = req.params;
     let { medicines, note, additionalNote, patientId } = req.body;
-    console.log(req.body)
     if (id) {
       let Appointment = await appointmentModel
         .findById(id)
         .populate({ path: "patientId", select: "id" });
-      console.log(Appointment);
-
+    
       const prescription = new prescriptionModel({
         patientId: Appointment.patientId._id,
         doctorId: Appointment.doctorId._id,
@@ -48,6 +46,36 @@ export const getPrescription = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+//get prescriptiopn by patient id
+export const getPrescriptionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+   
+    const prescriptions = await prescriptionModel.find({ patientId: id })
+      .populate({
+        path: 'appointmentId',
+        populate: {
+          path: 'doctorId'
+        }
+      }).populate({
+        path:"patientId"
+      }).populate({
+        path:"doctorId"
+      })
+      .lean(); // Use lean() for better performance if you don't need Mongoose documents
+
+    if (!prescriptions || prescriptions.length === 0) {
+      return res.status(404).json({ message: 'No prescriptions found for this patient' });
+    }
+
+    res.json(prescriptions);
+  } catch (error) {
+    console.error('Error in getPrescriptionById:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
@@ -139,7 +167,7 @@ export const searchPrescriptionsByPatientName = async (req, res) => {
 
     // Filter out results where PatientID is null (no match found)
     const filteredPrescriptions = prescriptions.filter(
-      (prescription) => prescription.PatientID
+      (prescription) => prescription.patientId
     );
 
     if (filteredPrescriptions.length === 0) {
@@ -167,7 +195,7 @@ export const getPrescriptionsByDate = async (req, res) => {
     const startOfDay = new Date(new Date(date).setHours(0, 0, 0, 0));
     const endOfDay = new Date(new Date(date).setHours(23, 59, 59, 999));
 
-    const prescriptions = await PrescriptionModel.find({
+    const prescriptions = await prescriptionModel.find({
       date: {
         $gte: startOfDay,
         $lte: endOfDay,

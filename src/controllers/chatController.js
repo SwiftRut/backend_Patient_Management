@@ -21,7 +21,6 @@ const getChatHistory = async (req, res) => {
     const history = await Chat.find({ doctorId, patientId }).sort({
       timestamp: 1,
     });
-    console.log(history);
     res.status(200).json(history);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -58,7 +57,6 @@ const getDoctorContacts = async (req, res) => {
   const { patientId } = req.params;
   try {
     const doctorIds = await Chat.find({ patientId }).distinct("doctorId");
-    console.log(doctorIds);
     const doctorContacts = await doctorModel.find({
       _id: { $in: doctorIds },
     }).select("-password");
