@@ -124,6 +124,15 @@ export const createAppointment = async (req, res) => {
 };
 
 // all appoinment - shoud work for both patient and doctor based on token role
+export const AllAppointmentsForCount = async (req, res) => {
+  try {
+    let data = await appointmentModel.find({})
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 export const AllAppointment = async (req, res) => {
   try {
     let data = await appointmentModel
