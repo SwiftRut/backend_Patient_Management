@@ -75,6 +75,17 @@ const doctorSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid time format!`,
       },
     },
+    unavailableTimes: [
+      {
+        date: String,
+        timeRange: {
+          start: String,
+          end: String
+        },
+        title: String,
+        reason: String
+      }
+    ],
     patientCheckupTime: {
       type: String,
       required: false,
