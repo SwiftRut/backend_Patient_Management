@@ -8,6 +8,8 @@ import {
   getAllDoctors,
   editDoctor,
   deleteDoctor,
+  getUnavailableTimes,
+  addUnavailableTime,
 } from "../controllers/doctorController.js";
 import upload from "../../cloudinary/multer.js";
 
@@ -20,6 +22,8 @@ router.get("/getDoctorById/:id", getDoctorById);
 router.get("/getAllDoctors", getAllDoctors);
 router.put("/editDoctor/:id",upload.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'signature', maxCount: 1 }]), editDoctor);
 router.delete("/deleteDoctor/:id", deleteDoctor);
+router.get("/:doctorId/unavailable-times", getUnavailableTimes);
+router.post("/:doctorId/unavailable-times", addUnavailableTime);
 
 
 export default router;
