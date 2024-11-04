@@ -55,7 +55,7 @@ const patientSchema = new mongoose.Schema(
     address: {
       type: String,
       required: [false, "Address is required"],
-      trim: false,
+      trim: false,   
     },
     diseaseName: {
       type: String,
