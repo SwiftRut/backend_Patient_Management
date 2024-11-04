@@ -7,7 +7,7 @@ const router = express.Router()
 
 //here we have to change the role bbase on the role of the user
 router.get('/appointment-fee', protect, appointmentFee);
-router.post("/appoinmentcreate" ,protect, authorize(["patient"]), createAppointment)
+router.post("/appoinmentcreate" ,protect, authorize(["patient", "doctor"]), createAppointment)
 router.get("/allappoinment" , protect, authorize(["patient", "doctor","admin"]), AllAppointment);
 router.get("/getAllAppointmentById/:id" , protect, authorize(["patient", "doctor","admin"]), AllAppointmentById);
 router.get("/alltodayappoinment" , protect, authorize(["patient", "doctor","admin"]), AllTodaysAppointment);

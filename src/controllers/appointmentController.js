@@ -48,7 +48,7 @@ export const createAppointment = async (req, res) => {
       doctorId,
       date,
       patient_issue,
-      dieseas_name,
+      diseaseName:dieseas_name,
       start,
       country,
       city,
@@ -95,7 +95,7 @@ export const createAppointment = async (req, res) => {
       doctorId,
       date,
       patient_issue,
-      dieseas_name,
+      dieseas_name : req.body.filteredData.diseaseName,
       appointmentTime: start,
       hospitalId,
       country,
@@ -108,7 +108,7 @@ export const createAppointment = async (req, res) => {
     });
 
     await newAppointment.save();
-
+    console.log(newAppointment, req.body);
     patient.appointmentId = patient.appointmentId || [];
     patient.appointmentId.push(newAppointment._id);
     await patient.save();
