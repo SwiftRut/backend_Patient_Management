@@ -48,7 +48,7 @@ export const createAppointment = async (req, res) => {
       doctorId,
       date,
       patient_issue,
-      dieseas_name,
+      diseaseName:dieseas_name,
       start,
       country,
       city,
@@ -60,10 +60,10 @@ export const createAppointment = async (req, res) => {
       razorpaySignature
     } = req.body;
 
-    const patient = await patientModel.findById(req.user.id);
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
-    }
+    // const patient = await patientModel.findById(req.user.id);
+    // if (!patient) {
+    //   return res.status(404).json({ message: "Patient not found" });
+    // }
 
     // Verify Razorpay payment
     // const generatedSignature = crypto
@@ -95,7 +95,7 @@ export const createAppointment = async (req, res) => {
       doctorId,
       date,
       patient_issue,
-      dieseas_name,
+      dieseas_name : req.body.filteredData.diseaseName,
       appointmentTime: start,
       hospitalId,
       country,
@@ -108,7 +108,7 @@ export const createAppointment = async (req, res) => {
     });
 
     await newAppointment.save();
-
+    console.log(newAppointment, req.body);
     patient.appointmentId = patient.appointmentId || [];
     patient.appointmentId.push(newAppointment._id);
     await patient.save();
@@ -124,6 +124,15 @@ export const createAppointment = async (req, res) => {
 };
 
 // all appoinment - shoud work for both patient and doctor based on token role
+export const AllAppointmentsForCount = async (req, res) => {
+  try {
+    let data = await appointmentModel.find({})
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 export const AllAppointment = async (req, res) => {
   try {
     let data = await appointmentModel
