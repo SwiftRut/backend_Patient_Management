@@ -276,3 +276,47 @@ export const deleteDoctor = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getUnavailableTimes = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const doctor = await doctorModel.findById(doctorId).select("unavailableTimes");
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+    res.status(200).json(doctor.unavailableTimes);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const addUnavailableTime = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { date, timeRange, title, reason } = req.body;
+
+    const doctor = await doctorModel.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Create new unavailable time entry
+    const newUnavailableTime = {
+      date,
+      timeRange,
+      title,
+      reason
+    };
+
+    doctor.unavailableTimes.push(newUnavailableTime);
+    await doctor.save();
+
+    // Return the newly created unavailable time
+    res.status(200).json({ 
+      message: "Unavailable time added successfully",
+      data: doctor.unavailableTimes[doctor.unavailableTimes.length - 1]
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
