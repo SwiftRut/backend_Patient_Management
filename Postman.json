@@ -1,0 +1,2118 @@
+{
+	"info": {
+		"_postman_id": "3e44d0ce-da0c-4c3a-b4e1-145d8f08bb2b",
+		"name": "patient_management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39514127"
+	},
+	"item": [
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "getalladmin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/admin/all",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"admin",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateadmin",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"piyush\",\r\n    \"lastName\": \"Doe\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"password\": \"password123\", \r\n    \"confirmPassword\": \"password123\",\r\n    \"phone\": \"1234567890\",\r\n    \"country\": \"USA\",\r\n    \"state\": \"California\",\r\n    \"city\": \"Los Angeles\",\r\n    \"hospital\": \"60b8b2f3c9f8f1c96c7c83d5\",\r\n    \"avatar\": \"https://randomuser.me/api/portraits/men/1.jpg\",\r\n    \"role\": \"admin\",\r\n    \"gender\": \"Male\",\r\n    \"createdAt\": \"2024-11-05T12:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T12:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/admin/edit-profile/6729e30665727bd745429a2c",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"admin",
+								"edit-profile",
+								"6729e30665727bd745429a2c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "passwordchange",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\" : \"password123\",\r\n    \"newPassword\" : \"piyush123\",\r\n    \"confirmPassword\" : \"piyush123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/admin/change-password/6729e30665727bd745429a2c",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"admin",
+								"change-password",
+								"6729e30665727bd745429a2c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adminregister",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"password\": \"password123\", \r\n    \"confirmPassword\": \"password123\",\r\n    \"phone\": \"1234567890\",\r\n    \"country\": \"USA\",\r\n    \"state\": \"California\",\r\n    \"city\": \"Los Angeles\",\r\n    \"hospital\": \"60b8b2f3c9f8f1c96c7c83d5\",\r\n    \"avatar\": \"https://randomuser.me/api/portraits/men/1.jpg\",\r\n    \"role\": \"admin\",\r\n    \"gender\": \"Male\",\r\n    \"createdAt\": \"2024-11-05T12:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T12:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/admin/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "payload",
+									"value": "{}",
+									"type": "string"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identifier\" : \"john.doe@example.com\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/admin/profile/6729e30665727bd745429a2",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"admin",
+								"profile",
+								"6729e30665727bd745429a2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "doctor",
+			"item": [
+				{
+					"name": "createdoctor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Emily\",\r\n    \"lastName\": \"Brown\",\r\n    \"hospitalId\": \"60b8b2f3c9f8f1c96c7c83d5\",  \r\n    \"name\": \"Dr. Emily Brown\",\r\n    \"gender\": \"Female\",\r\n    \"password\": \"password123\", \r\n    \"confirmPassword\": \"password123\",\r\n    \"qualification\": \"MBBS, MD\",\r\n    \"speciality\": \"Cardiology\",\r\n    \"workingTime\": \"09:00\",\r\n    \"breakTime\": \"12:30\",\r\n    \"patientCheckupTime\": \"15:00\",\r\n    \"workingOn\": \"Full-time\",\r\n    \"experience\": 10,\r\n    \"phone\": \"9876543210\",\r\n    \"age\": 35,\r\n    \"email\": \"emily.brown@hospital.com\",\r\n    \"country\": \"USA\",\r\n    \"state\": \"California\",\r\n    \"city\": \"Los Angeles\",\r\n    \"zipCode\": \"90001\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/doctor/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identifier\" : \"emily.brown@hospital.com\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/doctor/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "doctorfindbyid",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/doctor/getDoctorById/6729f10043bce38ed9d06ab7",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"getDoctorById",
+								"6729f10043bce38ed9d06ab7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getalldoctors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/doctor/getAllDoctors",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"getAllDoctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editdoctor",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"vasi\",\r\n        \"lastName\": \"Brown\",\r\n        \"password\": \"$2b$10$sueYzV7GR.8s1wB7MFPTHuvepE4z8GuMMzrdvdQjge7avupsCvlrG\",\r\n        \"avatar\": \"https://vectorified.com/images/default-user-icon-33.jpg\",\r\n        \"phone\": \"9876543210\",\r\n        \"email\": \"emily.brown@hospital.com\",\r\n        \"country\": \"USA\",\r\n        \"state\": \"California\",\r\n        \"city\": \"Los Angeles\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/doctor/editDoctor/6729f10043bce38ed9d06ab7",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"editDoctor",
+								"6729f10043bce38ed9d06ab7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/doctor/deleteDoctor/6729f10043bce38ed9d06ab7",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"deleteDoctor",
+								"6729f10043bce38ed9d06ab7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unavailable-times",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/doctor/6729f10043bce38ed9d06ab7/unavailable-times",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"6729f10043bce38ed9d06ab7",
+								"unavailable-times"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unavailable-time",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\" : \"2024-12-03\",\r\n    \"timeRange\" : \"9am to 9pm\",\r\n    \"title\" : \"other\",\r\n    \"reason\" : \"other\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/doctor/6729fa0f15200e37c4ab2e64/unavailable-times",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"doctor",
+								"6729fa0f15200e37c4ab2e64",
+								"unavailable-times"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "patient",
+			"item": [
+				{
+					"name": "registerpatient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"password\": \"password123\", // Hashed password\r\n    \"confirmPassword\": \"password123\",\r\n    \"phone\": \"1234567890\",\r\n    \"country\": \"USA\",\r\n    \"state\": \"California\",\r\n    \"city\": \"Los Angeles\",\r\n    \"address\": \"1234 Health St, Los Angeles, CA 90001\",\r\n    \"diseaseName\": \"Diabetes\",\r\n    \"avatar\": \"https://randomuser.me/api/portraits/men/1.jpg\",\r\n    \"appointmentId\": [\r\n      \"60b8b2f3c9f8f1c96c7c83d8\"  // Example ObjectId for an appointment\r\n    ],\r\n    \"resetPasswordOtp\": \"123456\",\r\n    \"resetPasswordExpires\": \"2024-11-10T00:00:00.000Z\",\r\n    \"age\": 45,\r\n    \"height\": 175,\r\n    \"weight\": 70,\r\n    \"gender\": \"male\",\r\n    \"bloodGroup\": \"O+\",\r\n    \"dob\": \"1979-04-15T00:00:00.000Z\",\r\n    \"doctor\": \"60b8b2f3c9f8f1c96c7c83d5\",  // Example ObjectId for a doctor\r\n    \"insurance\": \"60b8b2f3c9f8f1c96c7c83d6\",  // Example ObjectId for an insurance\r\n    \"role\": \"patient\",\r\n    \"createdAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T10:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/patient/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"patient",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identifier\" : \"john.doe@example.com\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/patient/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"patient",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addpatient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"password\": \"password123\", // Hashed password\r\n    \"confirmPassword\": \"password123\",\r\n    \"phone\": \"1234567890\",\r\n    \"country\": \"USA\",\r\n    \"state\": \"California\",\r\n    \"city\": \"Los Angeles\",\r\n    \"address\": \"1234 Health St, Los Angeles, CA 90001\",\r\n    \"diseaseName\": \"Diabetes\",\r\n    \"avatar\": \"https://randomuser.me/api/portraits/men/1.jpg\",\r\n    \"appointmentId\": [\r\n      \"60b8b2f3c9f8f1c96c7c83d8\"  // Example ObjectId for an appointment\r\n    ],\r\n    \"resetPasswordOtp\": \"123456\",\r\n    \"resetPasswordExpires\": \"2024-11-10T00:00:00.000Z\",\r\n    \"age\": 45,\r\n    \"height\": 175,\r\n    \"weight\": 70,\r\n    \"gender\": \"male\",\r\n    \"bloodGroup\": \"O+\",\r\n    \"dob\": \"1979-04-15T00:00:00.000Z\",\r\n    \"doctor\": \"60b8b2f3c9f8f1c96c7c83d5\",  // Example ObjectId for a doctor\r\n    \"insurance\": \"60b8b2f3c9f8f1c96c7c83d6\",  // Example ObjectId for an insurance\r\n    \"role\": \"patient\",\r\n    \"createdAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T10:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/patient/addPatient",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"patient",
+								"addPatient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientfindbyid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/patient/getPatient/6729fc74d60d61f6ca580539",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"patient",
+								"getPatient",
+								"6729fc74d60d61f6ca580539"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allpatient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/patient/getAllPatient",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"patient",
+								"getAllPatient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editpatient",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"vraj\",\r\n    \"lastName\": \"Doe\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"password\": \"password123\", // Hashed password\r\n    \"confirmPassword\": \"password123\",\r\n    \"phone\": \"1234567890\",\r\n    \"country\": \"USA\",\r\n    \"state\": \"California\",\r\n    \"city\": \"Los Angeles\",\r\n    \"address\": \"1234 Health St, Los Angeles, CA 90001\",\r\n    \"diseaseName\": \"Diabetes\",\r\n    \"avatar\": \"https://randomuser.me/api/portraits/men/1.jpg\",\r\n    \"appointmentId\": [\r\n      \"60b8b2f3c9f8f1c96c7c83d8\"  // Example ObjectId for an appointment\r\n    ],\r\n    \"resetPasswordOtp\": \"123456\",\r\n    \"resetPasswordExpires\": \"2024-11-10T00:00:00.000Z\",\r\n    \"age\": 45,\r\n    \"height\": 175,\r\n    \"weight\": 70,\r\n    \"gender\": \"male\",\r\n    \"bloodGroup\": \"O+\",\r\n    \"dob\": \"1979-04-15T00:00:00.000Z\",\r\n    \"doctor\": \"60b8b2f3c9f8f1c96c7c83d5\",  // Example ObjectId for a doctor\r\n    \"insurance\": \"60b8b2f3c9f8f1c96c7c83d6\",  // Example ObjectId for an insurance\r\n    \"role\": \"patient\",\r\n    \"createdAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T10:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/patient/editPatient/6729fc74d60d61f6ca580539",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"patient",
+								"editPatient",
+								"6729fc74d60d61f6ca580539"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletepatient",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/patient/deletePatient/6729fc74d60d61f6ca580539",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"patient",
+								"deletePatient",
+								"6729fc74d60d61f6ca580539"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "hospital",
+			"item": [
+				{
+					"name": "createhospital",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"St. Mary’s Hospital\",\r\n    \"address\": \"123 Health Avenue, Downtown\",\r\n    \"country\": \"USA\",\r\n    \"state\": \"California\",\r\n    \"city\": \"Los Angeles\",\r\n    \"zipcode\": \"90001\",\r\n    \"emergencyContactNo\": \"800-555-1234\",\r\n    \"worksiteLink\": \"https://www.stmaryshospital.com\",\r\n    \"createdAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T10:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/hospital/create-hospital",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"hospital",
+								"create-hospital"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getallhospital",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/hospital/get-all-hospitals",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"hospital",
+								"get-all-hospitals"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "appoinment",
+			"item": [
+				{
+					"name": "appoinment-fee",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MDYxNDYsImV4cCI6MTczMDg5MjU0Nn0.14npOiVuASaPTVufSWVAks8-bdqfIUyc1VKA9WFFSek",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/appointment-fee",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"appointment-fee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "appoinmentcreate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{// Example ObjectId for a patient\r\n    \"doctorId\": \"60b8b2f3c9f8f1c96c7c83d5\",  // Example ObjectId for a doctor\r\n    \"insuranceId\": \"60b8b2f3c9f8f1c96c7c83d9\", // Example ObjectId for insurance\r\n    \"date\": \"2024-11-10T10:00:00.000Z\",\r\n    \"appointmentTime\": \"14:00\",\r\n    \"type\": \"in-person\",\r\n    \"patient_issue\": \"Chest Pain\",\r\n    \"city\": \"Los Angeles\",\r\n    \"state\": \"California\",\r\n    \"country\": \"USA\",\r\n    \"status\": \"scheduled\",\r\n    \"createdAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"filteredData\":{\r\n         \"diseaseName\": \"Cardiovascular Disease\"\r\n    }\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/appoinment/appoinmentcreate",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"appoinmentcreate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getallappoinment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/allappoinment",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"allappoinment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getapponmentforcount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/allAppointmentsForCount",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"allAppointmentsForCount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getappoinmentbyid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/getAllAppointmentById/671a8ea55a7e624573d37481",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"getAllAppointmentById",
+								"671a8ea55a7e624573d37481"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "gettodayappoinment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/alltodayappoinment",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"alltodayappoinment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateappoinment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{// Example ObjectId for a patient\r\n    \"doctorId\": \"60b8b2f3c9f8f1c96c7c83d5\",  // Example ObjectId for a doctor\r\n    \"insuranceId\": \"60b8b2f3c9f8f1c96c7c83d9\", // Example ObjectId for insurance\r\n    \"date\": \"2024-11-10T10:00:00.000Z\",\r\n    \"appointmentTime\": \"14:00\",\r\n    \"type\": \"in-person\",\r\n    \"patient_issue\": \"heart pain\",\r\n    \"city\": \"Los Angeles\",\r\n    \"state\": \"California\",\r\n    \"country\": \"USA\",\r\n    \"status\": \"scheduled\",\r\n    \"createdAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"filteredData\":{\r\n         \"diseaseName\": \"Cardiovascular Disease\"\r\n    }\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/appoinment/updateappointment/672a09783703410b3777f085",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"updateappointment",
+								"672a09783703410b3777f085"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteappoinment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/deleteappointment/672a09783703410b3777f085",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"deleteappointment",
+								"672a09783703410b3777f085"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancelappoinment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/cancelappointment/672a0832114e2258912a30eb",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"cancelappointment",
+								"672a0832114e2258912a30eb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getappoinmenthistoryfordoctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/Doctor_Appointment_History/60b8b2f3c9f8f1c96c7c83d5",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"Doctor_Appointment_History",
+								"60b8b2f3c9f8f1c96c7c83d5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getappoinmentforpatient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/Patient_Appointment_History/672a0789114e2258912a30e3",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"Patient_Appointment_History",
+								"672a0789114e2258912a30e3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "singleappoinment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/singleappointment/672a0832114e2258912a30eb",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"singleappointment",
+								"672a0832114e2258912a30eb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allpatient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/allpatient",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"allpatient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "singlepatient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/singlepatient/6717de15d645596c0d6c1121",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"singlepatient",
+								"6717de15d645596c0d6c1121"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "doneappoinment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/appoinment/appoinmentDone/672a0832114e2258912a30eb",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"appoinment",
+								"appoinmentDone",
+								"672a0832114e2258912a30eb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "bill",
+			"item": [
+				{
+					"name": "createbill",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\r\n    \"phone\": \"8005551234\",\r\n    \"age\": 45,\r\n    \"patientId\": \"60b8b2f3c9f8f1c96c7c83d8\",  // Example ObjectId for a patient\r\n    \"doctorId\": \"60b8b2f3c9f8f1c96c7c83d5\",  // Example ObjectId for a doctor\r\n    \"description\": \"Consultation and lab tests\",\r\n    \"paymentType\": \"Online\",\r\n    \"date\": \"2024-11-10T10:00:00.000Z\",\r\n    \"time\": \"14:00\",\r\n    \"amount\": 200,\r\n    \"discount\": 10,\r\n    \"tax\": 18,\r\n    \"totalAmount\": 210,\r\n    \"insuranceId\": \"60b8b2f3c9f8f1c96c7c83d9\",  // Example ObjectId for insurance\r\n    \"status\": \"Paid\",\r\n    \"gender\": \"male\",\r\n    \"diseaseName\": \"Cardiovascular Disease\",\r\n    \"address\": \"123 Health Avenue, Los Angeles, CA\",\r\n    \"createdAt\": \"2024-11-05T10:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-05T10:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/bill/createbill",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"bill",
+								"createbill"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getbill",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/bill/getbill",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"bill",
+								"getbill"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getbillbyid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/bill/getbillsById",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"bill",
+								"getbillsById"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getinsurancebill",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/bill/getInsuranceBills",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"bill",
+								"getInsuranceBills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "singlebill",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/bill/singlebill/6717f4318e6a0a615c635945",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"bill",
+								"singlebill",
+								"6717f4318e6a0a615c635945"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatebill",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmEwNzg5MTE0ZTIyNTg5MTJhMzBlMyIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzMwODA3ODM5LCJleHAiOjE3MzA4OTQyMzl9.yjHGC2018DIYXOVmfU4IAlrLfY_nm4RTWrpGVZv558k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n        \"billNumber\": 1025,\r\n        \"phone\": \"8005551234\",\r\n        \"age\": 45,\r\n        \"patientId\": \"60b8b2f3c9f8f1c96c7c83d8\",\r\n        \"doctorId\": \"60b8b2f3c9f8f1c96c7c83d5\",\r\n        \"description\": \"Consultation and lab tests\",\r\n        \"paymentType\": \"Online\",\r\n        \"date\": \"2024-11-05T12:24:47.099Z\",\r\n        \"amount\": 200,\r\n        \"discount\": 10,\r\n        \"tax\": 18,\r\n        \"totalAmount\": 2152,\r\n        \"insuranceId\": \"60b8b2f3c9f8f1c96c7c83d9\",\r\n        \"status\": \"Unpaid\",\r\n        \"gender\": \"male\",\r\n        \"diseaseName\": \"Cardiovascular Disease\",\r\n        \"address\": \"123 Health Avenue, Los Angeles, CA\",\r\n        \"createdAt\": \"2024-11-05T12:24:47.105Z\",\r\n        \"updatedAt\": \"2024-11-05T12:24:47.105Z\",\r\n        \"__v\": 0\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/bill/billupdate/672a0e8feb191ad89a1f2aa5",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"bill",
+								"billupdate",
+								"672a0e8feb191ad89a1f2aa5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dletebill",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/bill/deletebill/672a0e8feb191ad89a1f2aa5",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"bill",
+								"deletebill",
+								"672a0e8feb191ad89a1f2aa5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "chat",
+			"item": [
+				{
+					"name": "createchat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"senderId\" : \"671809f53d80f052866dcf07\",\r\n    \"receiverId\" : \"6717de15d645596c0d6c1121\",\r\n    \"doctorId\" : \"671809f53d80f052866dcf07\",\r\n    \"patientId\" : \"6717de15d645596c0d6c1121\",\r\n    \"messageContent\" : \"hiiii\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/chat",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"chat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "chathistory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/chat/671809f53d80f052866dcf07/6717de15d645596c0d6c1121",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"chat",
+								"671809f53d80f052866dcf07",
+								"6717de15d645596c0d6c1121"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatechat",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"senderId\" : \"671809f53d80f052866dcf07\",\r\n    \"receiverId\" : \"6717de15d645596c0d6c1121\",\r\n    \"doctorId\" : \"671809f53d80f052866dcf07\",\r\n    \"patientId\" : \"6717de15d645596c0d6c1121\",\r\n    \"messageContent\" : \"hello\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/chat/672a13bf7f21b81ca8938dd4",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"chat",
+								"672a13bf7f21b81ca8938dd4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "chatdelete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/chat/672a13bf7f21b81ca8938dd4",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"chat",
+								"672a13bf7f21b81ca8938dd4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientcontact",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/chat/contacts/patient/6717de15d645596c0d6c1121",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"chat",
+								"contacts",
+								"patient",
+								"6717de15d645596c0d6c1121"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "doctorcontact",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/chat/contacts/doctor/671809f53d80f052866dcf07",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"chat",
+								"contacts",
+								"doctor",
+								"671809f53d80f052866dcf07"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "insurance",
+			"item": [
+				{
+					"name": "createinsurance",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"patientId\": \"6717de15d645596c0d6c1121\",  // Example ObjectId for a patient\r\n    \"insuranceCompany\": \"HDFC Life Insurance\",\r\n    \"insurancePlan\": \"Health\",\r\n    \"claimAmount\": 50000,\r\n    \"claimedAmount\": 20000,\r\n    \"createdAt\": \"2024-11-01T08:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-01T08:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/insurance/craeteindurance",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"insurance",
+								"craeteindurance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getallinsurance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/insurance/getallinsurance",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"insurance",
+								"getallinsurance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "singleinsurance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/insurance/singleinsurance/6718caabf3c25fa3273c6e94",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"insurance",
+								"singleinsurance",
+								"6718caabf3c25fa3273c6e94"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateinsurance",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"patientId\": \"6717de15d645596c0d6c1121\",  // Example ObjectId for a patient\r\n    \"insuranceCompany\": \"HDFC Life Insurance\",\r\n    \"insurancePlan\": \"Health\",\r\n    \"claimAmount\": 20000,\r\n    \"claimedAmount\": 20000,\r\n    \"createdAt\": \"2024-11-01T08:00:00.000Z\",\r\n    \"updatedAt\": \"2024-11-01T08:00:00.000Z\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/insurance/updateinsurance/672a15ba02717d39d3553fb4",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"insurance",
+								"updateinsurance",
+								"672a15ba02717d39d3553fb4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteinsurance",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/insurance/deleteinsurance/672a15ba02717d39d3553fb4",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"insurance",
+								"deleteinsurance",
+								"672a15ba02717d39d3553fb4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "prescription",
+			"item": [
+				{
+					"name": "createprescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"medications\": [\r\n    {\r\n      \"medicineName\": \"Paracetamol\",\r\n      \"strength\": \"500mg\",\r\n      \"dose\": \"1 tablet\",\r\n      \"duration\": \"5 days\",\r\n      \"whenToTake\": \"After meals\"\r\n    },\r\n    {\r\n      \"medicineName\": \"Amoxicillin\",\r\n      \"strength\": \"250mg\",\r\n      \"dose\": \"1 capsule\",\r\n      \"duration\": \"7 days\",\r\n      \"whenToTake\": \"Before meals\"\r\n    }\r\n  ],\r\n  \"instructions\": \"Take the medications with a glass of water. Avoid spicy food while on medication.\",\r\n  \"date\": \"2024-11-01T10:00:00.000Z\",\r\n  \"status\": \"Active\",\r\n  \"createdAt\": \"2024-11-01T10:00:00.000Z\",\r\n  \"updatedAt\": \"2024-11-01T10:00:00.000Z\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/prescription/createprescription/672a07aa114e2258912a30e7",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"createprescription",
+								"672a07aa114e2258912a30e7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPrescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/prescription/getPrescription",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"getPrescription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPrescriptionById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/prescription/getPrescriptionById/6717f13c8e6a0a615c63593b",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"getPrescriptionById",
+								"6717f13c8e6a0a615c63593b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todayPrescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/prescription/todayPrescription",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"todayPrescription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oldPrescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/prescription/oldPrescription",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"oldPrescription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchprescriptions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/prescription/searchprescriptions?name=Jane",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"searchprescriptions"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Jane"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchingdate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/prescription/searchingdate?date=2024-12-15",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"searchingdate"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-12-15"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjlmYTBmMTUyMDBlMzdjNGFiMmU2NCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3MzA4MTIwNzUsImV4cCI6MTczMDg5ODQ3NX0.Nr595GTt50Hfq4hmHxbCaVVdP0Hck9DjqIq14qB_Sv4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/prescription/SinglePrescription/671ba67d2c0a3463db303da0",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"prescription",
+								"SinglePrescription",
+								"671ba67d2c0a3463db303da0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "notification",
+			"item": [
+				{
+					"name": "createnotification",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"6717de15d645596c0d6c1121\",\r\n    \"type\" : \"appointment_reminder\",\r\n    \"message\" : \"heyfgsdvudhhukhdvhuy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/notification/createnotification",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"notification",
+								"createnotification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getnotificationforuser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/notification/getnotificationforuser/6717de15d645596c0d6c1121",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"notification",
+								"getnotificationforuser",
+								"6717de15d645596c0d6c1121"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletenotification",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/notification/deletenotification/672a1db4e9afb0f319690532",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"notification",
+								"deletenotification",
+								"672a1db4e9afb0f319690532"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "aggregation",
+			"item": [
+				{
+					"name": "doctorcountbydepartment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/doctors/department-count",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"doctors",
+								"department-count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientcountbydepartment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/patients/department-count",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"patients",
+								"department-count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "agedistributioninpatient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/patients/age-distribution",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"patients",
+								"age-distribution"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "totalpatient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/patients/total-count",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"patients",
+								"total-count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientrepeatcount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/patients/repeat-count",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"patients",
+								"repeat-count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientaddmittedcount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/patients/admitted-count",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"patients",
+								"admitted-count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "summarystate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/summary-stats",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"summary-stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientstatic",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/patient-statistics",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"patient-statistics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todayappoinment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/todays-appointments",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"todays-appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patientsummary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/patients-summary",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"patients-summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pendingbills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8001/ag/pending-bills",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"ag",
+								"pending-bills"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
