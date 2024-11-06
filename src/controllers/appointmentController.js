@@ -60,10 +60,10 @@ export const createAppointment = async (req, res) => {
       razorpaySignature
     } = req.body;
 
-    // const patient = await patientModel.findById(req.user.id);
-    // if (!patient) {
-    //   return res.status(404).json({ message: "Patient not found" });
-    // }
+    const patient = await patientModel.findById(req.user.id);
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
 
     // Verify Razorpay payment
     // const generatedSignature = crypto
