@@ -31,7 +31,8 @@ export const registerAdmin = async (req, res) => {
       !phone ||
       !country ||
       !state ||
-      !city
+      !city ||
+      !hospital
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
