@@ -1,17 +1,14 @@
-import express from "express";
-import { closeChatSession, createChatSession, getChatMessages, sendMessage } from "../controllers/chatController.js";
-const router = express.Router()
+import express from 'express';
+const router = express.Router();
+import { createMessage, getChatHistory, updateMessageStatus, deleteMessage, getDoctorContacts, getPatientContacts } from '../controllers/chatController.js';
 
-// create a new chat session
-router.post("/creatsession" , createChatSession)
+// CRUD operations for chat messages
+router.post('/', createMessage);
+router.get('/:doctorId/:patientId',getChatHistory);
+router.put('/:chatId', updateMessageStatus);
+router.delete('/:chatId', deleteMessage);
 
-
-// send a message
-router.post("/sendmessage/:senderId" , sendMessage)
-
-// all chat message
-router.get("/allmessage/:chatId" , getChatMessages)
-
-// close chat session
-router.put("/closesession/:chatId" , closeChatSession)
-export default router
+// Endpoints to retrieve contacts list
+router.get('/contacts/patient/:patientId', getDoctorContacts);
+router.get('/contacts/doctor/:doctorId', getPatientContacts);
+export default router;

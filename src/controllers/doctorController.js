@@ -1,4 +1,5 @@
 import doctorModel from "../models/doctorModel.js";
+import hospitalModel from "../models/hospitalModel.js"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -83,8 +84,7 @@ export const loginDoctor = async (req, res) => {
     const doctor = await doctorModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
-
-    if (!doctor) {
+     if (!doctor) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -93,7 +93,7 @@ export const loginDoctor = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: doctor._id, role:"doctor" }, process.env.JWT_SECRET, {
       expiresIn: rememberMe ? "7d" : "1d",
     });
 
@@ -110,7 +110,7 @@ export const loginDoctor = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error:error.message });
   }
 };
 
@@ -154,40 +154,55 @@ export const resetPassword = async (req, res) => {
 //add doctor
 export const addDoctor = async (req, res) => {
   try {
+    // Check if doctor with this email already exists
     const existingDoctor = await doctorModel.findOne({ email: req.body.email });
     if (existingDoctor) {
-      return res
-        .status(400)
-        .json({ message: "Doctor with this email already exists" });
+      return res.status(400).json({ message: "Doctor with this email already exists" });
     }
 
+    // Handle uploaded files
+    const imgUrlProfilePic = req.files['profilePicture'] && req.files['profilePicture'][0] ? req.files['profilePicture'][0].path : null;
+    const imgUrlSignature = req.files['signature'] && req.files['signature'][0] ? req.files['signature'][0].path : null;
+    // Add image paths to req.body if they exist
+    if (imgUrlProfilePic) req.body.avatar = imgUrlProfilePic; // Assuming you want to store the profilePic path in 'avatar'
+    if (imgUrlSignature) req.body.signature = imgUrlSignature; // Add signature path
+    req.body.hospitalId = req.body.hospital;
+    req.body.hospital = null;
+    // Create a new doctor instance
+    const updatedHospital = await hospitalModel.findByIdAndUpdate(
+      req.body.hospitalId,
+      { worksiteLink:req.body.worksiteLink, emergencyContactNo:req.body.emergencyContactNo }, // Update fields
+      { new: true, runValidators: true } // Options: return the updated document, validate updates
+    );
+   
     const newDoctor = new doctorModel(req.body);
     await newDoctor.save();
 
+    // Send success response
     res.status(201).json({
       message: "Doctor added successfully",
       data: newDoctor,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    res.status(500).json({ message: error.message });
+  }
 };
 
 //get doctor by id
 export const getDoctorById = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid Doctor ID" });
-  }
-
+  
   try {
-    const doctor = await doctorModel.findById(id);
+    const { id } = req.params;  
+  
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid Doctor ID" });
+    }
 
+    const doctor = await doctorModel.findById(id).populate("hospitalId");
+    
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
-
     res.status(200).json({
       message: "Doctor fetched successfully",
       data: doctor,
@@ -213,7 +228,9 @@ export const getAllDoctors = async (req, res) => {
 //edit doctor
 export const editDoctor = async (req, res) => {
   const { id } = req.params;
+  const imageUrl = req.file ? req.file.path : req.body.avatar || "";
   const updatedData = req.body;
+  updatedData.avatar = imageUrl;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid Doctor ID" });
@@ -257,5 +274,49 @@ export const deleteDoctor = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const getUnavailableTimes = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const doctor = await doctorModel.findById(doctorId).select("unavailableTimes");
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+    res.status(200).json(doctor.unavailableTimes);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const addUnavailableTime = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { date, timeRange, title, reason } = req.body;
+
+    const doctor = await doctorModel.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Create new unavailable time entry
+    const newUnavailableTime = {
+      date,
+      timeRange,
+      title,
+      reason
+    };
+
+    doctor.unavailableTimes.push(newUnavailableTime);
+    await doctor.save();
+
+    // Return the newly created unavailable time
+    res.status(200).json({ 
+      message: "Unavailable time added successfully",
+      data: doctor.unavailableTimes[doctor.unavailableTimes.length - 1]
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };

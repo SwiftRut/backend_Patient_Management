@@ -1,10 +1,59 @@
 import billModel from "../models/billModel.js";
+import insuranceModel from "../models/insuranceModel.js";
+import patientModel from "../models/patientModel.js";
 
 export const createBill = async (req, res) => {
   try {
     const {
       billNumber,
+      description,
+      paymentType,
+      billDate: date,
+      billTime: time,
+      amount,
+      discount,
+      tax,
+      totalAmount,
+      insuranceCompany,
+      insurancePlan,
+      claimAmount,
+      claimedAmount,
+      doctorId,
+      doctorName,
+      phone,
       patientId,
+      gender,
+      age,
+      diseaseName,
+      address,
+    } = req.body;
+    // //find the patient id based on the phone
+    // const patient = await patientModel.findOne({ _id:patientId });
+
+    if (insuranceCompany && insurancePlan && claimAmount && claimedAmount) {
+      const newInsurance = new insuranceModel({
+        patientId,
+        insuranceCompany,
+        insurancePlan,
+        claimAmount,
+        claimedAmount,
+      });
+      await newInsurance.save();
+      req.body.insuranceId = newInsurance._id;
+    }
+    // if (!billNumber || !description || !paymentType || !date || !time || !amount || !discount || !tax || !totalAmount) {
+    //     return res.status(400).json({ message: "All fields are required" });
+    //   }
+
+    const newBill = new billModel({
+      billNumber,
+      phone,
+      gender,
+      age,
+      patientId,
+      doctorId,
+      insuranceId: req.body.insuranceId,
+      diseaseName,
       description,
       paymentType,
       date,
@@ -13,24 +62,8 @@ export const createBill = async (req, res) => {
       discount,
       tax,
       totalAmount,
-      insuranceId,
-    } = req.body;
-
-    if (
-      !billNumber ||
-      !description ||
-      !paymentType ||
-      !date ||
-      !time ||
-      !amount ||
-      !discount ||
-      !tax ||
-      !totalAmount
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const newBill = new billModel(req.body);
+      address,
+    });
     await newBill.save();
     res.status(201).json({
       success: true,
@@ -50,6 +83,44 @@ export const getBills = async (req, res) => {
     const bills = await billModel
       .find()
       .populate("patientId doctorId insuranceId");
+    res.status(200).json({
+      success: true,
+      data: bills,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bills",
+      error: error.message,
+    });
+  }
+};
+
+//get bills by patientID
+export const getbillsById = async (req, res) => {
+  try {
+    const Id = req.user.id;
+
+    const bills = await billModel
+      .find({ patientId: Id })
+      .populate("patientId doctorId insuranceId");
+    res.status(200).json({
+      success: true,
+      data: bills,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bills",
+      error: error.message,
+    });
+  }
+};
+
+//get insurance bills
+export const getInsuranceBills = async (req, res) => {
+  try {
+    const bills = await billModel.find({ paymentType: "Insurance" });
     res.status(200).json({
       success: true,
       data: bills,
@@ -87,19 +158,31 @@ export const getBillById = async (req, res) => {
     });
   }
 };
-
 export const updateBill = async (req, res) => {
   try {
-    const updatedBill = await Bill.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    if (req.body.totalAmount && isNaN(Number(req.body.totalAmount))) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid totalAmount value",
+      });
+    }
+
+    const updatedBill = await billModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
     if (!updatedBill) {
       return res.status(404).json({
         success: false,
         message: "Bill not found",
       });
     }
+
     res.status(200).json({
       success: true,
       data: updatedBill,
@@ -107,8 +190,7 @@ export const updateBill = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to update the bill",
-      error: error.message,
+      message: "Bill not found",
     });
   }
 };

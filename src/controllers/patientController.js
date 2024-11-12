@@ -43,7 +43,6 @@ export const registerPatient = async (req, res) => {
       !country ||
       !state ||
       !address||
-      !diseaseName ||
       !city
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -75,7 +74,7 @@ export const registerPatient = async (req, res) => {
       city,
       address,
       diseaseName,
-      role: role || "patient",
+      role: "patient",
     });
 
     await newPatient.save();
@@ -104,12 +103,10 @@ export const loginPatient = async (req, res) => {
 
     const normalizedIdentifier = identifier.trim().toLowerCase();
 
-    console.log("Normalized Identifier: ", normalizedIdentifier);
-
+   
     const normalizedPhone = identifier.trim().replace(/[\s\-\(\)]/g, "");
 
-    console.log("Normalized Phone: ", normalizedPhone);
-
+   
     const patient = await patientModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
@@ -118,21 +115,18 @@ export const loginPatient = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    console.log("Patient found:", patient);
-
+   
     const isMatch = await bcrypt.compare(password, patient.password);
-    console.log("Password Match:", isMatch);
-
+   
     if (!isMatch) {
-      console.log("Password does not match");
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: patient._id },
+      { id: patient._id,role: 'patient' },
       process.env.JWT_SECRET,
-      { expiresIn: rememberMe ? "7d" : "1d" } // 'Remember Me' for 7 days, otherwise 1 day
+      { expiresIn: rememberMe ? "7d" : "1d" }
     );
 
     res.status(200).json({
@@ -188,8 +182,7 @@ export const getPatientById = async (req, res) => {
   }
 
   try {
-    const patient = await patientModel.findById(id);
-
+    const patient = await patientModel.findById(id).populate("appointmentId");
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
@@ -206,7 +199,12 @@ export const getPatientById = async (req, res) => {
 //get all patient
 export const getAllPatients = async (req, res) => {
   try {
-    const patients = await patientModel.find();
+    const patients = await patientModel.find().populate({
+      path: 'appointmentId',
+      populate: {
+        path: 'doctorId', // Populate doctorId within each appointment
+      },
+    });
     res.status(200).json({
       message: "Patients fetched successfully",
       data: patients,
@@ -221,6 +219,8 @@ export const editPatient = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
 
+  const imgUrl = req.file ? req.file.path : req.body.avatar;
+  if (imgUrl) updatedData.avatar = imgUrl;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid Patient ID" });
   }

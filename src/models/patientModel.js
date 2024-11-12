@@ -5,24 +5,24 @@ const patientSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: [true, "First name is required"],
+      required: [false, "First name is required"],
       trim: true,
     },
     lastName: {
       type: String,
-      required: [true, "Last name is required"],
+      required: [false, "Last name is required"],
       trim: true,
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [false, "Email is required"],
       unique: true,
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: [false, "Password is required"],
       minlength: [6, "Password must be at least 6 characters long"],
     },
     confirmPassword: {
@@ -37,25 +37,25 @@ const patientSchema = new mongoose.Schema(
     phone: {
       type: String,
       unique: true,
-      required: [true, "Phone number is required"],
+      required: [false, "Phone number is required"],
       match: [/^\d{10}$/, "Please provide a valid phone number"],
     },
     country: {
       type: String,
-      required: [true, "Country is required"],
+      required: [false, "Country is required"],
     },
     state: {
       type: String,
-      required: [true, "State is required"],
+      required: [false, "State is required"],
     },
     city: {
       type: String,
-      required: [true, "City is required"],
+      required: [false, "City is required"],
     },
     address: {
       type: String,
-      required: [true, "Address is required"],
-      trim: false,
+      required: [false, "Address is required"],
+      trim: false,   
     },
     diseaseName: {
       type: String,
@@ -81,36 +81,44 @@ const patientSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
-      required: [true, "Age is required"],
+      required: [false, "Age is required"],
       min: [0, "Age must be a positive number"],
     },
     height: {
       type: Number, // height in centimeters
-      required: [true, "Height is required"],
+      required: [false, "Height is required"],
       min: [0, "Height must be a positive number"],
     },
     weight: {
       type: Number, // weight in kilograms
-      required: [true, "Weight is required"],
+      required: [false, "Weight is required"],
       min: [0, "Weight must be a positive number"],
     },
     gender: {
       type: String,
       enum: ["male", "female", "other"],
-      required: [true, "Gender is required"],
+      required: [false, "Gender is required"],
     },
     bloodGroup: {
       type: String,
       enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-      required: [true, "Blood group is required"],
+      required: [false, "Blood group is required"],
     },
     dob: {
       type: Date,
-      required: [true, "Date of birth is required"],
+      required: [false, "Date of birth is required"],
     },
     doctor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
+    },
+    insurance: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Insurance",
+    },
+    role: {
+      type: String,
+      default: "patient",
     },
   },
   { timestamps: true }

@@ -5,7 +5,7 @@ const prescriptionSchema = new mongoose.Schema(
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
-      required: [true, "Patient ID is required"],
+      required: true,
     },
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -15,28 +15,33 @@ const prescriptionSchema = new mongoose.Schema(
     appointmentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
-      required: [true, "Appointment ID is required"],
+      required: true,
     },
     medications: [
       {
-        name: {
+        medicineName: {
           type: String,
           required: [true, "Medication name is required"],
           trim: true,
         },
-        dosage: {
+        strength: {
           type: String,
-          required: [true, "Dosage is required"],
+          required: [true, "Strength is required"],
           trim: true,
         },
-        frequency: {
+        dose: {
           type: String,
-          required: [true, "Frequency is required"],
+          required: [true, "Dosage is required"],
           trim: true,
         },
         duration: {
           type: String,
           required: [true, "Duration is required"],
+          trim: true,
+        },
+        whenToTake: {
+          type: String,
+          required: [true, "When to take is required"],
           trim: true,
         },
       },

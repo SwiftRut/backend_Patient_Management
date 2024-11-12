@@ -59,7 +59,7 @@ const adminSchema = new mongoose.Schema(
     hospital: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hospital",
-      required: [true, "Hospital is required"],
+      // required: [true, "Hospital ID is required"],
     },
     avatar: {
       type: String,
@@ -67,7 +67,6 @@ const adminSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "doctor", "patient"],
       default: "admin",
     },
     gender: {
