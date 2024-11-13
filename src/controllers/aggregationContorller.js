@@ -205,6 +205,44 @@ export const getPendingBills = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const ReportingAndAnalytics = async (req, res) => {
+  try {
+    const totalPatientCount = await patientModel.countDocuments();
+    
+    // Use aggregation for repeatPatientCount
+    const repeatPatientAggregation = await appointmentModel.aggregate([
+      {
+        $group: {
+          _id: '$patientId',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $match: { count: { $gt: 1 } },
+      },
+      {
+        $count: 'repeatPatientCount'
+      }
+    ]);
+
+    // Extract the count result (if no repeat patients, set to 0)
+    const repeatPatientCount = repeatPatientAggregation[0] ? repeatPatientAggregation[0].repeatPatientCount : 0;
+    
+    const totalDoctorCount = await doctorModel.countDocuments();
+    const totalAppointmentCount = await appointmentModel.countDocuments();
+    
+    res.json({
+      totalPatientCount,
+      repeatPatientCount,
+      totalDoctorCount,
+      totalAppointmentCount,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 export {
   getDoctorDepartmentCount,
   getPatientDepartmentCount,
@@ -212,5 +250,5 @@ export {
   getPatientAgeDistribution,
   getTotalPatientCount,
   getRepeatPatientCount,
-  getAdmittedPatientCount
+  getAdmittedPatientCount,
 };
