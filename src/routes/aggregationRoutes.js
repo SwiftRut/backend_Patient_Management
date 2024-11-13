@@ -12,6 +12,7 @@ import {
   getTodaysAppointments,
   getPatientsSummary,
   getPendingBills,
+  ReportingAndAnalytics,
 } from "../controllers/aggregationContorller.js";
 
 const router = express.Router();
@@ -30,4 +31,6 @@ router.get("/patient-statistics", getPatientStatistics);
 router.get("/todays-appointments", getTodaysAppointments);
 router.get("/patients-summary", getPatientsSummary);
 router.get("/pending-bills", getPendingBills);
+
+router.get("/reporting-and-analytics", ReportingAndAnalytics);
 export default router;
