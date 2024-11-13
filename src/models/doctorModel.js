@@ -58,22 +58,10 @@ const doctorSchema = new mongoose.Schema(
     workingTime: {
       type: String,
       required: false,
-      validate: {
-        validator: function (v) {
-          return /^([0-9]{1,2}):([0-9]{2})$/.test(v); // Validates time format (HH:mm)
-        },
-        message: (props) => `${props.value} is not a valid time format!`,
-      },
     },
     breakTime: {
       type: String,
       required: false,
-      validate: {
-        validator: function (v) {
-          return /^([0-9]{1,2}):([0-9]{2})$/.test(v); // Validates time format (HH:mm)
-        },
-        message: (props) => `${props.value} is not a valid time format!`,
-      },
     },
     unavailableTimes: [
       {
