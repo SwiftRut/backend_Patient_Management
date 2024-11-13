@@ -2,6 +2,7 @@ import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
 import patientModel from "../models/patientModel.js";
 import billModel from "../models/billModel.js";
+import { patient } from "../middlewares/authMiddleware.js";
 // Controller function to get doctor count by department (speciality)
 const getDoctorDepartmentCount = async (req, res) => {
   try {
@@ -230,12 +231,28 @@ export const ReportingAndAnalytics = async (req, res) => {
     
     const totalDoctorCount = await doctorModel.countDocuments();
     const totalAppointmentCount = await appointmentModel.countDocuments();
-    
+    const insuranceClaimCount = await billModel.find({ paymentType: "Insurance" }).countDocuments();
+
+    //create an object in which it will contain the all the diases name and its patient count useing the appointment model
+    const patientCountByDisease = await appointmentModel.aggregate([
+      {
+        $group: {
+          _id: '$dieseas_name',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]);
+
     res.json({
       totalPatientCount,
       repeatPatientCount,
       totalDoctorCount,
       totalAppointmentCount,
+      insuranceClaimCount,
+      patientCountByDisease
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
