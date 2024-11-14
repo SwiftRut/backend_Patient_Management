@@ -31,7 +31,8 @@ export const registerAdmin = async (req, res) => {
       !phone ||
       !country ||
       !state ||
-      !city
+      !city ||
+      !hospital
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -174,10 +175,12 @@ export const editProfile = async (req, res) => {
       avatar,
       role,
       gender,
-      hospitalName
+      hospitalId,
+      hospitalName,
+      hospitalAddress,
     } = req.body;
     const adminId = req.params.id;
-
+    console.log(req.body);
     const updates = {
       firstName,
       lastName,
@@ -187,7 +190,8 @@ export const editProfile = async (req, res) => {
       state,
       city,
       role,
-      gender
+      gender,
+      hospital:hospitalId
     };
 
     // Validate email uniqueness
@@ -218,6 +222,7 @@ export const editProfile = async (req, res) => {
       .findByIdAndUpdate(adminId, { $set: updates }, { new: true })
       .select("-password -confirmPassword");
 
+      console.log(updatedAdmin);
     if (!updatedAdmin) {
       return res.status(404).json({ message: "Admin not found" });
     }
@@ -226,7 +231,7 @@ export const editProfile = async (req, res) => {
     let updatedHospital = null;
     if (hospitalName && updatedAdmin.hospital) {
       updatedHospital = await hospitalModel.findByIdAndUpdate(
-        updatedAdmin.hospital,
+        updatedAdmin.hospital, // here change it to hosptalID
         { $set: { name: hospitalName } },
         { new: true }
       );
