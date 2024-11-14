@@ -77,12 +77,6 @@ const doctorSchema = new mongoose.Schema(
     patientCheckupTime: {
       type: String,
       required: false,
-      validate: {
-        validator: function (v) {
-          return /^([0-9]{1,2}):([0-9]{2})$/.test(v); // Validates time format (HH:mm)
-        },
-        message: (props) => `${props.value} is not a valid time format!`,
-      },
     },
     // Newly added fields
     workingOn: {
@@ -171,10 +165,6 @@ const doctorSchema = new mongoose.Schema(
     emergencyContactNo: {
       type: String,
       required: false,
-      match: [
-        /^\d{10}$/,
-        "Please provide a valid 10-digit emergency contact number",
-      ],
     },
     signature: {
       type: String,
