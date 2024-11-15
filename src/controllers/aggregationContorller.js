@@ -246,13 +246,144 @@ export const ReportingAndAnalytics = async (req, res) => {
       }
     ]);
 
+    //create an object in which we have the doctor count by department (speciality)
+    const doctorCountByDepartment = await doctorModel.aggregate([
+      {
+        $group: {
+          _id: "$speciality",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]);
+
+    //create an array which contains the percentage of the patient with different age ranges
+    const ageGroups = {
+      "0-2 Years": 0,
+      "3-12 Years": 0,
+      "13-19 Years": 0,
+      "20-39 Years": 0,
+      "40-59 Years": 0,
+      "60 And Above": 0,
+    };
+    //get all the patinets
+    const patients = await patientModel.find({});
+    patients.forEach((patient) => {
+      const age = patient.age;
+      if (age <= 2) ageGroups["0-2 Years"]++;
+      else if (age <= 12) ageGroups["3-12 Years"]++;
+      else if (age <= 19) ageGroups["13-19 Years"]++;
+      else if (age <= 39) ageGroups["20-39 Years"]++;
+      else if (age <= 59) ageGroups["40-59 Years"]++;
+      else ageGroups["60 And Above"]++;
+    });
+    const ageRangePercentage = Object.keys(ageGroups).map((key, index) => ({
+      name: key,
+      value: ageGroups[key],
+      color:
+        index < 6
+          ? [
+              "#F65D79",
+              "#506EF2",
+              "#51D2A6",
+              "#F6A52D",
+              "#FACF2E",
+              "#9253E1",
+            ][index]
+          : "#8884d8", // Default color if not provided
+    }));
+    //yearly data
+    const yearlyData = Array(12)
+      .fill(0)
+      .map((_, index) => ({
+        month: new Date(0, index).toLocaleString("default", { month: "short" }),
+        onlineConsultation: 0,
+        otherAppointment: 0,
+      }));
+    //current month
+    const currentMonth = new Date().getMonth();
+    const monthlyData = {
+      month: new Date().toLocaleString("default", { month: "short" }),
+      onlineConsultation: 0,
+      otherAppointment: 0,
+    };
+    patients.forEach((patient) => {
+      const appointmentDate = new Date(patient.createdAt);
+      const monthIndex = appointmentDate.getMonth();
+      if (isNaN(appointmentDate.getTime())) {
+        console.warn("Invalid appointment date:", patient.createdAt);
+        return;
+      }
+      if (monthIndex >= 0 && monthIndex < 12) {
+        yearlyData[monthIndex].otherAppointment++;
+      }
+      if (appointmentDate.getMonth() === currentMonth) {
+        monthlyData.otherAppointment++;
+      }
+    });
+    const finalYearlyData = yearlyData;
+    const finalMonthlyData = [monthlyData]; 
+    
+     // Initialize data structures for weekly and daily data
+     const weeklyPatients = Array(7).fill(0).map((_, index) => ({
+       day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index],
+       newPatient: 0,
+       oldPatient: 0,
+     }));
+
+     const dailyPatients = Array(24).fill(0).map((_, index) => ({
+       hour: `${index} ${index < 12 ? 'AM' : 'PM'}`,
+       newPatient: 0,
+       oldPatient: 0,
+     }));
+
+     const currentDate = new Date();
+     
+     // Process each patient to categorize by day and hour from all patients
+     patients.forEach(patient => {
+       const registrationDate = new Date(patient.createdAt);
+       const dayOfWeek = registrationDate.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+       const hourOfDay = registrationDate.getHours();
+
+       if (registrationDate > currentDate) {
+         // New patient
+         if (dayOfWeek > 0) {
+           weeklyPatients[dayOfWeek - 1].newPatient++;
+         }
+         if (hourOfDay >= 0) {
+           dailyPatients[hourOfDay].newPatient++;
+         }
+       } else {
+         // Old patient
+         if (dayOfWeek > 0) {
+           weeklyPatients[dayOfWeek - 1].oldPatient++;
+         }
+         if (hourOfDay >= 0) {
+           dailyPatients[hourOfDay].oldPatient++;
+         }
+       }
+     });
+
+
+
     res.json({
       totalPatientCount,
       repeatPatientCount,
       totalDoctorCount,
       totalAppointmentCount,
       insuranceClaimCount,
-      patientCountByDisease
+      patientCountByDisease,
+      doctorCountByDepartment,
+      ageRangePercentage,
+      finalYearlyData,
+      finalMonthlyData,
+      currentMonth,
+      monthlyData,
+      yearlyData,
+      weeklyPatients,
+      dailyPatients
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

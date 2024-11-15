@@ -168,13 +168,6 @@ export const addDoctor = async (req, res) => {
     if (imgUrlSignature) req.body.signature = imgUrlSignature; // Add signature path
     req.body.hospitalId = req.body.hospital;
     req.body.hospital = null;
-    // Create a new doctor instance
-    const updatedHospital = await hospitalModel.findByIdAndUpdate(
-      req.body.hospitalId,
-      { worksiteLink:req.body.worksiteLink, emergencyContactNo:req.body.emergencyContactNo }, // Update fields
-      { new: true, runValidators: true } // Options: return the updated document, validate updates
-    );
-   
     const newDoctor = new doctorModel(req.body);
     await newDoctor.save();
 
