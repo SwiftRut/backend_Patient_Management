@@ -58,6 +58,7 @@ const doctorSchema = new mongoose.Schema(
     workingTime: {
       type: String,
       required: false,
+
     },
     breakTime: {
       type: String,
