@@ -238,7 +238,7 @@ export const editPatient = async (req, res) => {
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
-
+    await client.del(`/patient/profile/${req.user.id}`);
     res.status(200).json({
       message: "Patient updated successfully",
       data: patient,
@@ -262,7 +262,7 @@ export const deletePatient = async (req, res) => {
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
-
+    await client.del(`/patient/profile/${req.user.id}`);
     res.status(200).json({
       message: "Patient deleted successfully",
     });

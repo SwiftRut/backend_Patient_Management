@@ -6,7 +6,6 @@ import patientModel from "../models/patientModel.js";
 
 export const protect = async (req, res, next) => {
   let token;
-
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -16,13 +15,10 @@ export const protect = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
        let user;
       if (decoded.role === "admin") {
-        console.log("In Admin");
         user = await adminModel.findById(decoded.id).select("-password");
       } else if (decoded.role === "doctor") {
-        console.log("in doctor");
         user = await doctorModel.findById(decoded.id).select("-password");
       } else if (decoded.role === "patient") {
-        console.log("in patient");
         user = await patientModel.findById(decoded.id).select("-password");
       }
 

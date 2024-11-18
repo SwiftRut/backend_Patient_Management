@@ -25,13 +25,13 @@ router.use("/admin", adminRoutes);
 router.use("/patient", patientRoutes);
 router.use("/doctor", doctorRoutes);
 router.use("/hospital", hospitalRoutes);
-
-router.use("/insurance", insuranceRoutes);
-router.use("/appoinment", appoinmentRoutes); //here add cathing
-router.use("/prescription", prescriptionRoutes);
-router.use("/chat", chatRoutes);
-router.use("/notification", notificationRoutes);
 router.use("/bill", billRoutes);
+router.use("/insurance", insuranceRoutes); //unused
+
+router.use("/appoinment", appoinmentRoutes); //appointment rechecking 
+router.use("/prescription", prescriptionRoutes);
+router.use("/chat", chatRoutes);//socket cashing remains
+router.use("/notification", notificationRoutes);
 
 router.use("/chat", chatRoutes);
 router.use("/aggregation", aggregationRoutes);

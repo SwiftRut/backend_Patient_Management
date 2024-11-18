@@ -1,5 +1,5 @@
 import express from "express";
-import { protect, admin } from "../middlewares/authMiddleware.js";
+import { protect} from "../middlewares/authMiddleware.js";
 import {
   registerAdmin,
   loginAdmin,
@@ -17,12 +17,11 @@ router.post("/register", registerAdmin);
 
 router.post("/login", loginAdmin);
 
-router.get("/profile/:id",cacheMiddleware, getProfile);
+router.get("/profile/:id",protect,cacheMiddleware, getProfile);
 
-router.get("/all",cacheMiddleware, getAllAdmins);
+router.get("/all", cacheMiddleware, getAllAdmins);
 
-
-router.patch("/edit-profile/:id", upload.single('profilePic'), editProfile);
+router.patch("/edit-profile/:id",protect, upload.single('profilePic'),editProfile);
 
 router.patch("/change-password/:id", changePassword);
 

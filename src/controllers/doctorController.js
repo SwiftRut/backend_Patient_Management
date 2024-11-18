@@ -173,6 +173,7 @@ export const addDoctor = async (req, res) => {
     const newDoctor = new doctorModel(req.body);
     await newDoctor.save();
 
+    await client.del(`/doctor/getAllDoctors`);
     // Send success response
     res.status(201).json({
       message: "Doctor added successfully",
@@ -245,6 +246,9 @@ export const editDoctor = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
+    await client.del(`/doctor/getAllDoctors`);
+    await client.del(`/doctor/getDoctorById/${id}`);
+
     res.status(200).json({
       message: "Doctor updated successfully",
       data: doctor,
@@ -269,6 +273,9 @@ export const deleteDoctor = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
+    await client.del(`/doctor/getDoctorById/${id}`);
+    await client.del(`/doctor/getAllDoctors`);
+
     res.status(200).json({
       message: "Doctor deleted successfully",
     });
@@ -285,6 +292,7 @@ export const getUnavailableTimes = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
     const key = req.originalUrl;
+    console.log("doctor.unavailableTimes", doctor.unavailableTimes);
     await client.setEx(key, CACHE_TIMEOUT, JSON.stringify(doctor.unavailableTimes));
     res.status(200).json(doctor.unavailableTimes);
   } catch (error) {
@@ -313,6 +321,7 @@ export const addUnavailableTime = async (req, res) => {
     doctor.unavailableTimes.push(newUnavailableTime);
     await doctor.save();
 
+    await client.del(`/doctor/${doctorId}/unavailable-times`);
     // Return the newly created unavailable time
     res.status(200).json({ 
       message: "Unavailable time added successfully",

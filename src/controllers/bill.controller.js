@@ -1,6 +1,8 @@
+import { CACHE_TIMEOUT } from "../constants.js";
 import billModel from "../models/billModel.js";
 import insuranceModel from "../models/insuranceModel.js";
 import patientModel from "../models/patientModel.js";
+import { client } from "../redis.js";
 
 export const createBill = async (req, res) => {
   try {
@@ -64,6 +66,10 @@ export const createBill = async (req, res) => {
       totalAmount,
       address,
     });
+    await client.del(`/bill/getbill`);
+    await client.del(`/bill/getbillsById`);
+    await client.del(`/bill/getInsuranceBills`);
+
     await newBill.save();
     res.status(201).json({
       success: true,
@@ -83,6 +89,8 @@ export const getBills = async (req, res) => {
     const bills = await billModel
       .find()
       .populate("patientId doctorId insuranceId");
+      const key = req.originalUrl;
+      await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bills }));
     res.status(200).json({
       success: true,
       data: bills,
@@ -97,13 +105,15 @@ export const getBills = async (req, res) => {
 };
 
 //get bills by patientID
-export const getbillsById = async (req, res) => {
+export const getbillsByPatientId = async (req, res) => {
   try {
     const Id = req.user.id;
 
     const bills = await billModel
       .find({ patientId: Id })
       .populate("patientId doctorId insuranceId");
+      const key = req.originalUrl;
+      await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bills }));
     res.status(200).json({
       success: true,
       data: bills,
@@ -121,6 +131,8 @@ export const getbillsById = async (req, res) => {
 export const getInsuranceBills = async (req, res) => {
   try {
     const bills = await billModel.find({ paymentType: "Insurance" });
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bills }));
     res.status(200).json({
       success: true,
       data: bills,
@@ -146,6 +158,8 @@ export const getBillById = async (req, res) => {
         message: "Bill not found",
       });
     }
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bill }));
     res.status(200).json({
       success: true,
       data: bill,
@@ -182,6 +196,10 @@ export const updateBill = async (req, res) => {
         message: "Bill not found",
       });
     }
+    await client.del(`/bill/getbill`);
+    await client.del(`/bill/getbillsById`);
+    await client.del(`/bill/getInsuranceBills`);
+    await client.del(`/bill/singlebill/${req.params.id}`);
 
     res.status(200).json({
       success: true,
@@ -204,6 +222,11 @@ export const deleteBill = async (req, res) => {
         message: "Bill not found",
       });
     }
+    await client.del(`/bill/getbill`);
+    await client.del(`/bill/getbillsById`);
+    await client.del(`/bill/getInsuranceBills`);
+    await client.del(`/bill/singlebill/${req.params.id}`);
+
     res.status(200).json({
       success: true,
       message: "Bill deleted successfully",

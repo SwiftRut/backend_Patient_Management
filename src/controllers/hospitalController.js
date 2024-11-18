@@ -18,7 +18,9 @@ export const createHospital = async (req, res) => {
     });
 
     await newHospital.save();
-
+    //remove the old cache data
+    await client.del('/hospital/get-all-hospitals');
+    
     res.status(201).json({
       message: "Hospital created successfully",
       hospital: newHospital,

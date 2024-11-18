@@ -1,9 +1,6 @@
 import adminModel from "../models/adminModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import nodemailer from "nodemailer";
-import twilio from "twilio";
 import hospitalModel from "../models/hospitalModel.js";
 import { client } from '../redis.js';
 import { CACHE_TIMEOUT } from "../constants.js";
@@ -183,7 +180,6 @@ export const editProfile = async (req, res) => {
       hospitalAddress,
     } = req.body;
     const adminId = req.params.id;
-    console.log(req.body);
     const updates = {
       firstName,
       lastName,
@@ -225,7 +221,6 @@ export const editProfile = async (req, res) => {
       .findByIdAndUpdate(adminId, { $set: updates }, { new: true })
       .select("-password -confirmPassword");
 
-      console.log(updatedAdmin);
     if (!updatedAdmin) {
       return res.status(404).json({ message: "Admin not found" });
     }
@@ -239,7 +234,8 @@ export const editProfile = async (req, res) => {
         { new: true }
       );
     }
-
+    //delete the old cache data from redis
+    await client.del(`/admin/profile/${req.user.id}`);
     res.status(200).json({
       message: "Profile updated successfully",
       admin: updatedAdmin,
