@@ -27,7 +27,7 @@ router.use("/doctor", doctorRoutes);
 router.use("/hospital", hospitalRoutes);
 
 router.use("/insurance", insuranceRoutes);
-router.use("/appoinment", appoinmentRoutes);
+router.use("/appoinment", appoinmentRoutes); //here add cathing
 router.use("/prescription", prescriptionRoutes);
 router.use("/chat", chatRoutes);
 router.use("/notification", notificationRoutes);

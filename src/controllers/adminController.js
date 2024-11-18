@@ -5,7 +5,8 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import twilio from "twilio";
 import hospitalModel from "../models/hospitalModel.js";
-
+import { client } from '../redis.js';
+import { CACHE_TIMEOUT } from "../constants.js";
 //register
 export const registerAdmin = async (req, res) => {
   try {
@@ -138,7 +139,8 @@ export const getProfile = async (req, res) => {
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
-
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify(admin));
     res.status(200).json(admin);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -151,7 +153,8 @@ export const getAllAdmins = async (req, res) => {
   try {
     const admins = await adminModel.find().select("-password -confirmPassword"); // Exclude sensitive fields
     const adminCount = await adminModel.countDocuments();
-
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ adminCount, admins }));
     res.status(200).json({
       totalAdmin: adminCount,
       admins,

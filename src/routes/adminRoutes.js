@@ -8,6 +8,7 @@ import {
   editProfile,
   changePassword,
 } from "../controllers/adminController.js";
+import {cacheMiddleware}  from "../middlewares/cacheMiddleware.js";
 import upload from "../../cloudinary/multer.js";
 
 const router = express.Router();
@@ -16,9 +17,9 @@ router.post("/register", registerAdmin);
 
 router.post("/login", loginAdmin);
 
-router.get("/profile/:id", getProfile);
+router.get("/profile/:id",cacheMiddleware, getProfile);
 
-router.get("/all", getAllAdmins);
+router.get("/all",cacheMiddleware, getAllAdmins);
 
 
 router.patch("/edit-profile/:id", upload.single('profilePic'), editProfile);

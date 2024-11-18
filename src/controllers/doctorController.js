@@ -3,6 +3,8 @@ import hospitalModel from "../models/hospitalModel.js"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { client } from '../redis.js';
+import { CACHE_TIMEOUT } from "../constants.js";
 
 export const registerDoctor = async (req, res) => {
   try {
@@ -197,6 +199,8 @@ export const getDoctorById = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
     doctor.countryCode = doctor.phone
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({data: doctor}));
     res.status(200).json({
       message: "Doctor fetched successfully",
       data: doctor,
@@ -210,6 +214,8 @@ export const getDoctorById = async (req, res) => {
 export const getAllDoctors = async (req, res) => {
   try {
     const doctors = await doctorModel.find();
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: doctors }));
     res.status(200).json({
       message: "Doctors fetched successfully",
       data: doctors,
@@ -278,6 +284,8 @@ export const getUnavailableTimes = async (req, res) => {
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify(doctor.unavailableTimes));
     res.status(200).json(doctor.unavailableTimes);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

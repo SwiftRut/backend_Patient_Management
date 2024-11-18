@@ -1,5 +1,6 @@
 import insuranceModel from "../models/insuranceModel.js"
-
+import { client } from '../redis.js';
+import { CACHE_TIMEOUT } from "../constants.js";
 export const createInsurance = async (req, res) => {
     try {
       const insurance = await insuranceModel(req.body);
@@ -23,6 +24,8 @@ export const getInsurances = async (req, res) => {
         .populate('bill')
         .populate('doctor')
         .populate('patient');
+      const key = req.originalUrl;
+      await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: insurances }));
       res.status(200).json({
         success: true,
         data: insurances,
@@ -50,7 +53,8 @@ export const getInsurances = async (req, res) => {
           message: 'Insurance record not found',
         });
       }
-      
+      const key = req.originalUrl;
+      await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: insurance }));
       res.status(200).json({
         success: true,
         data: insurance,

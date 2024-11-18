@@ -1,4 +1,6 @@
 import hospitalModel from "../models/hospitalModel.js";
+import { client } from '../redis.js';
+import { CACHE_TIMEOUT } from "../constants.js";
 
 export const createHospital = async (req, res) => {
   try {
@@ -29,6 +31,8 @@ export const createHospital = async (req, res) => {
 export const getAllHospitals = async (req, res) => {
   try {
     const hospitals = await hospitalModel.find();
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: hospitals }));
     res.status(200).json({
       message: "Hospitals fetched successfully",
       data: hospitals,

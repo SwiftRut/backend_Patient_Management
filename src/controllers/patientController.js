@@ -2,7 +2,8 @@ import patientModel from "../models/patientModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-
+import { client } from '../redis.js';
+import { CACHE_TIMEOUT } from "../constants.js";
 //register patient
 export const registerPatient = async (req, res) => {
   try {
@@ -187,6 +188,8 @@ export const getPatientById = async (req, res) => {
       return res.status(404).json({ message: "Patient not found" });
     }
 
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({data: patient}));
     res.status(200).json({
       message: "Patient fetched successfully",
       data: patient,
@@ -205,6 +208,8 @@ export const getAllPatients = async (req, res) => {
         path: 'doctorId', // Populate doctorId within each appointment
       },
     });
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: patients }));
     res.status(200).json({
       message: "Patients fetched successfully",
       data: patients,
