@@ -17,11 +17,11 @@ router.get("/alltodayappoinment" , protect,cacheMiddleware, authorize(["patient"
 router.get("/getAllAppointmentById/:id" , protect,cacheMiddleware, authorize(["patient", "doctor","admin"]), AllAppointmentById);
 router.get("/Patient_Appointment_History/:PatientID" , protect,cacheMiddleware, authorize(["patient", "doctor"]) , getPatientAppointmentHistory)
 router.get("/Doctor_Appointment_History/:id",protect,cacheMiddleware ,authorize(["patient", "doctor"]) , getDoctorAppointmentHistory);
-router.get("/singleappointment/:id" , protect ,cacheMiddleware, authorize(["patient", "doctor"]) ,SingleAppoiment);
+router.get("/singleappointment/:id" , protect ,cacheMiddleware, authorize(["patient", "doctor"]) ,SingleAppoiment);//
 router.get("/singlepatient/:id" , protect, cacheMiddleware, authorize(["patient", "doctor"]) , singlepatient);
 router.get("/appoinmentDone/:id", protect, cacheMiddleware, appoinmentDone);
-router.put("/updateappointment/:id" ,protect, authorize(["patient", "doctor"]), UpdateAppointment)
-router.put("/cancelappointment/:id" ,protect,authorize(["patient", "doctor"]) , CancelAppointment )
+router.put("/updateappointment/:id" ,protect, authorize(["patient", "doctor"]), UpdateAppointment)//
+router.put("/cancelappointment/:id" ,protect,authorize(["patient", "doctor"]) , CancelAppointment )//
 
-router.delete("/deleteappointment/:id" ,protect,authorize(["patient", "doctor"]) , DeleteAppointment)
+router.delete("/deleteappointment/:id" ,protect,authorize(["patient", "doctor"]) , DeleteAppointment)//
 export default router;

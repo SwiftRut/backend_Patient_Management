@@ -1,6 +1,27 @@
 import appointmentModel from "../models/appointmentModel.js";
 import prescriptionModel from "../models/prescriptionModel.js";
 
+const CACHE_KEYS={
+  PRESCRIPTION_BY_ID: (id) => `/prescription/getPrescriptionById/${id}`,
+  ALL_PRESCRIPTIONS: "/prescription/getPrescription",
+  TODAY_PRESCRIPTIONS: "/prescription/todayPrescription",
+  OLD_PRESCRIPTIONS: "/prescription/oldPrescription",
+  SEARCH_PRESCRIPTIONS: "/prescription/searchprescriptions",
+  SEARCHING_DATE: "/prescription/searchingdate",
+  SINGLE_PRESCRIPTION: (id) => `/prescription/SinglePrescription/${id}`  
+}
+const invalidateCache = async (id) => {
+  try {
+    await client.del(CACHE_KEYS.ALL_PRESCRIPTIONS);
+    await client.del(CACHE_KEYS.TODAY_PRESCRIPTIONS);
+    await client.del(CACHE_KEYS.OLD_PRESCRIPTIONS);
+    await client.del(CACHE_KEYS.SEARCH_PRESCRIPTIONS);
+    await client.del(CACHE_KEYS.SEARCHING_DATE);
+    await client.del(CACHE_KEYS.SINGLE_PRESCRIPTION(id));
+  } catch (error) {
+    console.log(error);
+  }
+};
 // create prescripition
 export const AddPriscription = async (req, res) => {
   try {
@@ -19,7 +40,7 @@ export const AddPriscription = async (req, res) => {
         instructions:additionalNote,
       });
       await prescription.save();
-
+      invalidateCache(id);
       // Return success response
       res.status(201).json({
         message: "Prescription created successfully",

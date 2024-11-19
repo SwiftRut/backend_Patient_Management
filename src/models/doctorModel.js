@@ -6,6 +6,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: false,
       trim: true,
+    
     },
     lastName: {
       type: String,
@@ -17,10 +18,12 @@ const doctorSchema = new mongoose.Schema(
       ref: "Hospital",
       required: [true, "Hospital ID is required"],
     },
+    //name should be always capitalized
     name:{
       type: String,
       required: false,
       trim: true,
+      lowercase: true,
     },
     gender: {
       type: String,
@@ -194,12 +197,20 @@ doctorSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   this.confirmPassword = undefined; // Do not store confirmPassword in the database
+  if (this.name) {
+    this.name = this.name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
   next();
 });
 // Method to compare password for login
 doctorSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
+
 const doctorModel = mongoose.model("Doctor", doctorSchema);
 
 export default doctorModel;

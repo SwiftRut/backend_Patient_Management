@@ -13,7 +13,6 @@ import {
 import authorize from "../middlewares/roleMiddleware.js";
 const router = express.Router();
 
-
 router.post("/createprescription/:id", protect, authorize(["patient", "doctor"]) , AddPriscription);
 router.get("/getPrescriptionById/:id", protect, authorize(["patient", "doctor"]) , getPrescriptionById);
 router.get("/getPrescription", protect, authorize(["patient", "doctor"]) , getPrescription);

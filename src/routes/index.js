@@ -28,7 +28,7 @@ router.use("/hospital", hospitalRoutes);
 router.use("/bill", billRoutes);
 router.use("/insurance", insuranceRoutes); //unused
 
-router.use("/appoinment", appoinmentRoutes); //appointment rechecking 
+router.use("/appoinment", appoinmentRoutes); 
 router.use("/prescription", prescriptionRoutes);
 router.use("/chat", chatRoutes);//socket cashing remains
 router.use("/notification", notificationRoutes);

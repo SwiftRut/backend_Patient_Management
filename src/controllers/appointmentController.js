@@ -11,23 +11,23 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-export const CACHE_KEYS = {
-  ALL_APPOINTMENTS: "/appointment/allappointment",
-  ALL_APPOINTMENTS_COUNT: "/appointment/allAppointmentsForCount",
-  ALL_PATIENTS: "/appointment/allpatient",
-  TODAY_APPOINTMENTS: "/appointment/alltodayappointment",
-  APPOINTMENT_BY_ID: (id) => `/appointment/getAllAppointmentById/${id}`,
-  PATIENT_HISTORY: (id) => `/appointment/Patient_Appointment_History/${id}`,
-  DOCTOR_HISTORY: (id) => `/appointment/Doctor_Appointment_History/${id}`,
-  SINGLE_APPOINTMENT: (id) => `/appointment/singleappointment/${id}`,
-  SINGLE_PATIENT: (id) => `/appointment/singlepatient/${id}`,
-  APPOINTMENT_DONE: (id) => `/appointment/appoinmentDone/${id}`,
+const CACHE_KEYS = {
+  ALL_APPOINTMENTS: "/appoinment/allappointment",
+  ALL_APPOINTMENTS_COUNT: "/appoinment/allAppointmentsForCount",
+  ALL_PATIENTS: "/appoinment/allpatient",
+  TODAY_APPOINTMENTS: "/appoinment/alltodayappointment",
+  APPOINTMENT_BY_ID: (id) => `/appoinment/getAllAppointmentById/${id}`,
+  PATIENT_HISTORY: (id) => `/appoinment/Patient_Appointment_History/${id}`,
+  DOCTOR_HISTORY: (id) => `/appoinment/Doctor_Appointment_History/${id}`,
+  SINGLE_APPOINTMENT: (id) => `/appoinment/singleappointment/${id}`,
+  SINGLE_PATIENT: (id) => `/appoinment/singlepatient/${id}`,
+  APPOINTMENT_DONE: (id) => `/appoinment/appoinmentDone/${id}`,
   APPOINTMENT_FEE: (doctorId, type) =>
-    `/appointment/appointment-fee?doctorId=${doctorId}&appointmentType=${type}`,
+    `/appoinment/appointment-fee?doctorId=${doctorId}&appointmentType=${type}`,
 };
 
 //fucntion to invalidate the querys from the cache_keys
-export const invalidateCache = async (req, res) => {
+export const invalidateCache = async (id) => {
   try {
     await client.del(CACHE_KEYS.ALL_APPOINTMENTS);
     await client.del(CACHE_KEYS.ALL_APPOINTMENTS_COUNT);
@@ -210,9 +210,11 @@ export const AllAppointmentById = async (req, res) => {
 
 export const AllTodaysAppointment = async (req, res) => {
   try {
+    //date is will conatient he  value like this 2024-10-27T15:06:00.000Z but we have to return the data with today's date
+    //so we have to get the date from the req.originalUrl
     let data = await appointmentModel
       .find({
-        // date: new Date().      [0]
+        // date: new Date().toISOString().split('T')[0]
       })
       .populate("patientId doctorId");
     const key = req.originalUrl;
@@ -243,6 +245,7 @@ export const DeleteAppointment = async (req, res) => {
     let { id } = req.params;
     let data = await appointmentModel.findByIdAndDelete(id);
     invalidateCache(id);
+    invalidateCache(req.user.id);
     res.json({ message: "Delete succesfully", data });
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -264,6 +267,7 @@ export const CancelAppointment = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
     invalidateCache(id);
+    invalidateCache(req.user.id);
     res
       .status(200)
       .json({
