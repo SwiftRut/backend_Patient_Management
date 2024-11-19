@@ -20,7 +20,6 @@ router.get("/Doctor_Appointment_History/:id",protect,cacheMiddleware ,authorize(
 router.get("/singleappointment/:id" , protect ,cacheMiddleware, authorize(["patient", "doctor"]) ,SingleAppoiment);
 router.get("/singlepatient/:id" , protect, cacheMiddleware, authorize(["patient", "doctor"]) , singlepatient);
 router.get("/appoinmentDone/:id", protect, cacheMiddleware, appoinmentDone);
-
 router.put("/updateappointment/:id" ,protect, authorize(["patient", "doctor"]), UpdateAppointment)
 router.put("/cancelappointment/:id" ,protect,authorize(["patient", "doctor"]) , CancelAppointment )
 
