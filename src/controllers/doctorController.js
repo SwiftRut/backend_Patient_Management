@@ -229,9 +229,16 @@ export const getAllDoctors = async (req, res) => {
 //edit doctor
 export const editDoctor = async (req, res) => {
   const { id } = req.params;
-  const imageUrl = req.file ? req.file.path : req.body.avatar || "";
-  const updatedData = req.body;
-  updatedData.avatar = imageUrl;
+  let imageUrl = "";
+  if (req.files) {
+    if (req.files.profilePicture && req.files.profilePicture.length > 0) {
+      imageUrl = req.files.profilePicture[0].path;
+    } else if (req.files.profilePic && req.files.profilePic.length > 0) {
+      imageUrl = req.files.profilePic[0].path;
+    }
+  }
+  imageUrl = imageUrl || req.body.avatar || "";  
+  const updatedData = { ...req.body, avatar: imageUrl };
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid Doctor ID" });
