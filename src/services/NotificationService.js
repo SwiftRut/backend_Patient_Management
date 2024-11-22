@@ -1,4 +1,4 @@
-import admin from "../utils/firebase";
+import admin from "../utils/firebase.js";
 class NotificationService{
 
     static async sendNotification(deviceToken, title, body) {

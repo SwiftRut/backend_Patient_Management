@@ -1,5 +1,6 @@
 import notificationModel from "../models/notificationModel.js";
 import patientModel from "../models/patientModel.js";
+import NotificationService from "../services/NotificationService.js";
 
 export const createNotification = async (req, res) => {
   const { userId, type, message } = req.body;
@@ -23,13 +24,13 @@ export const createNotification = async (req, res) => {
 };
 export const sendNotification = async (req, res) => {
   try {
-      const { userId, type, message } = req.body;
-
-      if (!userId || !type || !message) {
+      const { deviceToken, title, body } = req.body;
+      console.log(title, body);
+      if (!deviceToken || !title || !body) {
           return res.status(400).json({ error: "Missing required fields" });
       }
 
-      const response = await NotificationService.sendNotification(userId, type, message);
+      const response = await NotificationService.sendNotification(deviceToken, title, body);
       return res.status(200).json({ success: true, response });
   } catch (error) {
       console.error("Error in sendNotification:", error);
