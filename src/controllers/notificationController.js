@@ -21,6 +21,21 @@ export const createNotification = async (req, res) => {
     res.status(500).json({ message: "Error creating notification", error });
   }
 };
+export const sendNotification = async (req, res) => {
+  try {
+      const { userId, type, message } = req.body;
+
+      if (!userId || !type || !message) {
+          return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      const response = await NotificationService.sendNotification(userId, type, message);
+      return res.status(200).json({ success: true, response });
+  } catch (error) {
+      console.error("Error in sendNotification:", error);
+      return res.status(500).json({ success: false, error: error.message });
+  }
+};
 
 export const getNotificationsForUser = async (req, res) => {
   const { userId } = req.params;
