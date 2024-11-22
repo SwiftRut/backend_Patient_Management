@@ -156,7 +156,7 @@ router.post("/forgetPassword", async (req, res) => {
         .json({ message: "OTP has been sent to your email" });
     } else {
       // If identifier is phone number, send OTP via SMS using Twilio
-      console.log(user.phone);
+      console.log("phone",user.phone);
       await twilioClient.messages.create({
         body: `Your password reset OTP is: ${otp}. It will expire in 5 minutes.`,
         from: process.env.TWILIO_PHONE_NUMBER,
