@@ -1,2 +1,2 @@
 export const DB_NAME = "hospital";
-export const CACHE_TIMEOUT = 60;
+export const CACHE_TIMEOUT = 1;
