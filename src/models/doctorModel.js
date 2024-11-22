@@ -182,7 +182,11 @@ const doctorSchema = new mongoose.Schema(
     role:{
       type:String,
       default:"doctor"
-    }
+    },
+    deviceToken: {
+      type: String,
+      default:"null"
+    },
   },
   {
     timestamps: true,

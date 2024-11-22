@@ -120,6 +120,12 @@ const patientSchema = new mongoose.Schema(
       type: String,
       default: "patient",
     },
+
+    deviceToken: {
+      type: String,
+      required: false,
+      default: "null"
+    },
   },
   { timestamps: true }
 );
