@@ -41,6 +41,11 @@ const adminSchema = new mongoose.Schema(
       required: [true, "Phone number is required"],
       // match: [/^\d{13}$/, "Please enter a valid phone number"],
     },
+    countryCode:{
+      type: String,
+      // required: [true, "Country code is required"],
+      trim: true,
+    },
     country: {
       type: String,
       required: [true, "Country is required"],

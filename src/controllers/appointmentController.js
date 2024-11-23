@@ -4,6 +4,7 @@ import patientModel from "../models/patientModel.js";
 import Razorpay from "razorpay";
 import { CACHE_TIMEOUT } from "../constants.js";
 import { client } from "../redis.js";
+import { sendSMS } from "../services/SendSMS.js"
 
 // appointment fee
 const razorpay = new Razorpay({
@@ -154,6 +155,16 @@ export const createAppointment = async (req, res) => {
     patient.appointmentId.push(newAppointment._id);
     await patient.save();
     invalidateCache(req.user.id);
+
+    // Send SMS Notification
+    const message = `Dear ${patient.firstName}, your appointment with Dr. ${doctorId} on ${date} at ${start} has been confirmed.`;
+    try {
+      await sendSMS(patient.phone, message);
+      console.log('SMS sent successfully');
+    } catch (error) {
+      console.error('Failed to send SMS:', error.message);
+    }
+
     res.status(201).json({
       message: "Appointment booked successfully",
       data: newAppointment,
@@ -163,7 +174,6 @@ export const createAppointment = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 // all appoinment - shoud work for both patient and doctor based on token role
 export const AllAppointmentsForCount = async (req, res) => {
   try {

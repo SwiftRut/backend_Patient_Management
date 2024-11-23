@@ -1,5 +1,5 @@
-require('dotenv').config(); // Load .env variables
-const twilio = require('twilio');
+import 'dotenv/config'; // Load .env variables
+import twilio from 'twilio';
 
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -21,4 +21,4 @@ const sendSMS = async (to, message) => {
     }
 };
 
-module.exports = { sendSMS };
+export  { sendSMS };
