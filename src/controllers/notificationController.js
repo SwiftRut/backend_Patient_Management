@@ -1,7 +1,7 @@
+import doctorModel from "../models/doctorModel.js";
 import notificationModel from "../models/notificationModel.js";
 import patientModel from "../models/patientModel.js";
 import NotificationService from "../services/NotificationService.js";
-
 export const createNotification = async (req, res) => {
   const { userId, type, message } = req.body;
 
@@ -66,3 +66,52 @@ export const deleteNotification = async (req, res) => {
     res.status(500).json({ message: "Error deleting notification", error });
   }
 };
+
+export const updateDoctor = async (req, res) => {
+  const { token: deviceToken } = req.body;
+
+  console.log("Doctor ID:", req.user?.id, "Device Token:", deviceToken);
+
+  try {
+    // Find and update the doctor's device token
+    const doctor = await doctorModel.findOneAndUpdate(
+      { _id: req.user.id },
+      { deviceToken },
+      { new: true } // Return the updated document
+    );
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.status(200).json({ message: "Doctor token updated successfully", doctor });
+  } catch (error) {
+    console.error("Error updating doctor token:", error);
+    res.status(500).json({ message: "Error updating doctor token", error });
+  }
+};
+
+export const updatePatient = async (req, res) => {
+  const { token: deviceToken } = req.body;
+
+  console.log("Patient ID:", req.user?.id, "Device Token:", deviceToken);
+
+  try {
+    // Find and update the patient's device token
+    const patient = await patientModel.findOneAndUpdate(
+      { _id: req.user.id },
+      { deviceToken },
+      { new: true } // Return the updated document
+    );
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    res.status(200).json({ message: "Patient token updated successfully", patient });
+  } catch (error) {
+    console.error("Error updating patient token:", error);
+    res.status(500).json({ message: "Error updating patient token", error });
+  }
+};
+  

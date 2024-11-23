@@ -23,6 +23,10 @@ const patientSchema = new mongoose.Schema(
     gender: String,
     bloodGroup: String,
     dob: Date,
+    deviceToken:{
+      type: String,
+      default:"null"
+    },
     doctor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
