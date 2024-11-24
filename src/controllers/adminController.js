@@ -14,6 +14,7 @@ export const registerAdmin = async (req, res) => {
       password,
       confirmPassword,
       phone,
+      countryCode,
       country,
       state,
       city,
@@ -28,6 +29,7 @@ export const registerAdmin = async (req, res) => {
       !confirmPassword ||
       !phone ||
       !country ||
+      !countryCode ||
       !state ||
       !city ||
       !hospital
@@ -49,7 +51,9 @@ export const registerAdmin = async (req, res) => {
       lastName,
       email,
       password,
-      phone,
+      phone:countryCode + phone,
+      countryCode,
+      // twiloPhone: countryCode + phone,
       country,
       state,
       city,

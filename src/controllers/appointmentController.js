@@ -5,6 +5,7 @@ import Razorpay from "razorpay";
 import { CACHE_TIMEOUT } from "../constants.js";
 import { client } from "../redis.js";
 import { sendSMS } from "../services/SendSMS.js"
+import doctorModel from "../models/doctorModel.js";
 
 // appointment fee
 const razorpay = new Razorpay({
@@ -156,8 +157,29 @@ export const createAppointment = async (req, res) => {
     await patient.save();
     invalidateCache(req.user.id);
 
+    const doctor = await doctorModel.findById(newAppointment.doctorId);
+   
     // Send SMS Notification
-    const message = `Dear ${patient.firstName}, your appointment with Dr. ${doctorId} on ${date} at ${start} has been confirmed.`;
+    // Assuming `date` and `appointmentTime` are in ISO format
+const formattedDate = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(new Date(newAppointment.date));
+
+const formattedTime = new Intl.DateTimeFormat('en-US', {
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: true,
+  timeZone: 'UTC',
+}).format(new Date(newAppointment.appointmentTime));
+
+// SMS message
+const message = `Dear ${patient.firstName} ${patient.lastName}, your appointment with Dr. ${doctor.name} on ${formattedDate} at ${formattedTime} has been confirmed.`;
+
+console.log(message);
+    // const message = `Dear ${patient.firstName+' '+patient.lastName}, your appointment with Dr. ${doctor.name} on ${date} at ${appointmentTime} has been confirmed.`;
     try {
       await sendSMS(patient.phone, message);
       console.log('SMS sent successfully');
@@ -267,6 +289,7 @@ export const CancelAppointment = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // Find and update the appointment status to "canceled"
     const appointment = await appointmentModel.findByIdAndUpdate(
       id,
       { status: "canceled" },
@@ -276,18 +299,58 @@ export const CancelAppointment = async (req, res) => {
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
+
+    // Fetch the patient details
+    const patient = await patientModel.findById(appointment.patientId);
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    // Fetch the doctor details
+    const doctor = await doctorModel.findById(appointment.doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Format date and time
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(new Date(appointment.date));
+
+    const formattedTime = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+      timeZone: 'UTC', 
+    }).format(new Date(appointment.appointmentTime));
+
+    // Send SMS notification about cancellation
+    const message = `Dear ${patient.firstName} ${patient.lastName}, your appointment with Dr. ${doctor.name} on ${formattedDate} at ${formattedTime} has been canceled.`;
+    console.log(message);
+    try {
+      await sendSMS(patient.phone, message);
+      console.log('SMS sent successfully');
+    } catch (error) {
+      console.error('Failed to send SMS:', error.message);
+    }
+
+    // Invalidate cache
     invalidateCache(id);
     invalidateCache(req.user.id);
-    res
-      .status(200)
-      .json({
-        message: "Appointment canceled successfully",
-        data: appointment,
-      });
+
+    // Respond with success
+    res.status(200).json({
+      message: "Appointment canceled successfully",
+      data: appointment,
+    });
   } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // fetch appointment for patient selected user
 export const getPatientAppointmentHistory = async (req, res) => {
