@@ -57,7 +57,7 @@ export const appointmentFee = async (req, res) => {
   try {
     // const doctor = await Doctor.findById(doctorId);
     // let fee = doctor.consultationFee;
-    let fee = 1000; // You might want to replace this with actual doctor's fee in the future
+    let fee = 10; // You might want to replace this with actual doctor's fee in the future
     if (appointmentType === "follow_up" || true) {
       fee *= 0.1;
     }
