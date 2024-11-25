@@ -38,7 +38,15 @@ const patientSchema = new mongoose.Schema(
       type: String,
       unique: true,
       required: [false, "Phone number is required"],
-      match: [/^\d{10}$/, "Please provide a valid phone number"],
+     
+    },
+    countryCode:{
+      type: String,
+      required: false,
+    },
+    twiloPhone:{
+      type: String,
+      required: false,
     },
     country: {
       type: String,

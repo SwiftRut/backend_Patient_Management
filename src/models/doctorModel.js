@@ -96,6 +96,10 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [false, "Phone number is required"],
     },
+    countryCode:{
+      type: String,
+      required: false,
+    },
     age: {
       type: Number,
       required: false,
@@ -114,6 +118,10 @@ const doctorSchema = new mongoose.Schema(
       minlength: [6, "Password must be at least 6 characters long"],
     },
     country: {
+      type: String,
+      required: false,
+    },
+    twiloPhone:{
       type: String,
       required: false,
     },
