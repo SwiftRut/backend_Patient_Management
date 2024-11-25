@@ -204,8 +204,8 @@ export const getDoctorById = async (req, res) => {
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
-    doctor.countryCode = doctor.phone
-    const key = req.originalUrl;
+    doctor.phone= doctor.phone.replace(doctor.countryCode, '')
+    const key = req.originalUrl;   
     await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({data: doctor}));
     res.status(200).json({
       message: "Doctor fetched successfully",
