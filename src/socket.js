@@ -25,15 +25,24 @@ export default (io) => {
     // Handle sending a chat message
     socket.on('message', async (data) => {
       try {
-        const { doctorId, patientId, senderId, receiverId, messageContent } = data;
+        const { doctorId, patientId, senderId, receiverId, messageContent, type, fileUrl, fileName, fileSize } = data;
 
-        // Save the chat message to the database
-        const chat = new Chat({ doctorId, patientId, senderId, receiverId, messageContent });
+        // Save the chat message to the database with media info
+        const chat = new Chat({ 
+          doctorId, 
+          patientId, 
+          senderId, 
+          receiverId, 
+          messageContent,
+          type,
+          fileUrl,
+          fileName,
+          fileSize 
+        });
         await chat.save();
 
         const room = [doctorId, patientId].sort().join('-');
-        io.to(room).emit('message', chat); // Emit message to the room
-        console.log(`Message sent in room ${room}`);
+        io.to(room).emit('message', chat);
       } catch (err) {
         console.error('Error saving chat message:', err);
       }
