@@ -43,7 +43,9 @@ export const getNotificationsForUser = async (req, res) => {
   try {
     const notifications = await notificationModel
       .find({ userId })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .limit(50);
+    
     res.status(200).json(notifications);
   } catch (error) {
     res.status(500).json({ message: "Error fetching notifications", error });
@@ -111,6 +113,41 @@ export const updatePatient = async (req, res) => {
   } catch (error) {
     console.error("Error updating patient token:", error);
     res.status(500).json({ message: "Error updating patient token", error });
+  }
+};
+
+export const markAsRead = async (req, res) => {
+  const { notificationId } = req.params;
+
+  try {
+    const notification = await notificationModel.findByIdAndUpdate(
+      notificationId,
+      { isRead: true },
+      { new: true }
+    );
+
+    if (!notification) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+
+    res.status(200).json(notification);
+  } catch (error) {
+    res.status(500).json({ message: "Error marking notification as read", error });
+  }
+};
+
+export const markAllAsRead = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    await notificationModel.updateMany(
+      { userId, isRead: false },
+      { isRead: true }
+    );
+
+    res.status(200).json({ message: "All notifications marked as read" });
+  } catch (error) {
+    res.status(500).json({ message: "Error marking all notifications as read", error });
   }
 };
   

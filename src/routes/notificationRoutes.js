@@ -5,18 +5,22 @@ import {
   getNotificationsForUser,
   sendNotification,
   updateDoctor,
-  updatePatient
+  updatePatient,
+  markAsRead,
+  markAllAsRead
 } from "../controllers/notificationController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/createnotification", createNotification);
-router.get("/getnotificationforuser", getNotificationsForUser);
-router.delete("/deletenotification", deleteNotification);
+router.get("/getnotificationforuser/:userId", protect, getNotificationsForUser);
+router.delete("/deletenotification/:id", protect, deleteNotification);
 router.post("/sendNotification", sendNotification);
-router.post("/updateDoctor",protect, updateDoctor);
-router.post("/updatePatient",protect, updatePatient);
+router.post("/updateDoctor", protect, updateDoctor);
+router.post("/updatePatient", protect, updatePatient);
+router.put("/markAsRead/:notificationId", protect, markAsRead);
+router.put("/markAllAsRead/:userId", protect, markAllAsRead);
 
 export default router;
 
