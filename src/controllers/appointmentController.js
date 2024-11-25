@@ -6,6 +6,7 @@ import { CACHE_TIMEOUT } from "../constants.js";
 import { client } from "../redis.js";
 import { sendSMS } from "../services/SendSMS.js"
 import doctorModel from "../models/doctorModel.js";
+import crypto from 'crypto';
 
 // appointment fee
 const razorpay = new Razorpay({
@@ -58,7 +59,7 @@ export const appointmentFee = async (req, res) => {
     // let fee = doctor.consultationFee;
     let fee = 1000; // You might want to replace this with actual doctor's fee in the future
     if (appointmentType === "follow_up" || true) {
-      fee *= 0.8;
+      fee *= 0.1;
     }
     const key = req.originalUrl;
     await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ fee }));
@@ -72,20 +73,61 @@ export const createRazorpayOrder = async (req, res) => {
   try {
     const { amount } = req.body;
 
+    if (!amount) {
+      return res.status(400).json({ error: "Amount is required" });
+    }
+
     const options = {
-      amount: amount * 100,
+      amount: Math.round(amount * 100), // Convert to smallest currency unit (paise)
       currency: "INR",
       receipt: "receipt_" + Math.random().toString(36).substring(7),
+      payment_capture: 1, // Auto capture payment
     };
 
     const order = await razorpay.orders.create(options);
-    res.json(order);
+    
+    res.status(200).json({
+      id: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      receipt: order.receipt
+    });
   } catch (error) {
+    console.error("Razorpay order creation error:", error);
     res.status(500).json({ error: "Error creating Razorpay order" });
   }
 };
 
-export const createAppointment = async (req, res, io) => {
+export const verifyPayment = async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature
+    } = req.body;
+
+    // Verify signature
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(sign)
+      .digest("hex");
+
+    if (razorpay_signature !== expectedSign) {
+      return res.status(400).json({ error: "Invalid payment signature" });
+    }
+
+    // Payment is valid
+    res.status(200).json({
+      message: "Payment verified successfully"
+    });
+  } catch (error) {
+    console.error("Payment verification error:", error);
+    res.status(500).json({ error: "Error verifying payment" });
+  }
+};
+
+export const createAppointment = async (req, res) => {
   try {
     const {
       doctorId,
@@ -103,36 +145,18 @@ export const createAppointment = async (req, res, io) => {
       razorpaySignature,
     } = req.body;
 
-    const patient = await patientModel.findById(req.user.id);
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
+    // Verify payment signature
+    const sign = razorpayOrderId + "|" + razorpayPaymentId;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(sign)
+      .digest("hex");
+
+    if (razorpaySignature !== expectedSign) {
+      return res.status(400).json({ message: "Invalid payment signature" });
     }
 
-    // Verify Razorpay payment
-    // const generatedSignature = crypto
-    //   .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-    //   .update(razorpayOrderId + "|" + razorpayPaymentId)
-    //   .digest("hex");
-
-    // if (generatedSignature !== razorpaySignature) {
-    //   return res.status(400).json({ message: "Invalid payment signature" });
-    // }
-
-    // const conflictingAppointment = await appointmentModel.findOne({
-    //   patientId: req.user.id,
-    //   doctorId,
-    //   date,
-    //   appointmentTime: start,
-    //   status: { $ne: "cancelled" },
-    // });
-
-    // if (conflictingAppointment) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Doctor is not available at this time" });
-    // }
-
-    // Creating new appointment
+    // Create appointment
     const newAppointment = new appointmentModel({
       patientId: req.user.id,
       doctorId,
@@ -145,9 +169,11 @@ export const createAppointment = async (req, res, io) => {
       city,
       type,
       state,
-      // paymentId: razorpayPaymentId,
-      // orderId: razorpayOrderId,
+      type,
+      paymentId: razorpayPaymentId,
+      orderId: razorpayOrderId,
       paymentStatus: "paid",
+      status: "scheduled"
     });
 
     await newAppointment.save();
@@ -195,6 +221,7 @@ console.log(message);
     res.status(500).json({ message: error.message });
   }
 };
+
 // all appoinment - shoud work for both patient and doctor based on token role
 export const AllAppointmentsForCount = async (req, res) => {
   try {

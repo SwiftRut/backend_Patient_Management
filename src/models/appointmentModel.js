@@ -65,6 +65,23 @@ const appointmentSchema = new mongoose.Schema(
       enum: ["scheduled", "canceled", "pending", "completed"],
       default: "scheduled", 
     },
+    paymentId: {
+      type: String,
+      sparse: true
+    },
+    orderId: {
+      type: String,
+      sparse: true
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'paid', 'failed'],
+      default: 'pending'
+    },
+    amount: {
+      type: Number,
+      required: true
+    }
   },
   {
     timestamps: true,
