@@ -1,6 +1,6 @@
 import doctorModel from "../models/doctorModel.js";
 import hospitalModel from "../models/hospitalModel.js"
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { client } from '../redis.js';

@@ -2,24 +2,23 @@ import doctorModel from "../models/doctorModel.js";
 import notificationModel from "../models/notificationModel.js";
 import patientModel from "../models/patientModel.js";
 import NotificationService from "../services/NotificationService.js";
-export const createNotification = async (req, res) => {
-  const { userId, type, message } = req.body;
-
+export const createNotification = async (userId, type, message, io) => {
   try {
-    const patient = await patientModel.findById(userId);
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
-    }
-
-    const notification = await notificationModel.create({
+    const notification = await Notification.create({
       userId,
       type,
       message,
+      isRead: false,
     });
 
-    res.status(201).json(notification);
+    // Emit notification via Socket.IO
+    const recipientSocketId = onlineUsers.get(userId);
+    if (recipientSocketId && io) {
+      io.to(recipientSocketId).emit('notification', { message, type });
+    }
+    console.log(`Notification saved and sent to user ${userId}`);
   } catch (error) {
-    res.status(500).json({ message: "Error creating notification", error });
+    console.error('Error creating notification:', error);
   }
 };
 export const sendNotification = async (req, res) => {

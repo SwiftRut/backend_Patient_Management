@@ -7,7 +7,9 @@ export const client = createClient( {socket: {
     host: process.env.REDIS_HOST || 'localhost',
     port: process.env.REDIS_PORT || 6379,
 }});
-
+// export const client = createClient({
+//     url: process.env.REDIS_URL,
+// });
 // Export Redis store for session management
 export const redisStore = new RedisStore({
     client,

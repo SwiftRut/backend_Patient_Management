@@ -83,7 +83,7 @@ export const createRazorpayOrder = async (req, res) => {
   }
 };
 
-export const createAppointment = async (req, res) => {
+export const createAppointment = async (req, res, io) => {
   try {
     const {
       doctorId,
@@ -149,7 +149,6 @@ export const createAppointment = async (req, res) => {
     });
 
     await newAppointment.save();
-    console.log(newAppointment, req.body);
     patient.appointmentId = patient.appointmentId || [];
     patient.appointmentId.push(newAppointment._id);
     await patient.save();

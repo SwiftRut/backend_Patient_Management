@@ -2,7 +2,7 @@ import express from "express";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import twilio from "twilio";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import adminModel from "../models/adminModel.js";
 import doctorModel from "../models/doctorModel.js";
 import patientModel from "../models/patientModel.js";

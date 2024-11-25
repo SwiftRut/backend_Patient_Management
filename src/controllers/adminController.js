@@ -1,5 +1,5 @@
 import adminModel from "../models/adminModel.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import hospitalModel from "../models/hospitalModel.js";
 import { client } from '../redis.js';
