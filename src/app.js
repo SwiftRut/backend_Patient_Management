@@ -46,3 +46,46 @@ app.get('/redis', (req, res) => {
   }
 });
 app.use("/", routes);
+app.get("/ssr", (req, res) => {
+  // Dynamic values for meta tags
+  const dynamicTitle = "Dynamic Title";
+  const dynamicDescription = "Dynamic Description";
+  const dynamicImage = "https://brd.so/page-fallback-img.png";
+
+  // Constructing meta tags with template literals
+  const metaTags = `
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="${dynamicTitle}">
+    <meta property="og:description" content="${dynamicDescription}">
+    <meta property="og:image" content="${dynamicImage}">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="${dynamicTitle}">
+    <meta property="twitter:description" content="${dynamicDescription}">
+    <meta property="twitter:image" content="${dynamicImage}">
+  `;
+
+  // Respond with the full HTML structure
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  ${metaTags}
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  <script type="text/javascript">
+    window.flutterWebRenderer = "html";
+  </script>
+  <title>${dynamicTitle}</title>
+</head>
+<body>
+</body>
+</html>`);
+});
+

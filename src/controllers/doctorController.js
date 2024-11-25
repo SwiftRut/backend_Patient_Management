@@ -19,6 +19,7 @@ export const registerDoctor = async (req, res) => {
       state,
       city,
       hospital,
+      countryCode,
     } = req.body;
 
     if (
@@ -37,6 +38,10 @@ export const registerDoctor = async (req, res) => {
 
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    if (countryCode && !countryCode.startsWith('+')) {
+      return res.status(400).json({ message: "Country code must start with a '+' sign." });
     }
 
     const existingDoctor = await doctorModel.findOne({ email });
