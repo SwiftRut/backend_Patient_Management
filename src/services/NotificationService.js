@@ -12,7 +12,7 @@ class NotificationService{
             const response = admin.messaging().send(message);
             return response;
         }catch(error){
-            console.log(error);
+            console.error(error);
         }
     }
 }

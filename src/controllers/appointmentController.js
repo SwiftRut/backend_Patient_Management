@@ -7,6 +7,7 @@ import { client } from "../redis.js";
 import { sendSMS } from "../services/SendSMS.js"
 import doctorModel from "../models/doctorModel.js";
 import crypto from 'crypto';
+import logger from "../utils/logger.js";
 
 // appointment fee
 const razorpay = new Razorpay({
@@ -44,20 +45,17 @@ export const invalidateCache = async (id) => {
     await client.del(CACHE_KEYS.APPOINTMENT_DONE(id));
     await client.del(CACHE_KEYS.APPOINTMENT_FEE(id));
   } catch (error) {
-    console.log(error);
+    logger.error('Error invalidating cache:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const appointmentFee = async (req, res) => {
   const { doctorId, appointmentType } = req.query;
-  console.log(
-    `Appointment fee for doctor ${doctorId} and type ${appointmentType}`
-  );
+  logger.info(`Appointment fee for doctor ${doctorId} and type ${appointmentType}`);
   try {
     const doctor = await doctorModel.findById(doctorId);
-    // let fee = doctor.onlineConsultationRate;
-    let fee = 1;
+    let fee = doctor.onlineConsultationRate;
 
     if (appointmentType === "follow_up" || true) {
       fee *= 1;
@@ -66,6 +64,7 @@ export const appointmentFee = async (req, res) => {
     await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ fee }));
     res.json({ fee });
   } catch (error) {
+    logger.error('Error fetching appointment fee:', error);
     res.status(500).json({ error: "Error fetching appointment fee" });
   }
 };
@@ -79,10 +78,10 @@ export const createRazorpayOrder = async (req, res) => {
     }
 
     const options = {
-      amount: Math.round(amount * 100), // Convert to smallest currency unit (paise)
+      amount: Math.round(amount * 100),
       currency: "INR",
       receipt: "receipt_" + Math.random().toString(36).substring(7),
-      payment_capture: 1, // Auto capture payment
+      payment_capture: 1,
     };
 
     const order = await razorpay.orders.create(options);
@@ -94,7 +93,7 @@ export const createRazorpayOrder = async (req, res) => {
       receipt: order.receipt
     });
   } catch (error) {
-    console.error("Razorpay order creation error:", error);
+    logger.error("Razorpay order creation error:", error);
     res.status(500).json({ error: "Error creating Razorpay order" });
   }
 };
@@ -123,7 +122,7 @@ export const verifyPayment = async (req, res) => {
       message: "Payment verified successfully"
     });
   } catch (error) {
-    console.error("Payment verification error:", error);
+    logger.error("Payment verification error:", error);
     res.status(500).json({ error: "Error verifying payment" });
   }
 };
@@ -204,13 +203,12 @@ const formattedTime = new Intl.DateTimeFormat('en-US', {
 // SMS message
 const message = `Dear ${patient.firstName} ${patient.lastName}, your appointment with Dr. ${doctor.name} on ${formattedDate} at ${formattedTime} has been confirmed.`;
 
-console.log(message);
+logger.info(message);
     // const message = `Dear ${patient.firstName+' '+patient.lastName}, your appointment with Dr. ${doctor.name} on ${date} at ${appointmentTime} has been confirmed.`;
     try {
       await sendSMS(patient.phone, message);
-      console.log('SMS sent successfully');
     } catch (error) {
-      console.error('Failed to send SMS:', error.message);
+      logger.error('Failed to send SMS:', error.message);
     }
 
     res.status(201).json({
@@ -218,12 +216,11 @@ console.log(message);
       data: newAppointment,
     });
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// all appoinment - shoud work for both patient and doctor based on token role
 export const AllAppointmentsForCount = async (req, res) => {
   try {
     let data = await appointmentModel.find({});
@@ -269,8 +266,7 @@ export const AllAppointmentById = async (req, res) => {
 
 export const AllTodaysAppointment = async (req, res) => {
   try {
-    //date is will conatient he  value like this 2024-10-27T15:06:00.000Z but we have to return the data with today's date
-    //so we have to get the date from the req.originalUrl
+
     let data = await appointmentModel
       .find({
         // date: new Date().toISOString().split('T')[0]
@@ -311,12 +307,10 @@ export const DeleteAppointment = async (req, res) => {
   }
 };
 
-//cancel appointment
 export const CancelAppointment = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Find and update the appointment status to "canceled"
     const appointment = await appointmentModel.findByIdAndUpdate(
       id,
       { status: "canceled" },
@@ -327,19 +321,16 @@ export const CancelAppointment = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    // Fetch the patient details
     const patient = await patientModel.findById(appointment.patientId);
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
 
-    // Fetch the doctor details
     const doctor = await doctorModel.findById(appointment.doctorId);
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    // Format date and time
     const formattedDate = new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
@@ -353,41 +344,36 @@ export const CancelAppointment = async (req, res) => {
       timeZone: 'UTC', 
     }).format(new Date(appointment.appointmentTime));
 
-    // Send SMS notification about cancellation
     const message = `Dear ${patient.firstName} ${patient.lastName}, your appointment with Dr. ${doctor.name} on ${formattedDate} at ${formattedTime} has been canceled.`;
-    console.log(message);
+    logger.info(message);
     try {
       await sendSMS(patient.phone, message);
-      console.log('SMS sent successfully');
     } catch (error) {
-      console.error('Failed to send SMS:', error.message);
+      logger.error('Failed to send SMS:', error.message);
     }
 
-    // Invalidate cache
     invalidateCache(id);
     invalidateCache(req.user.id);
 
-    // Respond with success
     res.status(200).json({
       message: "Appointment canceled successfully",
       data: appointment,
     });
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
 
-// fetch appointment for patient selected user
 export const getPatientAppointmentHistory = async (req, res) => {
   try {
     const { PatientID } = req.params;
 
     const appointmentHistory = await appointmentModel
       .find({ patientId: PatientID })
-      .populate({ path: "doctorId", populate: { path: "hospitalId" } }) // Populates doctor information
-      .sort({ appointmentdate: -1 }); // Sort by date (most recent first)
+      .populate({ path: "doctorId", populate: { path: "hospitalId" } }) 
+      .sort({ appointmentdate: -1 });
     const key = req.originalUrl;
     await client.setEx(
       key,
@@ -403,7 +389,6 @@ export const getPatientAppointmentHistory = async (req, res) => {
   }
 };
 
-// fetch appoinment for doctor
 export const getDoctorAppointmentHistory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -425,7 +410,6 @@ export const getDoctorAppointmentHistory = async (req, res) => {
   }
 };
 
-// single appoinment
 export const SingleAppoiment = async (req, res) => {
   try {
     let { id } = req.params;
@@ -441,12 +425,11 @@ export const SingleAppoiment = async (req, res) => {
     await client.setEx(key, CACHE_TIMEOUT, JSON.stringify(SingleAppoiment));
     res.json(SingleAppoiment);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// all patint for doctor
 export const allpatient = async (req, res) => {
   try {
     let data = await patientModel.find();
@@ -458,7 +441,6 @@ export const allpatient = async (req, res) => {
   }
 };
 
-// doctor click patient record
 export const singlepatient = async (req, res) => {
   try {
     let { id } = req.params;
@@ -474,7 +456,6 @@ export const singlepatient = async (req, res) => {
 
 export const appoinmentDone = async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
   try {
     const appointment = await appointmentModel.findByIdAndUpdate(
       id,

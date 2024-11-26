@@ -33,11 +33,7 @@ client.on('error', (err) => {
 
         // Example: Set a key
         await client.set('key', 'value');
-        console.log('SET: key = value');
-
-        // Example: Get the value of the key
         const value = await client.get('key');
-        console.log('GET: key =', value);
     } catch (err) {
         console.error('Error interacting with Redis:', err);
     }

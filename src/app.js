@@ -5,7 +5,12 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import session from "express-session";
 import { redisStore } from "./redis.js";
+import logger from './config/logger.js';
+import { httpLogger } from './middleware/httpLogger.js';
+
 export const app = express();
+
+app.use(httpLogger);
 
 app.use(
   cors({
@@ -87,5 +92,10 @@ app.get("/ssr", (req, res) => {
 <body>
 </body>
 </html>`);
+});
+
+app.use((err, req, res, next) => {
+  logger.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 

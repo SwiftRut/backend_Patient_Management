@@ -24,7 +24,6 @@ export const createNotification = async (userId, type, message, io) => {
 export const sendNotification = async (req, res) => {
   try {
       const { deviceToken, title, body } = req.body;
-      console.log(title, body);
       if (!deviceToken || !title || !body) {
           return res.status(400).json({ error: "Missing required fields" });
       }
@@ -71,14 +70,11 @@ export const deleteNotification = async (req, res) => {
 export const updateDoctor = async (req, res) => {
   const { token: deviceToken } = req.body;
 
-  console.log("Doctor ID:", req.user?.id, "Device Token:", deviceToken);
-
   try {
-    // Find and update the doctor's device token
     const doctor = await doctorModel.findOneAndUpdate(
       { _id: req.user.id },
       { deviceToken },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!doctor) {
@@ -95,14 +91,11 @@ export const updateDoctor = async (req, res) => {
 export const updatePatient = async (req, res) => {
   const { token: deviceToken } = req.body;
 
-  console.log("Patient ID:", req.user?.id, "Device Token:", deviceToken);
-
   try {
-    // Find and update the patient's device token
     const patient = await patientModel.findOneAndUpdate(
       { _id: req.user.id },
       { deviceToken },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!patient) {
