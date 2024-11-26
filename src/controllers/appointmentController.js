@@ -55,11 +55,12 @@ export const appointmentFee = async (req, res) => {
     `Appointment fee for doctor ${doctorId} and type ${appointmentType}`
   );
   try {
-    // const doctor = await Doctor.findById(doctorId);
-    // let fee = doctor.consultationFee;
-    let fee = 10; // You might want to replace this with actual doctor's fee in the future
+    const doctor = await doctorModel.findById(doctorId);
+    // let fee = doctor.onlineConsultationRate;
+    let fee = 1;
+
     if (appointmentType === "follow_up" || true) {
-      fee *= 0.1;
+      fee *= 1;
     }
     const key = req.originalUrl;
     await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ fee }));
