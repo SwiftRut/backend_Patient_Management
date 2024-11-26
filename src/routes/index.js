@@ -19,7 +19,6 @@ import aggregationRoutes from "../routes/aggregationRoutes.js";
 
 
 const router = express.Router();
-
 router.use("/", universalRoutes);
 router.use("/admin", adminRoutes);
 router.use("/patient", patientRoutes);
@@ -35,5 +34,7 @@ router.use("/notification", notificationRoutes);
 
 router.use("/chat", chatRoutes);
 router.use("/aggregation", aggregationRoutes);
-
+router.get("/hello", (req, res) => {
+  res.send("Welcome to Hospital Management System");
+});
 export default router;

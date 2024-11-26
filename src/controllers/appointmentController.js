@@ -56,7 +56,6 @@ export const appointmentFee = async (req, res) => {
   try {
     const doctor = await doctorModel.findById(doctorId);
     let fee = doctor.onlineConsultationRate;
-
     if (appointmentType === "follow_up" || true) {
       fee *= 1;
     }
@@ -145,16 +144,18 @@ export const createAppointment = async (req, res) => {
       razorpaySignature,
     } = req.body;
 
-    // Verify payment signature
-    const sign = razorpayOrderId + "|" + razorpayPaymentId;
-    const expectedSign = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(sign)
-      .digest("hex");
+    const patient= await patientModel.findById(req.user.id);
 
-    if (razorpaySignature !== expectedSign) {
-      return res.status(400).json({ message: "Invalid payment signature" });
-    }
+    // Verify payment signature
+    // const sign = razorpayOrderId + "|" + razorpayPaymentId;
+    // const expectedSign = crypto
+    //   .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    //   .update(sign)
+    //   .digest("hex");
+
+    // if (razorpaySignature !== expectedSign) {
+    //   return res.status(400).json({ message: "Invalid payment signature" });
+    // }
 
     // Create appointment
     const newAppointment = new appointmentModel({
