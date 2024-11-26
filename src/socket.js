@@ -1,6 +1,6 @@
+import logger from "./config/logger.js";
 import Chat from "./models/chatModel.js";
 import { notifyUser } from "./utils/notifyUser.js";
-import logger from "./utils/logger.js";
 
 export default (io) => {
   const onlineUsers = new Map();

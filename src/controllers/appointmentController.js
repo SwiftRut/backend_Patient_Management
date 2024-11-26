@@ -7,7 +7,7 @@ import { client } from "../redis.js";
 import { sendSMS } from "../services/SendSMS.js"
 import doctorModel from "../models/doctorModel.js";
 import crypto from 'crypto';
-import logger from "../utils/logger.js";
+import logger from "../config/logger.js";
 
 // appointment fee
 const razorpay = new Razorpay({
