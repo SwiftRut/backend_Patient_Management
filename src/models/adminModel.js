@@ -43,7 +43,7 @@ const adminSchema = new mongoose.Schema(
     },
     countryCode:{
       type: String,
-      required: [true, "Country code is required"],
+      required: [false, "Country code is required"],
       trim: true,
     },
     twiloPhone:{
