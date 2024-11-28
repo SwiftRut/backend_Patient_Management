@@ -40,6 +40,12 @@ export const AddPriscription = async (req, res) => {
         instructions:additionalNote,
       });
       await prescription.save();
+      
+      
+      //find the appointment and update the prescriptionID
+      const appointment = await appointmentModel.findById(id);
+      appointment.prescriptionId = prescription._id;
+      await appointment.save();
       invalidateCache(id);
       // Return success response
       res.status(201).json({
