@@ -76,6 +76,17 @@ export default (io) => {
       }
     });
 
+    socket.on('deleteMessage', async (data) => {
+      try {
+        const { messageId, room } = data;
+        await Chat.findByIdAndDelete(messageId);
+        io.to(room).emit('messageDeleted', { messageId });
+        logger.info(`Message deleted: ${messageId}`);
+      } catch (err) {
+        logger.error('Error deleting message:', err);
+      }
+    });
+
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
 
