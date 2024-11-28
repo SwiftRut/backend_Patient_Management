@@ -89,8 +89,8 @@ export const getBills = async (req, res) => {
     const bills = await billModel
       .find()
       .populate("patientId doctorId insuranceId");
-      const key = req.originalUrl;
-      await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bills }));
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bills }));
     res.status(200).json({
       success: true,
       data: bills,
@@ -112,8 +112,8 @@ export const getbillsByPatientId = async (req, res) => {
     const bills = await billModel
       .find({ patientId: Id })
       .populate("patientId doctorId insuranceId");
-      const key = req.originalUrl;
-      await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bills }));
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: bills }));
     res.status(200).json({
       success: true,
       data: bills,

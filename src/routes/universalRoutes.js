@@ -54,7 +54,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
 //logout
 router.post("/logout", async (req, res) => {
   try {
@@ -64,7 +63,6 @@ router.post("/logout", async (req, res) => {
     return res.status(500).json({ message: "Server error during logout" });
   }
 });
-
 
 const twilioClient = twilio(
   process.env.TWILIO_SID,

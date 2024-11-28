@@ -16,13 +16,13 @@ const appointmentSchema = new mongoose.Schema(
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "Hospital",
     // },
-    insuranceId : {
-      type : mongoose.Schema.Types.ObjectId,
-      ref : "Insurance"
+    insuranceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Insurance",
     },
     date: {
       type: Date,
-      required: [true, "Date is required"], 
+      required: [true, "Date is required"],
     },
     appointmentTime: {
       type: String,
@@ -63,30 +63,30 @@ const appointmentSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["scheduled", "canceled", "pending", "completed"],
-      default: "scheduled", 
+      default: "scheduled",
     },
     paymentId: {
       type: String,
-      sparse: true
+      sparse: true,
     },
     orderId: {
       type: String,
-      sparse: true
+      sparse: true,
     },
     paymentStatus: {
       type: String,
-      enum: ['pending', 'paid', 'failed'],
-      default: 'pending'
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
     },
     prescriptionId: {
       type: String,
-      default: null
+      default: null,
     },
     amount: {
       type: Number,
       // required: true
-      required: false
-    }
+      required: false,
+    },
   },
   {
     timestamps: true,

@@ -1,15 +1,15 @@
 import appointmentModel from "../models/appointmentModel.js";
 import prescriptionModel from "../models/prescriptionModel.js";
 
-const CACHE_KEYS={
+const CACHE_KEYS = {
   PRESCRIPTION_BY_ID: (id) => `/prescription/getPrescriptionById/${id}`,
   ALL_PRESCRIPTIONS: "/prescription/getPrescription",
   TODAY_PRESCRIPTIONS: "/prescription/todayPrescription",
   OLD_PRESCRIPTIONS: "/prescription/oldPrescription",
   SEARCH_PRESCRIPTIONS: "/prescription/searchprescriptions",
   SEARCHING_DATE: "/prescription/searchingdate",
-  SINGLE_PRESCRIPTION: (id) => `/prescription/SinglePrescription/${id}`  
-}
+  SINGLE_PRESCRIPTION: (id) => `/prescription/SinglePrescription/${id}`,
+};
 const invalidateCache = async (id) => {
   try {
     await client.del(CACHE_KEYS.ALL_PRESCRIPTIONS);
@@ -31,17 +31,16 @@ export const AddPriscription = async (req, res) => {
       let Appointment = await appointmentModel
         .findById(id)
         .populate({ path: "patientId", select: "id" });
-    
+
       const prescription = new prescriptionModel({
         patientId: Appointment.patientId._id,
         doctorId: Appointment.doctorId._id,
         appointmentId: Appointment._id,
         medications: [...medicines],
-        instructions:additionalNote,
+        instructions: additionalNote,
       });
       await prescription.save();
-      
-      
+
       //find the appointment and update the prescriptionID
       const appointment = await appointmentModel.findById(id);
       appointment.prescriptionId = prescription._id;
@@ -65,10 +64,12 @@ export const AddPriscription = async (req, res) => {
 export const getPrescription = async (req, res) => {
   try {
     let { id } = req.params;
-    let data = await prescriptionModel.find({
-      // AppointmentID: id,
-      // DoctorID: req.body.DoctorID,
-    }).populate("patientId");
+    let data = await prescriptionModel
+      .find({
+        // AppointmentID: id,
+        // DoctorID: req.body.DoctorID,
+      })
+      .populate("patientId");
     res.json(data);
   } catch (error) {
     console.log(error);
@@ -80,29 +81,33 @@ export const getPrescription = async (req, res) => {
 export const getPrescriptionById = async (req, res) => {
   try {
     const { id } = req.params;
-    
-   
-    const prescriptions = await prescriptionModel.find({ patientId: id })
+
+    const prescriptions = await prescriptionModel
+      .find({ patientId: id })
       .populate({
-        path: 'appointmentId',
+        path: "appointmentId",
         populate: {
-          path: 'doctorId'
-        }
-      }).populate({
-        path:"patientId"
-      }).populate({
-        path:"doctorId"
+          path: "doctorId",
+        },
+      })
+      .populate({
+        path: "patientId",
+      })
+      .populate({
+        path: "doctorId",
       })
       .lean(); // Use lean() for better performance if you don't need Mongoose documents
 
     if (!prescriptions || prescriptions.length === 0) {
-      return res.status(404).json({ message: 'No prescriptions found for this patient' });
+      return res
+        .status(404)
+        .json({ message: "No prescriptions found for this patient" });
     }
 
     res.json(prescriptions);
   } catch (error) {
-    console.error('Error in getPrescriptionById:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error("Error in getPrescriptionById:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -222,12 +227,13 @@ export const getPrescriptionsByDate = async (req, res) => {
     const startOfDay = new Date(new Date(date).setHours(0, 0, 0, 0));
     const endOfDay = new Date(new Date(date).setHours(23, 59, 59, 999));
 
-    const prescriptions = await prescriptionModel.find({
-      date: {
-        $gte: startOfDay,
-        $lte: endOfDay,
-      },
-    })
+    const prescriptions = await prescriptionModel
+      .find({
+        date: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
+      })
       .populate({
         path: "patientId",
         select: "firstname lastname phonenumber age gender",

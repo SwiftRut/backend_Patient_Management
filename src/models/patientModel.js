@@ -38,13 +38,12 @@ const patientSchema = new mongoose.Schema(
       type: String,
       unique: true,
       required: [false, "Phone number is required"],
-     
     },
-    countryCode:{
+    countryCode: {
       type: String,
       required: false,
     },
-    twiloPhone:{
+    twiloPhone: {
       type: String,
       required: false,
     },
@@ -63,7 +62,7 @@ const patientSchema = new mongoose.Schema(
     address: {
       type: String,
       required: [false, "Address is required"],
-      trim: false,   
+      trim: false,
     },
     diseaseName: {
       type: String,
@@ -77,10 +76,12 @@ const patientSchema = new mongoose.Schema(
       type: String,
       default: "https://vectorified.com/images/default-user-icon-33.jpg",
     },
-    appointmentId : [{
-      type : mongoose.Schema.Types.ObjectId,
-      ref : "Appointment"
-    }],
+    appointmentId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Appointment",
+      },
+    ],
     resetPasswordOtp: {
       type: String,
     },
@@ -132,7 +133,7 @@ const patientSchema = new mongoose.Schema(
     deviceToken: {
       type: String,
       required: false,
-      default: "null"
+      default: "null",
     },
   },
   { timestamps: true }

@@ -2,7 +2,7 @@ import patientModel from "../models/patientModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { client } from '../redis.js';
+import { client } from "../redis.js";
 import { CACHE_TIMEOUT } from "../constants.js";
 //register patient
 export const registerPatient = async (req, res) => {
@@ -45,7 +45,7 @@ export const registerPatient = async (req, res) => {
       !phone ||
       !country ||
       !state ||
-      !address||
+      !address ||
       !city
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -108,10 +108,8 @@ export const loginPatient = async (req, res) => {
 
     const normalizedIdentifier = identifier.trim().toLowerCase();
 
-   
     const normalizedPhone = identifier.trim().replace(/[\s\-\(\)]/g, "");
 
-   
     const patient = await patientModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
@@ -120,16 +118,15 @@ export const loginPatient = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-   
     const isMatch = await bcrypt.compare(password, patient.password);
-   
+
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: patient._id,role: 'patient' },
+      { id: patient._id, role: "patient" },
       process.env.JWT_SECRET,
       { expiresIn: rememberMe ? "7d" : "1d" }
     );
@@ -193,7 +190,7 @@ export const getPatientById = async (req, res) => {
     }
 
     const key = req.originalUrl;
-    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({data: patient}));
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: patient }));
     res.status(200).json({
       message: "Patient fetched successfully",
       data: patient,
@@ -207,9 +204,9 @@ export const getPatientById = async (req, res) => {
 export const getAllPatients = async (req, res) => {
   try {
     const patients = await patientModel.find().populate({
-      path: 'appointmentId',
+      path: "appointmentId",
       populate: {
-        path: 'doctorId', // Populate doctorId within each appointment
+        path: "doctorId", // Populate doctorId within each appointment
       },
     });
     const key = req.originalUrl;

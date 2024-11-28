@@ -17,12 +17,33 @@ const router = express.Router();
 
 router.post("/register", registerDoctor);
 router.post("/login", loginDoctor);
-router.post("/addDoctor",protect, upload.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'signature', maxCount: 1 }]), addDoctor);
+router.post(
+  "/addDoctor",
+  protect,
+  upload.fields([
+    { name: "profilePicture", maxCount: 1 },
+    { name: "signature", maxCount: 1 },
+  ]),
+  addDoctor
+);
 router.get("/getDoctorById/:id", cacheMiddleware, getDoctorById);
 router.get("/getAllDoctors", cacheMiddleware, getAllDoctors);
-router.put("/editDoctor/:id", protect, upload.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'signature', maxCount: 1 }, { name: 'profilePic', maxCount: 1 }]), editDoctor);
+router.put(
+  "/editDoctor/:id",
+  protect,
+  upload.fields([
+    { name: "profilePicture", maxCount: 1 },
+    { name: "signature", maxCount: 1 },
+    { name: "profilePic", maxCount: 1 },
+  ]),
+  editDoctor
+);
 router.delete("/deleteDoctor/:id", protect, deleteDoctor);
-router.get("/:doctorId/unavailable-times", cacheMiddleware, getUnavailableTimes);
-router.post("/:doctorId/unavailable-times",protect, addUnavailableTime);
+router.get(
+  "/:doctorId/unavailable-times",
+  cacheMiddleware,
+  getUnavailableTimes
+);
+router.post("/:doctorId/unavailable-times", protect, addUnavailableTime);
 
 export default router;

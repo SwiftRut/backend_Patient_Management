@@ -13,7 +13,7 @@ export const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-       let user;
+      let user;
       if (decoded.role === "admin") {
         user = await adminModel.findById(decoded.id).select("-password");
       } else if (decoded.role === "doctor") {

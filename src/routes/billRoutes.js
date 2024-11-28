@@ -15,16 +15,16 @@ const router = express.Router();
 
 // router.post("/createbill" ,upload.single('profilePic'), createBill)
 router.post("/createbill", createBill); //
-router.get("/getbill",cacheMiddleware, getBills); //
+router.get("/getbill", cacheMiddleware, getBills); //
 router.get(
   "/getbillsById",
   protect,
   authorize(["patient", "doctor"]),
   cacheMiddleware,
   getbillsByPatientId
-);//bill/getbillsById
-router.get("/getInsuranceBills",cacheMiddleware, getInsuranceBills);
-router.get("/singlebill/:id",cacheMiddleware, getBillById);
+); //bill/getbillsById
+router.get("/getInsuranceBills", cacheMiddleware, getInsuranceBills);
+router.get("/singlebill/:id", cacheMiddleware, getBillById);
 router.put("/billupdate/:id", updateBill);
 router.delete("/deletebill/:id", deleteBill);
 export default router;

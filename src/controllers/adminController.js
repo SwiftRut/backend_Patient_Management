@@ -2,7 +2,7 @@ import adminModel from "../models/adminModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import hospitalModel from "../models/hospitalModel.js";
-import { client } from '../redis.js';
+import { client } from "../redis.js";
 import { CACHE_TIMEOUT } from "../constants.js";
 //register
 export const registerAdmin = async (req, res) => {
@@ -51,7 +51,7 @@ export const registerAdmin = async (req, res) => {
       lastName,
       email,
       password,
-      phone:countryCode + phone,
+      phone: countryCode + phone,
       countryCode,
       // twiloPhone: countryCode + phone,
       country,
@@ -148,14 +148,17 @@ export const getProfile = async (req, res) => {
   }
 };
 
-
 //get all admin
 export const getAllAdmins = async (req, res) => {
   try {
     const admins = await adminModel.find().select("-password -confirmPassword"); // Exclude sensitive fields
     const adminCount = await adminModel.countDocuments();
     const key = req.originalUrl;
-    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ adminCount, admins }));
+    await client.setEx(
+      key,
+      CACHE_TIMEOUT,
+      JSON.stringify({ adminCount, admins })
+    );
     res.status(200).json({
       totalAdmin: adminCount,
       admins,
@@ -168,7 +171,7 @@ export const getAllAdmins = async (req, res) => {
 //edit profile
 export const editProfile = async (req, res) => {
   try {
-    const { 
+    const {
       firstName,
       lastName,
       email,
@@ -194,7 +197,7 @@ export const editProfile = async (req, res) => {
       city,
       role,
       gender,
-      hospital:hospitalId
+      hospital: hospitalId,
     };
 
     // Validate email uniqueness
@@ -243,7 +246,7 @@ export const editProfile = async (req, res) => {
     res.status(200).json({
       message: "Profile updated successfully",
       admin: updatedAdmin,
-      hospital: updatedHospital
+      hospital: updatedHospital,
     });
   } catch (error) {
     console.error("Error updating profile:", error);

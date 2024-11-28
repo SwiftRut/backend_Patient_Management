@@ -6,7 +6,6 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: false,
       trim: true,
-    
     },
     lastName: {
       type: String,
@@ -19,7 +18,7 @@ const doctorSchema = new mongoose.Schema(
       required: [true, "Hospital ID is required"],
     },
     //name should be always capitalized
-    name:{
+    name: {
       type: String,
       required: false,
       trim: true,
@@ -61,7 +60,6 @@ const doctorSchema = new mongoose.Schema(
     workingTime: {
       type: String,
       required: false,
-
     },
     breakTime: {
       type: String,
@@ -72,11 +70,11 @@ const doctorSchema = new mongoose.Schema(
         date: String,
         timeRange: {
           start: String,
-          end: String
+          end: String,
         },
         title: String,
-        reason: String
-      }
+        reason: String,
+      },
     ],
     patientCheckupTime: {
       type: String,
@@ -96,7 +94,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [false, "Phone number is required"],
     },
-    countryCode:{
+    countryCode: {
       type: String,
       required: false,
     },
@@ -183,13 +181,13 @@ const doctorSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
-    role:{
-      type:String,
-      default:"doctor"
+    role: {
+      type: String,
+      default: "doctor",
     },
     deviceToken: {
       type: String,
-      default:"null"
+      default: "null",
     },
   },
   {
@@ -207,9 +205,9 @@ doctorSchema.pre("save", async function (next) {
   this.confirmPassword = undefined; // Do not store confirmPassword in the database
   if (this.name) {
     this.name = this.name
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
   next();
 });
@@ -217,7 +215,6 @@ doctorSchema.pre("save", async function (next) {
 doctorSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
-
 
 const doctorModel = mongoose.model("Doctor", doctorSchema);
 
