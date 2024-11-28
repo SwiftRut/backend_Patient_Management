@@ -30,7 +30,6 @@ const CACHE_KEYS = {
     `/appoinment/appointment-fee?doctorId=${doctorId}&appointmentType=${type}`,
 };
 
-//fucntion to invalidate the querys from the cache_keys
 export const invalidateCache = async (id) => {
   try {
     await client.del(CACHE_KEYS.ALL_APPOINTMENTS);
