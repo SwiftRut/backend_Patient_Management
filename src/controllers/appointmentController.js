@@ -4,9 +4,9 @@ import patientModel from "../models/patientModel.js";
 import Razorpay from "razorpay";
 import { CACHE_TIMEOUT } from "../constants.js";
 import { client } from "../redis.js";
-import { sendSMS } from "../services/SendSMS.js"
+import { sendSMS } from "../services/SendSMS.js";
 import doctorModel from "../models/doctorModel.js";
-import crypto from 'crypto';
+import crypto from "crypto";
 import logger from "../config/logger.js";
 
 // appointment fee
@@ -44,14 +44,16 @@ export const invalidateCache = async (id) => {
     await client.del(CACHE_KEYS.APPOINTMENT_DONE(id));
     await client.del(CACHE_KEYS.APPOINTMENT_FEE(id));
   } catch (error) {
-    logger.error('Error invalidating cache:', error);
+    logger.error("Error invalidating cache:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const appointmentFee = async (req, res) => {
   const { doctorId, appointmentType } = req.query;
-  logger.info(`Appointment fee for doctor ${doctorId} and type ${appointmentType}`);
+  logger.info(
+    `Appointment fee for doctor ${doctorId} and type ${appointmentType}`
+  );
   try {
     const doctor = await doctorModel.findById(doctorId);
     let fee = doctor.onlineConsultationRate;
@@ -62,7 +64,7 @@ export const appointmentFee = async (req, res) => {
     await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ fee }));
     res.json({ fee });
   } catch (error) {
-    logger.error('Error fetching appointment fee:', error);
+    logger.error("Error fetching appointment fee:", error);
     res.status(500).json({ error: "Error fetching appointment fee" });
   }
 };
@@ -83,12 +85,12 @@ export const createRazorpayOrder = async (req, res) => {
     };
 
     const order = await razorpay.orders.create(options);
-    
+
     res.status(200).json({
       id: order.id,
       amount: order.amount,
       currency: order.currency,
-      receipt: order.receipt
+      receipt: order.receipt,
     });
   } catch (error) {
     logger.error("Razorpay order creation error:", error);
@@ -98,11 +100,8 @@ export const createRazorpayOrder = async (req, res) => {
 
 export const verifyPayment = async (req, res) => {
   try {
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature
-    } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
     // Verify signature
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
@@ -117,7 +116,7 @@ export const verifyPayment = async (req, res) => {
 
     // Payment is valid
     res.status(200).json({
-      message: "Payment verified successfully"
+      message: "Payment verified successfully",
     });
   } catch (error) {
     logger.error("Payment verification error:", error);
@@ -143,7 +142,7 @@ export const createAppointment = async (req, res) => {
       razorpaySignature,
     } = req.body;
 
-    const patient= await patientModel.findById(req.user.id);
+    const patient = await patientModel.findById(req.user.id);
 
     // Verify payment signature
     // const sign = razorpayOrderId + "|" + razorpayPaymentId;
@@ -173,7 +172,7 @@ export const createAppointment = async (req, res) => {
       paymentId: razorpayPaymentId,
       orderId: razorpayOrderId,
       paymentStatus: "paid",
-      status: "scheduled"
+      status: "scheduled",
     });
 
     await newAppointment.save();
@@ -183,32 +182,32 @@ export const createAppointment = async (req, res) => {
     invalidateCache(req.user.id);
 
     const doctor = await doctorModel.findById(newAppointment.doctorId);
-   
+
     // Send SMS Notification
     // Assuming `date` and `appointmentTime` are in ISO format
-const formattedDate = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-}).format(new Date(newAppointment.date));
+    const formattedDate = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(newAppointment.date));
 
-const formattedTime = new Intl.DateTimeFormat('en-US', {
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  hour12: true,
-  timeZone: 'UTC',
-}).format(new Date(newAppointment.appointmentTime));
+    const formattedTime = new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+      timeZone: "UTC",
+    }).format(new Date(newAppointment.appointmentTime));
 
-// SMS message
-const message = `Dear ${patient.firstName} ${patient.lastName}, your appointment with Dr. ${doctor.name} on ${formattedDate} at ${formattedTime} has been confirmed.`;
+    // SMS message
+    const message = `Dear ${patient.firstName} ${patient.lastName}, your appointment with Dr. ${doctor.name} on ${formattedDate} at ${formattedTime} has been confirmed.`;
 
-logger.info(message);
+    logger.info(message);
     // const message = `Dear ${patient.firstName+' '+patient.lastName}, your appointment with Dr. ${doctor.name} on ${date} at ${appointmentTime} has been confirmed.`;
     try {
       await sendSMS(patient.phone, message);
     } catch (error) {
-      logger.error('Failed to send SMS:', error.message);
+      logger.error("Failed to send SMS:", error.message);
     }
 
     res.status(201).json({
@@ -266,7 +265,6 @@ export const AllAppointmentById = async (req, res) => {
 
 export const AllTodaysAppointment = async (req, res) => {
   try {
-
     let data = await appointmentModel
       .find({
         // date: new Date().toISOString().split('T')[0]
@@ -331,17 +329,17 @@ export const CancelAppointment = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    const formattedDate = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     }).format(new Date(appointment.date));
 
-    const formattedTime = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
+    const formattedTime = new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "numeric",
       hour12: true,
-      timeZone: 'UTC', 
+      timeZone: "UTC",
     }).format(new Date(appointment.appointmentTime));
 
     const message = `Dear ${patient.firstName} ${patient.lastName}, your appointment with Dr. ${doctor.name} on ${formattedDate} at ${formattedTime} has been canceled.`;
@@ -349,7 +347,7 @@ export const CancelAppointment = async (req, res) => {
     try {
       await sendSMS(patient.phone, message);
     } catch (error) {
-      logger.error('Failed to send SMS:', error.message);
+      logger.error("Failed to send SMS:", error.message);
     }
 
     invalidateCache(id);
@@ -365,14 +363,13 @@ export const CancelAppointment = async (req, res) => {
   }
 };
 
-
 export const getPatientAppointmentHistory = async (req, res) => {
   try {
     const { PatientID } = req.params;
 
     const appointmentHistory = await appointmentModel
       .find({ patientId: PatientID })
-      .populate({ path: "doctorId", populate: { path: "hospitalId" } }) 
+      .populate({ path: "doctorId", populate: { path: "hospitalId" } })
       .sort({ appointmentdate: -1 });
     const key = req.originalUrl;
     await client.setEx(
@@ -471,12 +468,10 @@ export const appoinmentDone = async (req, res) => {
         data: appointment,
       })
     );
-    res
-      .status(200)
-      .json({
-        message: "Appointment status updated successfully",
-        data: appointment,
-      });
+    res.status(200).json({
+      message: "Appointment status updated successfully",
+      data: appointment,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

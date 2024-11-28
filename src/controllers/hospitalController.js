@@ -1,5 +1,5 @@
 import hospitalModel from "../models/hospitalModel.js";
-import { client } from '../redis.js';
+import { client } from "../redis.js";
 import { CACHE_TIMEOUT } from "../constants.js";
 
 export const createHospital = async (req, res) => {
@@ -19,8 +19,8 @@ export const createHospital = async (req, res) => {
 
     await newHospital.save();
     //remove the old cache data
-    await client.del('/hospital/get-all-hospitals');
-    
+    await client.del("/hospital/get-all-hospitals");
+
     res.status(201).json({
       message: "Hospital created successfully",
       hospital: newHospital,
@@ -42,4 +42,4 @@ export const getAllHospitals = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};

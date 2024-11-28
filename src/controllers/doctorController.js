@@ -1,9 +1,9 @@
 import doctorModel from "../models/doctorModel.js";
-import hospitalModel from "../models/hospitalModel.js"
+import hospitalModel from "../models/hospitalModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { client } from '../redis.js';
+import { client } from "../redis.js";
 import { CACHE_TIMEOUT } from "../constants.js";
 
 export const registerDoctor = async (req, res) => {
@@ -40,8 +40,10 @@ export const registerDoctor = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    if (countryCode && !countryCode.startsWith('+')) {
-      return res.status(400).json({ message: "Country code must start with a '+' sign." });
+    if (countryCode && !countryCode.startsWith("+")) {
+      return res
+        .status(400)
+        .json({ message: "Country code must start with a '+' sign." });
     }
 
     const existingDoctor = await doctorModel.findOne({ email });
@@ -91,7 +93,7 @@ export const loginDoctor = async (req, res) => {
     const doctor = await doctorModel.findOne({
       $or: [{ email: normalizedIdentifier }, { phone: normalizedPhone }],
     });
-     if (!doctor) {
+    if (!doctor) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -100,9 +102,13 @@ export const loginDoctor = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: doctor._id, role:"doctor" }, process.env.JWT_SECRET, {
-      expiresIn: rememberMe ? "7d" : "1d",
-    });
+    const token = jwt.sign(
+      { id: doctor._id, role: "doctor" },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: rememberMe ? "7d" : "1d",
+      }
+    );
 
     res.status(200).json({
       message: "Login successful",
@@ -117,7 +123,7 @@ export const loginDoctor = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error:error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -164,12 +170,20 @@ export const addDoctor = async (req, res) => {
     // Check if doctor with this email already exists
     const existingDoctor = await doctorModel.findOne({ email: req.body.email });
     if (existingDoctor) {
-      return res.status(400).json({ message: "Doctor with this email already exists" });
+      return res
+        .status(400)
+        .json({ message: "Doctor with this email already exists" });
     }
 
     // Handle uploaded files
-    const imgUrlProfilePic = req.files['profilePicture'] && req.files['profilePicture'][0] ? req.files['profilePicture'][0].path : null;
-    const imgUrlSignature = req.files['signature'] && req.files['signature'][0] ? req.files['signature'][0].path : null;
+    const imgUrlProfilePic =
+      req.files["profilePicture"] && req.files["profilePicture"][0]
+        ? req.files["profilePicture"][0].path
+        : null;
+    const imgUrlSignature =
+      req.files["signature"] && req.files["signature"][0]
+        ? req.files["signature"][0].path
+        : null;
     // Add image paths to req.body if they exist
     if (imgUrlProfilePic) req.body.avatar = imgUrlProfilePic; // Assuming you want to store the profilePic path in 'avatar'
     if (imgUrlSignature) req.body.signature = imgUrlSignature; // Add signature path
@@ -185,28 +199,27 @@ export const addDoctor = async (req, res) => {
       data: newDoctor,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    res.status(500).json({ message: error.message });
+  }
 };
 
 //get doctor by id
 export const getDoctorById = async (req, res) => {
-  
   try {
-    const { id } = req.params;  
-  
+    const { id } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid Doctor ID" });
     }
 
     const doctor = await doctorModel.findById(id).populate("hospitalId");
-    
+
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
-    doctor.phone= doctor.phone.replace(doctor.countryCode, '')
-    const key = req.originalUrl;   
-    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({data: doctor}));
+    doctor.phone = doctor.phone.replace(doctor.countryCode, "");
+    const key = req.originalUrl;
+    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify({ data: doctor }));
     res.status(200).json({
       message: "Doctor fetched successfully",
       data: doctor,
@@ -242,7 +255,7 @@ export const editDoctor = async (req, res) => {
       imageUrl = req.files.profilePic[0].path;
     }
   }
-  imageUrl = imageUrl || req.body.avatar || "";  
+  imageUrl = imageUrl || req.body.avatar || "";
   const updatedData = { ...req.body, avatar: imageUrl };
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -299,13 +312,19 @@ export const deleteDoctor = async (req, res) => {
 export const getUnavailableTimes = async (req, res) => {
   try {
     const { doctorId } = req.params;
-    const doctor = await doctorModel.findById(doctorId).select("unavailableTimes");
+    const doctor = await doctorModel
+      .findById(doctorId)
+      .select("unavailableTimes");
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
     const key = req.originalUrl;
     console.log("doctor.unavailableTimes", doctor.unavailableTimes);
-    await client.setEx(key, CACHE_TIMEOUT, JSON.stringify(doctor.unavailableTimes));
+    await client.setEx(
+      key,
+      CACHE_TIMEOUT,
+      JSON.stringify(doctor.unavailableTimes)
+    );
     res.status(200).json(doctor.unavailableTimes);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -327,7 +346,7 @@ export const addUnavailableTime = async (req, res) => {
       date,
       timeRange,
       title,
-      reason
+      reason,
     };
 
     doctor.unavailableTimes.push(newUnavailableTime);
@@ -335,9 +354,9 @@ export const addUnavailableTime = async (req, res) => {
 
     await client.del(`/doctor/${doctorId}/unavailable-times`);
     // Return the newly created unavailable time
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Unavailable time added successfully",
-      data: doctor.unavailableTimes[doctor.unavailableTimes.length - 1]
+      data: doctor.unavailableTimes[doctor.unavailableTimes.length - 1],
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

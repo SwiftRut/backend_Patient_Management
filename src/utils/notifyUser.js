@@ -11,7 +11,7 @@ export const notifyUser = async (io, userId, message, type, onlineUsers) => {
     await notification.save();
     const recipientSocketId = onlineUsers.get(userId);
     if (recipientSocketId) {
-      io.to(recipientSocketId).emit('notification', { message, type });
+      io.to(recipientSocketId).emit("notification", { message, type });
     }
   } catch (error) {
     console.error("Error creating or sending notification:", error);

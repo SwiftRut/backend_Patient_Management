@@ -41,12 +41,12 @@ const adminSchema = new mongoose.Schema(
       required: [true, "Phone number is required"],
       // match: [/^\d{13}$/, "Please enter a valid phone number"],
     },
-    countryCode:{
+    countryCode: {
       type: String,
       required: [true, "Country code is required"],
       trim: true,
     },
-    twiloPhone:{
+    twiloPhone: {
       type: String,
       required: false,
     },
@@ -82,7 +82,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
       enum: ["Male", "Female", "Other"],
       default: "Other",
-    }
+    },
   },
   {
     timestamps: true,
@@ -108,4 +108,3 @@ adminSchema.methods.matchPassword = async function (enteredPassword) {
 
 const adminModel = mongoose.model("Admin", adminSchema);
 export default adminModel;
-  

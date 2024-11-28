@@ -14,25 +14,29 @@ export const createNotification = async (userId, type, message, io) => {
     // Emit notification via Socket.IO
     const recipientSocketId = onlineUsers.get(userId);
     if (recipientSocketId && io) {
-      io.to(recipientSocketId).emit('notification', { message, type });
+      io.to(recipientSocketId).emit("notification", { message, type });
     }
     console.log(`Notification saved and sent to user ${userId}`);
   } catch (error) {
-    console.error('Error creating notification:', error);
+    console.error("Error creating notification:", error);
   }
 };
 export const sendNotification = async (req, res) => {
   try {
-      const { deviceToken, title, body } = req.body;
-      if (!deviceToken || !title || !body) {
-          return res.status(400).json({ error: "Missing required fields" });
-      }
+    const { deviceToken, title, body } = req.body;
+    if (!deviceToken || !title || !body) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
-      const response = await NotificationService.sendNotification(deviceToken, title, body);
-      return res.status(200).json({ success: true, response });
+    const response = await NotificationService.sendNotification(
+      deviceToken,
+      title,
+      body
+    );
+    return res.status(200).json({ success: true, response });
   } catch (error) {
-      console.error("Error in sendNotification:", error);
-      return res.status(500).json({ success: false, error: error.message });
+    console.error("Error in sendNotification:", error);
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -44,7 +48,7 @@ export const getNotificationsForUser = async (req, res) => {
       .find({ userId })
       .sort({ createdAt: -1 })
       .limit(50);
-    
+
     res.status(200).json(notifications);
   } catch (error) {
     res.status(500).json({ message: "Error fetching notifications", error });
@@ -81,7 +85,9 @@ export const updateDoctor = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    res.status(200).json({ message: "Doctor token updated successfully", doctor });
+    res
+      .status(200)
+      .json({ message: "Doctor token updated successfully", doctor });
   } catch (error) {
     console.error("Error updating doctor token:", error);
     res.status(500).json({ message: "Error updating doctor token", error });
@@ -102,7 +108,9 @@ export const updatePatient = async (req, res) => {
       return res.status(404).json({ message: "Patient not found" });
     }
 
-    res.status(200).json({ message: "Patient token updated successfully", patient });
+    res
+      .status(200)
+      .json({ message: "Patient token updated successfully", patient });
   } catch (error) {
     console.error("Error updating patient token:", error);
     res.status(500).json({ message: "Error updating patient token", error });
@@ -125,7 +133,9 @@ export const markAsRead = async (req, res) => {
 
     res.status(200).json(notification);
   } catch (error) {
-    res.status(500).json({ message: "Error marking notification as read", error });
+    res
+      .status(500)
+      .json({ message: "Error marking notification as read", error });
   }
 };
 
@@ -140,7 +150,8 @@ export const markAllAsRead = async (req, res) => {
 
     res.status(200).json({ message: "All notifications marked as read" });
   } catch (error) {
-    res.status(500).json({ message: "Error marking all notifications as read", error });
+    res
+      .status(500)
+      .json({ message: "Error marking all notifications as read", error });
   }
 };
-  

@@ -22,7 +22,7 @@ const invalidateCache = async (id) => {
 const createMessage = async (req, res) => {
   const { senderId, receiverId, messageContent } = req.body;
   try {
-    const chat = new Chat({ senderId, receiverId, messageContent })
+    const chat = new Chat({ senderId, receiverId, messageContent });
     invalidateCache(senderId);
     invalidateCache(receiverId);
     await client.del(`/chat/${senderId}/${receiverId}`);
@@ -58,7 +58,7 @@ const updateMessageStatus = async (req, res) => {
       { status: "read" },
       { new: true }
     );
-    const chat = new Chat({ senderId, receiverId, messageContent })
+    const chat = new Chat({ senderId, receiverId, messageContent });
     invalidateCache(senderId);
     invalidateCache(receiverId);
     res.status(200).json(updatedChat);
@@ -71,7 +71,7 @@ const deleteMessage = async (req, res) => {
   const { chatId } = req.params;
   try {
     await Chat.findByIdAndDelete(chatId);
-    const chat = new Chat({ senderId, receiverId, messageContent })
+    const chat = new Chat({ senderId, receiverId, messageContent });
     invalidateCache(senderId);
     invalidateCache(receiverId);
     res.status(200).json({ message: "Message deleted" });

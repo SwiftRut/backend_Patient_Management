@@ -31,12 +31,12 @@ const hospitalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Zip code is required"],
     },
-    emergencyContactNo:{
+    emergencyContactNo: {
       type: String,
     },
-    worksiteLink:{
-      type: String
-    }
+    worksiteLink: {
+      type: String,
+    },
   },
   {
     timestamps: true,

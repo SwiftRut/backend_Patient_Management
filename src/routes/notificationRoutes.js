@@ -7,7 +7,7 @@ import {
   updateDoctor,
   updatePatient,
   markAsRead,
-  markAllAsRead
+  markAllAsRead,
 } from "../controllers/notificationController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
@@ -23,4 +23,3 @@ router.put("/markAsRead/:notificationId", protect, markAsRead);
 router.put("/markAllAsRead/:userId", protect, markAllAsRead);
 
 export default router;
-

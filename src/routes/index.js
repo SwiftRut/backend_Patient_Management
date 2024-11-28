@@ -1,6 +1,5 @@
 import express from "express";
 
-
 import insuranceRoutes from "./insuranceRoutes.js";
 import appoinmentRoutes from "./appointmentRoutes.js";
 import prescriptionRoutes from "./prescriptionRoutes.js";
@@ -17,7 +16,6 @@ import billRoutes from "../routes/billRoutes.js";
 import universalRoutes from "../routes/universalRoutes.js";
 import aggregationRoutes from "../routes/aggregationRoutes.js";
 
-
 const router = express.Router();
 router.use("/", universalRoutes);
 router.use("/admin", adminRoutes);
@@ -27,9 +25,9 @@ router.use("/hospital", hospitalRoutes);
 router.use("/bill", billRoutes);
 router.use("/insurance", insuranceRoutes); //unused
 
-router.use("/appoinment", appoinmentRoutes); 
+router.use("/appoinment", appoinmentRoutes);
 router.use("/prescription", prescriptionRoutes);
-router.use("/chat", chatRoutes);//socket cashing remains
+router.use("/chat", chatRoutes); //socket cashing remains
 router.use("/notification", notificationRoutes);
 
 router.use("/chat", chatRoutes);

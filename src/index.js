@@ -2,11 +2,11 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import { app } from "./app.js";
 import socketHandler from "./socket.js";
-import logger from './config/logger.js';
+import logger from "./config/logger.js";
 dotenv.config({ path: "./.env" });
 
 import http from "http";
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
@@ -16,7 +16,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   logger.info(`User connected: ${socket.id}`);
 });
 
