@@ -145,15 +145,15 @@ export const createAppointment = async (req, res) => {
     const patient = await patientModel.findById(req.user.id);
 
     // Verify payment signature
-    // const sign = razorpayOrderId + "|" + razorpayPaymentId;
-    // const expectedSign = crypto
-    //   .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-    //   .update(sign)
-    //   .digest("hex");
+    const sign = razorpayOrderId + "|" + razorpayPaymentId;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(sign)
+      .digest("hex");
 
-    // if (razorpaySignature !== expectedSign) {
-    //   return res.status(400).json({ message: "Invalid payment signature" });
-    // }
+    if (razorpaySignature !== expectedSign) {
+      return res.status(400).json({ message: "Invalid payment signature" });
+    }
 
     // Create appointment
     const newAppointment = new appointmentModel({
